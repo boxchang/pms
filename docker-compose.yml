@@ -8,6 +8,8 @@ services:
     restart: always
     expose:
       - "9000"
+    environment:
+      - "DJANGO_SETTINGS_MODULE=PMS.settings.test-box-local"
   django_nginx:
     image: "nginx:1.15-alpine"
     container_name: django_nginx
