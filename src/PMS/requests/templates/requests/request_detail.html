@@ -1,0 +1,17 @@
+{% extends 'bases/menu_base.html' %}
+
+{% load static %}
+{% load i18n %}
+{% block head %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% trans "request_detail" %}</title>
+{% endblock %}
+{% block breadcrumb %}
+    {{ block.super }}
+    <li class="breadcrumb-item"><a href="{% url "project_manage" pk=data.project.pk %}">{{ data.project.name }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ data.title }}</li>
+{% endblock %}
+{% block content %}
+{% include 'requests/request_base.html' %}
+{% endblock %}

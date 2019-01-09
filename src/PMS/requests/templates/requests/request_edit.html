@@ -1,0 +1,69 @@
+{% extends 'bases/menu_base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% load staticfiles %}
+{% load i18n %}
+{% block breadcrumb %}
+    {{ block.super }}
+    {% if form.instance.id %}
+    <li class="breadcrumb-item"><a href="{% url 'project_manage' pk=request.project.pk %}">{{ request.project.name }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'request_detail' pk=request.pk %}">{{ request.title }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans "request_edit" %}</li>
+    {% else %}
+    <li class="breadcrumb-item active" aria-current="page">{% trans "request_create" %}</li>
+    {% endif %}
+{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-md-1"></div>
+  <div class="col-md-10">
+      <div class="card">
+          <div class="card-header">
+          {% if form.instance.id %}
+            {% trans "request_edit" %}
+          {% else %}
+            {% trans "request_create" %}
+          {% endif %}
+          </div>
+          {% include "bases/attach_form.html" %}
+      </div>
+  </div>
+  <div class="col-md-1"></div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+$(function() {
+    FinishCheck();
+
+    $("#id_status").change(function(){
+        FinishCheck();
+    });
+});
+
+
+//狀態為Finished才出現實際完成時間
+function FinishCheck() {
+    if($("#id_status :selected").text().toUpperCase()=="FINISHED")
+    {
+        $("#div_id_actual_date").show();
+    }
+    else
+    {
+        $("#id_actual_date").val('');
+        $("#div_id_actual_date").hide();
+    }
+}
+</script>
+{% endblock js %}
+
+{% block css %}
+<style>
+.django-ckeditor-widget {
+width: 100%;
+}
+</style>
+{% endblock %}

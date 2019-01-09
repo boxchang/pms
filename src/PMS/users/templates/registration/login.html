@@ -1,0 +1,68 @@
+{% extends "bases/base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% load staticfiles %}
+{% load i18n %}
+{% block container %}
+<div style="padding-top: 50px;font-size: 1.2em;">
+
+<form method="post" action="{% url 'login' %}">
+  {% csrf_token %}
+
+<table class="offset-4">
+    <tr>
+        <td colspan="2">
+            {% if messages %}
+                <div class="float-left">
+                    <ul class="messages">
+                        {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        </td>
+    </tr>
+    <tr >
+        <td class="text-right" style="height: 50px;">
+            {% trans "Username" %}：
+        </td>
+        <td>
+            <input type="text" name="username" class="form-control">
+        </td>
+    </tr>
+    <tr>
+        <td class="text-right" style="height: 50px;">
+            {% trans "Password" %}：
+        </td>
+        <td>
+            <input type="password" name="password" class="form-control">
+        </td>
+    </tr>
+    <tr>
+
+    </tr>
+    <tr>
+        <td colspan="2" class="text-center" style="height: 50px;">
+            <input class="btn btn-primary text-center" type="submit" value='{% trans "Submit" %}'>
+        </td>
+    </tr>
+</table>
+</form>
+<table class="offset-4">
+    <tr>
+        <td class="text-right" style="height: 50px;">
+            {% trans "Language" %}：
+        </td>
+        <td>
+           {% include 'bases/lang.html' %}
+        </td>
+    </tr>
+</table>
+</div>
+
+{% endblock container %}
+
+{% block js %}
+{% endblock js %}

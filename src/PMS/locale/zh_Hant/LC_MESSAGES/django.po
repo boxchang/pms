@@ -1,0 +1,1358 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-12-20 15:00+0800\n"
+"PO-Revision-Date: 2018-12-20 15:01+0800\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: zh_TW\n"
+"X-Generator: Poedit 2.2\n"
+
+#: .\bases\templates\bases\attach_form.html:9
+msgid "attachment"
+msgstr "附件"
+
+#: .\bases\templates\bases\attach_form.html:12
+#: .\bases\templates\bases\attach_form.html:23
+msgid "file"
+msgstr "文件"
+
+#: .\bases\templates\bases\attach_form.html:17
+#: .\bases\templates\bases\attach_form.html:27
+#: .\bases\templates\bases\homepage.html:293
+#: .\bugs\templates\bugs\bug_detail.html:77 .\problems\forms.py:19
+#: .\problems\templates\problems\problem_base.html:51 .\projects\forms.py:21
+#: .\requests\forms.py:26 .\requests\templates\requests\request_base.html:66
+msgid "desc"
+msgstr "描述"
+
+#: .\bases\templates\bases\attach_form.html:33
+#: .\bases\templates\bases\form.html:10
+msgid "save"
+msgstr "儲存"
+
+#: .\bases\templates\bases\homepage.html:7
+msgid "BugList"
+msgstr "Bug清單"
+
+#: .\bases\templates\bases\homepage.html:58
+msgid "DataHasBeenTransfered"
+msgstr "資料已轉移"
+
+#: .\bases\templates\bases\homepage.html:74
+msgid "home"
+msgstr "首頁"
+
+#: .\bases\templates\bases\homepage.html:91
+msgid "waiting"
+msgstr "等待中"
+
+#: .\bases\templates\bases\homepage.html:122
+msgid "on_going"
+msgstr "處理中"
+
+#: .\bases\templates\bases\homepage.html:152
+msgid "finished"
+msgstr "已完成"
+
+#: .\bases\templates\bases\homepage.html:183
+msgid "pending"
+msgstr "擱置中"
+
+#: .\bases\templates\bases\homepage.html:227
+#: .\projects\templates\projects\project_manage.html:43
+msgid "project_name"
+msgstr "專案名稱"
+
+#: .\bases\templates\bases\homepage.html:230
+msgid "project_code"
+msgstr "專案描述"
+
+#: .\bases\templates\bases\homepage.html:233
+msgid "project_desc"
+msgstr "專案描述"
+
+#: .\bases\templates\bases\homepage.html:236
+#: .\bases\templates\bases\homepage.html:299
+#: .\bases\templates\bases\homepage.html:361
+#: .\bugs\templates\bugs\bug_detail.html:52
+#: .\bugs\templates\bugs\bug_detail.html:150
+#: .\projects\templates\projects\project_manage.html:136
+#: .\projects\templates\projects\project_manage.html:159
+#: .\requests\templates\requests\request_base.html:166
+msgid "create_by"
+msgstr "建立者"
+
+#: .\bases\templates\bases\homepage.html:239
+#: .\bases\templates\bases\homepage.html:302
+#: .\bases\templates\bases\homepage.html:364
+#: .\bugs\templates\bugs\bug_detail.html:56
+#: .\bugs\templates\bugs\bug_detail.html:152
+#: .\problems\templates\problems\problem_base.html:30
+#: .\projects\templates\projects\project_manage.html:138
+#: .\projects\templates\projects\project_manage.html:161
+#: .\requests\templates\requests\request_base.html:168
+msgid "create_at"
+msgstr "建立時間"
+
+#: .\bases\templates\bases\homepage.html:284
+#: .\bugs\templates\bugs\bug_detail.html:37 .\requests\forms.py:23
+msgid "belong_project"
+msgstr "所屬專案"
+
+#: .\bases\templates\bases\homepage.html:287
+#: .\bases\templates\bases\homepage.html:355 .\bugs\forms.py:17
+#: .\bugs\templates\bugs\bug_detail.html:146 .\problems\forms.py:18
+#: .\projects\templates\projects\project_manage.html:106
+#: .\projects\templates\projects\project_manage.html:132
+#: .\projects\templates\projects\project_manage.html:153 .\requests\forms.py:25
+#: .\requests\templates\requests\request_base.html:162
+#: .\requests\templates\requests\request_base.html:182
+msgid "title"
+msgstr "標題"
+
+#: .\bases\templates\bases\homepage.html:290 .\bugs\forms.py:19
+#: .\projects\templates\projects\project_manage.html:110 .\requests\forms.py:27
+#: .\requests\templates\requests\request_base.html:186
+msgid "status"
+msgstr "狀態"
+
+#: .\bases\templates\bases\homepage.html:296 .\bugs\forms.py:20
+#: .\bugs\templates\bugs\bug_detail.html:41
+#: .\problems\templates\problems\problem_base.html:26
+#: .\projects\templates\projects\project_manage.html:112
+#: .\projects\templates\projects\project_manage.html:157 .\requests\forms.py:29
+#: .\requests\templates\requests\request_base.html:35
+#: .\requests\templates\requests\request_base.html:188
+msgid "owner"
+msgstr "擁有者"
+
+#: .\bases\templates\bases\homepage.html:352 .\requests\forms.py:28
+msgid "belong"
+msgstr "所屬"
+
+#: .\bases\templates\bases\homepage.html:358
+#: .\bugs\templates\bugs\bug_detail.html:148
+#: .\requests\templates\requests\request_base.html:164
+msgid "replies"
+msgstr "回覆數"
+
+#: .\bases\templates\bases\homepage.html:367
+#: .\bugs\templates\bugs\bug_detail.html:154
+#: .\projects\templates\projects\project_manage.html:140
+#: .\requests\templates\requests\request_base.html:170
+msgid "update_by"
+msgstr "最後回覆人"
+
+#: .\bases\templates\bases\homepage.html:370
+#: .\bugs\templates\bugs\bug_detail.html:58
+#: .\bugs\templates\bugs\bug_detail.html:156
+#: .\problems\templates\problems\problem_base.html:32
+#: .\projects\templates\projects\project_manage.html:142
+#: .\requests\templates\requests\request_base.html:172
+msgid "update_at"
+msgstr "最後回覆時間"
+
+#: .\bases\templates\bases\menu_base.html:30
+msgid "logout"
+msgstr "登出"
+
+#: .\bases\templates\bases\menu_base.html:32
+msgid "login"
+msgstr "登入"
+
+#: .\bugs\forms.py:18 .\projects\templates\projects\project_manage.html:108
+#: .\projects\templates\projects\project_manage.html:155 .\requests\forms.py:24
+#: .\requests\templates\requests\request_base.html:33
+#: .\requests\templates\requests\request_base.html:184
+msgid "level"
+msgstr "緊急狀態"
+
+#: .\bugs\forms.py:21 .\problems\forms.py:17
+msgid "project"
+msgstr "專案"
+
+#: .\bugs\forms.py:22
+msgid "belong_to"
+msgstr "所屬"
+
+#: .\bugs\templates\bugs\bug_detail.html:9
+msgid "bug_index"
+msgstr "Bug內容"
+
+#: .\bugs\templates\bugs\bug_detail.html:25
+#: .\bugs\templates\bugs\bug_edit.html:5 .\bugs\templates\bugs\bug_edit.html:15
+#: .\bugs\templates\bugs\bug_edit.html:28
+msgid "bug_edit"
+msgstr "編輯Bug單"
+
+#: .\bugs\templates\bugs\bug_detail.html:26
+msgid "bug_delete"
+msgstr "刪除Bug單"
+
+#: .\bugs\templates\bugs\bug_detail.html:109
+#: .\projects\templates\projects\project_manage.html:56
+#: .\requests\templates\requests\request_base.html:124
+#: .\requests\templates\requests\request_base.html:198
+msgid "problem"
+msgstr "問題"
+
+#: .\bugs\templates\bugs\bug_detail.html:112
+#: .\problems\templates\problems\problem_edit.html:7
+#: .\problems\templates\problems\problem_edit.html:17
+#: .\problems\templates\problems\problem_edit.html:30
+#: .\projects\templates\projects\project_manage.html:61
+msgid "problem_create"
+msgstr "建立問題"
+
+#: .\bugs\templates\bugs\bug_detail.html:144
+#: .\projects\templates\projects\project_manage.html:130
+#: .\requests\templates\requests\request_base.html:160
+msgid "problem_no"
+msgstr "問題編號"
+
+#: .\bugs\templates\bugs\bug_edit.html:7 .\bugs\templates\bugs\bug_edit.html:17
+#: .\bugs\templates\bugs\bug_edit.html:30
+#: .\projects\templates\projects\project_manage.html:60
+msgid "bug_create"
+msgstr "建立Bug單"
+
+#: .\problems\templates\problems\problem_base.html:10
+#: .\problems\templates\problems\problem_edit.html:5
+#: .\problems\templates\problems\problem_edit.html:15
+#: .\problems\templates\problems\problem_edit.html:28
+msgid "problem_edit"
+msgstr "編輯問題"
+
+#: .\problems\templates\problems\problem_base.html:11
+msgid "problem_delete"
+msgstr "刪除問題"
+
+#: .\problems\templates\problems\problem_base.html:22
+#: .\requests\templates\requests\request_base.html:31
+msgid "project_belong"
+msgstr "所屬專案"
+
+#: .\problems\templates\problems\problem_detail.html:8
+msgid "problem_index"
+msgstr "問題內容"
+
+#: .\projects\forms.py:16
+msgid "alphanumeric"
+msgstr "專案代碼"
+
+#: .\projects\forms.py:18
+msgid "name"
+msgstr "名稱"
+
+#: .\projects\forms.py:18
+msgid "help_name"
+msgstr "請輸入專案名稱"
+
+#: .\projects\forms.py:19
+msgid "short_name"
+msgstr "專案簡稱"
+
+#: .\projects\forms.py:19
+msgid "help_short"
+msgstr "請輸入專案簡稱"
+
+#: .\projects\forms.py:21
+msgid "help_desc"
+msgstr "請輸入專案描述"
+
+#: .\projects\templates\projects\project_edit.html:8
+#: .\projects\templates\projects\project_edit.html:17
+#: .\projects\templates\projects\project_edit.html:29
+#: .\projects\templates\projects\project_manage.html:16
+msgid "project_edit"
+msgstr "編輯專案"
+
+#: .\projects\templates\projects\project_edit.html:10
+#: .\projects\templates\projects\project_edit.html:19
+#: .\projects\templates\projects\project_edit.html:31
+#: .\projects\templates\projects\project_manage.html:15
+msgid "project_create"
+msgstr "建立專案"
+
+#: .\projects\templates\projects\project_manage.html:5
+msgid "project_manage"
+msgstr "專案處理"
+
+#: .\projects\templates\projects\project_manage.html:18
+msgid "project_delete"
+msgstr "刪除專案"
+
+#: .\projects\templates\projects\project_manage.html:50
+msgid "request"
+msgstr "需求"
+
+#: .\projects\templates\projects\project_manage.html:59
+#: .\requests\templates\requests\request_edit.html:14
+#: .\requests\templates\requests\request_edit.html:26
+msgid "request_create"
+msgstr "建立需求"
+
+#: .\projects\templates\projects\project_manage.html:104
+#: .\requests\templates\requests\request_base.html:180
+msgid "request_no"
+msgstr "需求編號"
+
+#: .\projects\templates\projects\project_manage.html:114 .\requests\forms.py:31
+#: .\requests\templates\requests\request_base.html:39
+#: .\requests\templates\requests\request_base.html:190
+msgid "starttime"
+msgstr "預計起始時間"
+
+#: .\projects\templates\projects\project_manage.html:116 .\requests\forms.py:32
+#: .\requests\templates\requests\request_base.html:45
+#: .\requests\templates\requests\request_base.html:192
+msgid "finishtime"
+msgstr "預計完成時間"
+
+#: .\projects\templates\projects\project_manage.html:118
+#: .\requests\templates\requests\request_base.html:41
+#: .\requests\templates\requests\request_base.html:194
+msgid "rate"
+msgstr "完成率"
+
+#: .\projects\templates\projects\project_manage.html:120
+#: .\requests\templates\requests\request_base.html:196
+msgid "subrequire"
+msgstr "子需求"
+
+#: .\projects\templates\projects\project_manage.html:122
+msgid "question"
+msgstr "問題"
+
+#: .\projects\templates\projects\project_manage.html:134
+msgid "reply_num"
+msgstr "回覆數"
+
+#: .\projects\templates\projects\project_manage.html:151
+msgid "bug_no"
+msgstr "Bug編號"
+
+#: .\projects\templates\projects\project_setting.html:7
+#: .\projects\templates\projects\project_setting.html:15
+msgid "project_setting"
+msgstr "專案設定"
+
+#: .\projects\templates\projects\project_setting.html:18
+msgid "project_setting_desc"
+msgstr "說明：設定登入後預設專案"
+
+#: .\projects\templates\projects\project_setting.html:24
+msgid "upload_selfie"
+msgstr "上傳大頭照"
+
+#: .\projects\templates\projects\search.html:8
+#, fuzzy, python-format
+#| msgid "There_are_%(results_count)_results."
+msgid ""
+"\n"
+"        There_are_%(results_count)s_results.\n"
+"    "
+msgstr "共有%(results_count)筆結果。"
+
+#: .\requests\forms.py:30 .\requests\templates\requests\request_base.html:47
+msgid "estimate_time"
+msgstr "預估工時"
+
+#: .\requests\forms.py:33
+msgid "actualtime"
+msgstr "實際完成日期"
+
+#: .\requests\templates\requests\request_base.html:10
+#: .\requests\templates\requests\request_edit.html:12
+#: .\requests\templates\requests\request_edit.html:24
+msgid "request_edit"
+msgstr "編輯需求"
+
+#: .\requests\templates\requests\request_base.html:11
+msgid "request_delete"
+msgstr "刪除需求"
+
+#: .\requests\templates\requests\request_base.html:24
+msgid "Share:"
+msgstr "分享網址："
+
+#: .\requests\templates\requests\request_base.html:98
+msgid "subrequest"
+msgstr "子需求"
+
+#: .\requests\templates\requests\request_base.html:102
+#: .\requests\templates\requests\request_base.html:128
+msgid "New"
+msgstr "新增"
+
+#: .\requests\templates\requests\request_detail.html:8
+msgid "request_detail"
+msgstr "需求內容"
+
+#: .\users\admin.py:17
+msgid "Personal info"
+msgstr "個人資訊"
+
+#: .\users\admin.py:19
+msgid "Permissions"
+msgstr "權限"
+
+#: .\users\admin.py:21
+msgid "Important dates"
+msgstr "重要日期"
+
+#: .\users\models.py:54
+msgid "username"
+msgstr "用戶名"
+
+#: .\users\models.py:55
+msgid "Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only."
+msgstr "請少於30個字元，限使用文字、數字以及@/./+/-/_ "
+
+#: .\users\models.py:59
+msgid ""
+"Enter a valid username. This value may contain only letters, numbers and @/./"
+"+/-/_ characters."
+msgstr "請輸入有效用戶名，並請使用有效字元。"
+
+#: .\users\models.py:64
+msgid "A user with that username already exists."
+msgstr "用戶名已存在"
+
+#: .\users\models.py:67
+msgid "email address"
+msgstr "email address"
+
+#: .\users\models.py:68
+msgid "first name"
+msgstr "名"
+
+#: .\users\models.py:69
+msgid "last name"
+msgstr "姓"
+
+#: .\users\models.py:71
+msgid "mobile number"
+msgstr "手機號碼"
+
+#: .\users\models.py:72
+msgid "Required. digits and +-() only."
+msgstr "請使用數字及+-()"
+
+#: .\users\models.py:74
+msgid "Enter a valid mobile number."
+msgstr "請輸入有效號碼"
+
+#: .\users\models.py:77
+msgid "staff status"
+msgstr "員工狀態"
+
+#: .\users\models.py:78
+msgid "Designates whether the user can log into this admin site."
+msgstr "Designates whether the user can log into this admin site."
+
+#: .\users\models.py:80
+msgid "active"
+msgstr "啟用"
+
+#: .\users\models.py:81
+msgid ""
+"Designates whether this user should be treated as active. Unselect this "
+"instead of deleting accounts."
+msgstr ""
+"Designates whether this user should be treated as active. Unselect this "
+"instead of deleting accounts."
+
+#: .\users\models.py:83
+msgid "date joined"
+msgstr "加入日期"
+
+#: .\users\models.py:90
+msgid "user"
+msgstr "用戶名"
+
+#: .\users\models.py:91
+msgid "users"
+msgstr "users"
+
+#: .\users\templates\registration\login.html:29
+msgid "Username"
+msgstr "帳號"
+
+#: .\users\templates\registration\login.html:37
+msgid "Password"
+msgstr "密碼"
+
+#: .\users\templates\registration\login.html:48
+msgid "Submit"
+msgstr "確定"
+
+#: .\users\templates\registration\login.html:56
+msgid "Language"
+msgstr "語言"
+
+#~ msgid "This field is required."
+#~ msgstr "必填"
+
+#~ msgid "i18n text"
+#~ msgstr "i18n text"
+
+#~ msgid "i18n legend"
+#~ msgstr "i18n legend"
+
+#~ msgid "Enter a valid value."
+#~ msgstr "請輸入有效值"
+
+#~ msgid "Messages"
+#~ msgstr "訊息"
+
+#~ msgid "Site Maps"
+#~ msgstr "網站地圖"
+
+#~ msgid "Static Files"
+#~ msgstr "靜態文件"
+
+#~ msgid "Syndication"
+#~ msgstr "Syndication"
+
+#~ msgid "That page number is not an integer"
+#~ msgstr "That page number is not an integer"
+
+#~ msgid "That page number is less than 1"
+#~ msgstr "That page number is less than 1"
+
+#~ msgid "That page contains no results"
+#~ msgstr "That page contains no results"
+
+#~ msgid "Enter a valid URL."
+#~ msgstr "Enter a valid URL."
+
+#~ msgid "Enter a valid integer."
+#~ msgstr "Enter a valid integer."
+
+#~ msgid "Enter a valid email address."
+#~ msgstr "Enter a valid email address."
+
+#~ msgid ""
+#~ "Enter a valid 'slug' consisting of letters, numbers, underscores or "
+#~ "hyphens."
+#~ msgstr ""
+#~ "Enter a valid 'slug' consisting of letters, numbers, underscores or "
+#~ "hyphens."
+
+#~ msgid ""
+#~ "Enter a valid 'slug' consisting of Unicode letters, numbers, underscores, "
+#~ "or hyphens."
+#~ msgstr ""
+#~ "Enter a valid 'slug' consisting of Unicode letters, numbers, underscores, "
+#~ "or hyphens."
+
+#~ msgid "Enter a valid IPv4 address."
+#~ msgstr "Enter a valid IPv4 address."
+
+#~ msgid "Enter a valid IPv6 address."
+#~ msgstr "Enter a valid IPv6 address."
+
+#~ msgid "Enter a valid IPv4 or IPv6 address."
+#~ msgstr "Enter a valid IPv4 or IPv6 address."
+
+#~ msgid "Enter only digits separated by commas."
+#~ msgstr "Enter only digits separated by commas."
+
+#~ msgid "Ensure this value is %(limit_value)s (it is %(show_value)s)."
+#~ msgstr "Ensure this value is %(limit_value)s (it is %(show_value)s)."
+
+#~ msgid "Ensure this value is less than or equal to %(limit_value)s."
+#~ msgstr "Ensure this value is less than or equal to %(limit_value)s."
+
+#~ msgid "Ensure this value is greater than or equal to %(limit_value)s."
+#~ msgstr "Ensure this value is greater than or equal to %(limit_value)s."
+
+#~ msgid ""
+#~ "Ensure this value has at least %(limit_value)d character (it has "
+#~ "%(show_value)d)."
+#~ msgid_plural ""
+#~ "Ensure this value has at least %(limit_value)d characters (it has "
+#~ "%(show_value)d)."
+#~ msgstr[0] ""
+#~ "Ensure this value has at least %(limit_value)d character (it has "
+#~ "%(show_value)d)."
+
+#~ msgid ""
+#~ "Ensure this value has at most %(limit_value)d character (it has "
+#~ "%(show_value)d)."
+#~ msgid_plural ""
+#~ "Ensure this value has at most %(limit_value)d characters (it has "
+#~ "%(show_value)d)."
+#~ msgstr[0] ""
+#~ "Ensure this value has at most %(limit_value)d character (it has "
+#~ "%(show_value)d)."
+
+#~ msgid "Ensure that there are no more than %(max)s digit in total."
+#~ msgid_plural "Ensure that there are no more than %(max)s digits in total."
+#~ msgstr[0] "Ensure that there are no more than %(max)s digit in total."
+
+#~ msgid "Ensure that there are no more than %(max)s decimal place."
+#~ msgid_plural "Ensure that there are no more than %(max)s decimal places."
+#~ msgstr[0] "Ensure that there are no more than %(max)s decimal place."
+
+#~ msgid ""
+#~ "Ensure that there are no more than %(max)s digit before the decimal point."
+#~ msgid_plural ""
+#~ "Ensure that there are no more than %(max)s digits before the decimal "
+#~ "point."
+#~ msgstr[0] ""
+#~ "Ensure that there are no more than %(max)s digit before the decimal point."
+
+#~ msgid ""
+#~ "File extension '%(extension)s' is not allowed. Allowed extensions are: "
+#~ "'%(allowed_extensions)s'."
+#~ msgstr ""
+#~ "File extension '%(extension)s' is not allowed. Allowed extensions are: "
+#~ "'%(allowed_extensions)s'."
+
+#~ msgid "and"
+#~ msgstr "and"
+
+#~ msgid "%(model_name)s with this %(field_labels)s already exists."
+#~ msgstr "%(model_name)s with this %(field_labels)s already exists."
+
+#~ msgid "Value %(value)r is not a valid choice."
+#~ msgstr "Value %(value)r is not a valid choice."
+
+#~ msgid "This field cannot be null."
+#~ msgstr "This field cannot be null."
+
+#~ msgid "This field cannot be blank."
+#~ msgstr "This field cannot be blank."
+
+#~ msgid "%(model_name)s with this %(field_label)s already exists."
+#~ msgstr "%(model_name)s with this %(field_label)s already exists."
+
+#~ msgid ""
+#~ "%(field_label)s must be unique for %(date_field_label)s %(lookup_type)s."
+#~ msgstr ""
+#~ "%(field_label)s must be unique for %(date_field_label)s %(lookup_type)s."
+
+#~ msgid "Field of type: %(field_type)s"
+#~ msgstr "Field of type: %(field_type)s"
+
+#~ msgid "Integer"
+#~ msgstr "Integer"
+
+#~ msgid "'%(value)s' value must be an integer."
+#~ msgstr "'%(value)s' value must be an integer."
+
+#~ msgid "Big (8 byte) integer"
+#~ msgstr "Big (8 byte) integer"
+
+#~ msgid "'%(value)s' value must be either True or False."
+#~ msgstr "'%(value)s' value must be either True or False."
+
+#~ msgid "Boolean (Either True or False)"
+#~ msgstr "Boolean (Either True or False)"
+
+#~ msgid "String (up to %(max_length)s)"
+#~ msgstr "String (up to %(max_length)s)"
+
+#~ msgid "Comma-separated integers"
+#~ msgstr "Comma-separated integers"
+
+#~ msgid ""
+#~ "'%(value)s' value has an invalid date format. It must be in YYYY-MM-DD "
+#~ "format."
+#~ msgstr ""
+#~ "'%(value)s' value has an invalid date format. It must be in YYYY-MM-DD "
+#~ "format."
+
+#~ msgid ""
+#~ "'%(value)s' value has the correct format (YYYY-MM-DD) but it is an "
+#~ "invalid date."
+#~ msgstr ""
+#~ "'%(value)s' value has the correct format (YYYY-MM-DD) but it is an "
+#~ "invalid date."
+
+#~ msgid "Date (without time)"
+#~ msgstr "Date (without time)"
+
+#~ msgid ""
+#~ "'%(value)s' value has an invalid format. It must be in YYYY-MM-DD HH:MM[:"
+#~ "ss[.uuuuuu]][TZ] format."
+#~ msgstr ""
+#~ "'%(value)s' value has an invalid format. It must be in YYYY-MM-DD HH:MM[:"
+#~ "ss[.uuuuuu]][TZ] format."
+
+#~ msgid ""
+#~ "'%(value)s' value has the correct format (YYYY-MM-DD HH:MM[:ss[.uuuuuu]]"
+#~ "[TZ]) but it is an invalid date/time."
+#~ msgstr ""
+#~ "'%(value)s' value has the correct format (YYYY-MM-DD HH:MM[:ss[.uuuuuu]]"
+#~ "[TZ]) but it is an invalid date/time."
+
+#~ msgid "Date (with time)"
+#~ msgstr "Date (with time)"
+
+#~ msgid "'%(value)s' value must be a decimal number."
+#~ msgstr "'%(value)s' value must be a decimal number."
+
+#~ msgid "Decimal number"
+#~ msgstr "Decimal number"
+
+#~ msgid ""
+#~ "'%(value)s' value has an invalid format. It must be in [DD] [HH:[MM:]]ss[."
+#~ "uuuuuu] format."
+#~ msgstr ""
+#~ "'%(value)s' value has an invalid format. It must be in [DD] [HH:[MM:]]ss[."
+#~ "uuuuuu] format."
+
+#~ msgid "Duration"
+#~ msgstr "Duration"
+
+#~ msgid "Email address"
+#~ msgstr "Email address"
+
+#~ msgid "File path"
+#~ msgstr "File path"
+
+#~ msgid "'%(value)s' value must be a float."
+#~ msgstr "'%(value)s' value must be a float."
+
+#~ msgid "Floating point number"
+#~ msgstr "Floating point number"
+
+#~ msgid "IPv4 address"
+#~ msgstr "IPv4 address"
+
+#~ msgid "IP address"
+#~ msgstr "IP address"
+
+#~ msgid "'%(value)s' value must be either None, True or False."
+#~ msgstr "'%(value)s' value must be either None, True or False."
+
+#~ msgid "Boolean (Either True, False or None)"
+#~ msgstr "Boolean (Either True, False or None)"
+
+#~ msgid "Positive integer"
+#~ msgstr "Positive integer"
+
+#~ msgid "Positive small integer"
+#~ msgstr "Positive small integer"
+
+#~ msgid "Slug (up to %(max_length)s)"
+#~ msgstr "Slug (up to %(max_length)s)"
+
+#~ msgid "Small integer"
+#~ msgstr "Small integer"
+
+#~ msgid "Text"
+#~ msgstr "Text"
+
+#~ msgid ""
+#~ "'%(value)s' value has an invalid format. It must be in HH:MM[:ss[."
+#~ "uuuuuu]] format."
+#~ msgstr ""
+#~ "'%(value)s' value has an invalid format. It must be in HH:MM[:ss[."
+#~ "uuuuuu]] format."
+
+#~ msgid ""
+#~ "'%(value)s' value has the correct format (HH:MM[:ss[.uuuuuu]]) but it is "
+#~ "an invalid time."
+#~ msgstr ""
+#~ "'%(value)s' value has the correct format (HH:MM[:ss[.uuuuuu]]) but it is "
+#~ "an invalid time."
+
+#~ msgid "Time"
+#~ msgstr "Time"
+
+#~ msgid "URL"
+#~ msgstr "URL"
+
+#~ msgid "Raw binary data"
+#~ msgstr "Raw binary data"
+
+#~ msgid "'%(value)s' is not a valid UUID."
+#~ msgstr "'%(value)s' is not a valid UUID."
+
+#~ msgid "File"
+#~ msgstr "File"
+
+#~ msgid "Image"
+#~ msgstr "Image"
+
+#~ msgid "%(model)s instance with %(field)s %(value)r does not exist."
+#~ msgstr "%(model)s instance with %(field)s %(value)r does not exist."
+
+#~ msgid "Foreign Key (type determined by related field)"
+#~ msgstr "Foreign Key (type determined by related field)"
+
+#~ msgid "One-to-one relationship"
+#~ msgstr "One-to-one relationship"
+
+#~ msgid "%(from)s-%(to)s relationship"
+#~ msgstr "%(from)s-%(to)s relationship"
+
+#~ msgid "%(from)s-%(to)s relationships"
+#~ msgstr "%(from)s-%(to)s relationships"
+
+#~ msgid "Many-to-many relationship"
+#~ msgstr "Many-to-many relationship"
+
+#~ msgid ":?.!"
+#~ msgstr ":?.!"
+
+#~ msgid "Enter a whole number."
+#~ msgstr "Enter a whole number."
+
+#~ msgid "Enter a number."
+#~ msgstr "Enter a number."
+
+#~ msgid "Enter a valid date."
+#~ msgstr "Enter a valid date."
+
+#~ msgid "Enter a valid time."
+#~ msgstr "Enter a valid time."
+
+#~ msgid "Enter a valid date/time."
+#~ msgstr "Enter a valid date/time."
+
+#~ msgid "Enter a valid duration."
+#~ msgstr "Enter a valid duration."
+
+#~ msgid "No file was submitted. Check the encoding type on the form."
+#~ msgstr "No file was submitted. Check the encoding type on the form."
+
+#~ msgid "No file was submitted."
+#~ msgstr "No file was submitted."
+
+#~ msgid "The submitted file is empty."
+#~ msgstr "The submitted file is empty."
+
+#~ msgid ""
+#~ "Ensure this filename has at most %(max)d character (it has %(length)d)."
+#~ msgid_plural ""
+#~ "Ensure this filename has at most %(max)d characters (it has %(length)d)."
+#~ msgstr[0] ""
+#~ "Ensure this filename has at most %(max)d character (it has %(length)d)."
+
+#~ msgid "Please either submit a file or check the clear checkbox, not both."
+#~ msgstr "Please either submit a file or check the clear checkbox, not both."
+
+#~ msgid ""
+#~ "Upload a valid image. The file you uploaded was either not an image or a "
+#~ "corrupted image."
+#~ msgstr ""
+#~ "Upload a valid image. The file you uploaded was either not an image or a "
+#~ "corrupted image."
+
+#~ msgid ""
+#~ "Select a valid choice. %(value)s is not one of the available choices."
+#~ msgstr ""
+#~ "Select a valid choice. %(value)s is not one of the available choices."
+
+#~ msgid "Enter a list of values."
+#~ msgstr "Enter a list of values."
+
+#~ msgid "Enter a complete value."
+#~ msgstr "Enter a complete value."
+
+#~ msgid "Enter a valid UUID."
+#~ msgstr "Enter a valid UUID."
+
+#~ msgid ":"
+#~ msgstr ":"
+
+#~ msgid "(Hidden field %(name)s) %(error)s"
+#~ msgstr "(Hidden field %(name)s) %(error)s"
+
+#~ msgid "ManagementForm data is missing or has been tampered with"
+#~ msgstr "ManagementForm data is missing or has been tampered with"
+
+#~ msgid "Please submit %d or fewer forms."
+#~ msgid_plural "Please submit %d or fewer forms."
+#~ msgstr[0] "Please submit %d or fewer forms."
+
+#~ msgid "Please submit %d or more forms."
+#~ msgid_plural "Please submit %d or more forms."
+#~ msgstr[0] "Please submit %d or more forms."
+
+#~ msgid "Order"
+#~ msgstr "Order"
+
+#~ msgid "Delete"
+#~ msgstr "Delete"
+
+#~ msgid "Please correct the duplicate data for %(field)s."
+#~ msgstr "Please correct the duplicate data for %(field)s."
+
+#~ msgid ""
+#~ "Please correct the duplicate data for %(field)s, which must be unique."
+#~ msgstr ""
+#~ "Please correct the duplicate data for %(field)s, which must be unique."
+
+#~ msgid ""
+#~ "Please correct the duplicate data for %(field_name)s which must be unique "
+#~ "for the %(lookup)s in %(date_field)s."
+#~ msgstr ""
+#~ "Please correct the duplicate data for %(field_name)s which must be unique "
+#~ "for the %(lookup)s in %(date_field)s."
+
+#~ msgid "Please correct the duplicate values below."
+#~ msgstr "Please correct the duplicate values below."
+
+#~ msgid ""
+#~ "The inline foreign key did not match the parent instance primary key."
+#~ msgstr ""
+#~ "The inline foreign key did not match the parent instance primary key."
+
+#~ msgid ""
+#~ "Select a valid choice. That choice is not one of the available choices."
+#~ msgstr ""
+#~ "Select a valid choice. That choice is not one of the available choices."
+
+#~ msgid "\"%(pk)s\" is not a valid value for a primary key."
+#~ msgstr "\"%(pk)s\" is not a valid value for a primary key."
+
+#~ msgid ""
+#~ "%(datetime)s couldn't be interpreted in time zone %(current_timezone)s; "
+#~ "it may be ambiguous or it may not exist."
+#~ msgstr ""
+#~ "%(datetime)s couldn't be interpreted in time zone %(current_timezone)s; "
+#~ "it may be ambiguous or it may not exist."
+
+#~ msgid "Clear"
+#~ msgstr "Clear"
+
+#~ msgid "Currently"
+#~ msgstr "Currently"
+
+#~ msgid "Change"
+#~ msgstr "Change"
+
+#~ msgid "Unknown"
+#~ msgstr "Unknown"
+
+#~ msgid "Yes"
+#~ msgstr "Yes"
+
+#~ msgid "No"
+#~ msgstr "No"
+
+#~ msgid "yes,no,maybe"
+#~ msgstr "yes,no,maybe"
+
+#~ msgid "%(size)d byte"
+#~ msgid_plural "%(size)d bytes"
+#~ msgstr[0] "%(size)d byte"
+
+#~ msgid "%s KB"
+#~ msgstr "%s KB"
+
+#~ msgid "%s MB"
+#~ msgstr "%s MB"
+
+#~ msgid "%s GB"
+#~ msgstr "%s GB"
+
+#~ msgid "%s TB"
+#~ msgstr "%s TB"
+
+#~ msgid "%s PB"
+#~ msgstr "%s PB"
+
+#~ msgid "p.m."
+#~ msgstr "p.m."
+
+#~ msgid "a.m."
+#~ msgstr "a.m."
+
+#~ msgid "PM"
+#~ msgstr "PM"
+
+#~ msgid "AM"
+#~ msgstr "AM"
+
+#~ msgid "midnight"
+#~ msgstr "midnight"
+
+#~ msgid "noon"
+#~ msgstr "noon"
+
+#~ msgid "Monday"
+#~ msgstr "Monday"
+
+#~ msgid "Tuesday"
+#~ msgstr "Tuesday"
+
+#~ msgid "Wednesday"
+#~ msgstr "Wednesday"
+
+#~ msgid "Thursday"
+#~ msgstr "Thursday"
+
+#~ msgid "Friday"
+#~ msgstr "Friday"
+
+#~ msgid "Saturday"
+#~ msgstr "Saturday"
+
+#~ msgid "Sunday"
+#~ msgstr "Sunday"
+
+#~ msgid "Mon"
+#~ msgstr "Mon"
+
+#~ msgid "Tue"
+#~ msgstr "Tue"
+
+#~ msgid "Wed"
+#~ msgstr "Wed"
+
+#~ msgid "Thu"
+#~ msgstr "Thu"
+
+#~ msgid "Fri"
+#~ msgstr "Fri"
+
+#~ msgid "Sat"
+#~ msgstr "Sat"
+
+#~ msgid "Sun"
+#~ msgstr "Sun"
+
+#~ msgid "January"
+#~ msgstr "January"
+
+#~ msgid "February"
+#~ msgstr "February"
+
+#~ msgid "March"
+#~ msgstr "March"
+
+#~ msgid "April"
+#~ msgstr "April"
+
+#~ msgid "May"
+#~ msgstr "May"
+
+#~ msgid "June"
+#~ msgstr "June"
+
+#~ msgid "July"
+#~ msgstr "July"
+
+#~ msgid "August"
+#~ msgstr "August"
+
+#~ msgid "September"
+#~ msgstr "September"
+
+#~ msgid "October"
+#~ msgstr "October"
+
+#~ msgid "November"
+#~ msgstr "November"
+
+#~ msgid "December"
+#~ msgstr "December"
+
+#~ msgid "jan"
+#~ msgstr "jan"
+
+#~ msgid "feb"
+#~ msgstr "feb"
+
+#~ msgid "mar"
+#~ msgstr "mar"
+
+#~ msgid "apr"
+#~ msgstr "apr"
+
+#~ msgid "may"
+#~ msgstr "may"
+
+#~ msgid "jun"
+#~ msgstr "jun"
+
+#~ msgid "jul"
+#~ msgstr "jul"
+
+#~ msgid "aug"
+#~ msgstr "aug"
+
+#~ msgid "sep"
+#~ msgstr "sep"
+
+#~ msgid "oct"
+#~ msgstr "oct"
+
+#~ msgid "nov"
+#~ msgstr "nov"
+
+#~ msgid "dec"
+#~ msgstr "dec"
+
+#~ msgctxt "abbrev. month"
+#~ msgid "Jan."
+#~ msgstr "Jan."
+
+#~ msgctxt "abbrev. month"
+#~ msgid "Feb."
+#~ msgstr "Feb."
+
+#~ msgctxt "abbrev. month"
+#~ msgid "March"
+#~ msgstr "March"
+
+#~ msgctxt "abbrev. month"
+#~ msgid "April"
+#~ msgstr "April"
+
+#~ msgctxt "abbrev. month"
+#~ msgid "May"
+#~ msgstr "May"
+
+#~ msgctxt "abbrev. month"
+#~ msgid "June"
+#~ msgstr "June"
+
+#~ msgctxt "abbrev. month"
+#~ msgid "July"
+#~ msgstr "July"
+
+#~ msgctxt "abbrev. month"
+#~ msgid "Aug."
+#~ msgstr "Aug."
+
+#~ msgctxt "abbrev. month"
+#~ msgid "Sept."
+#~ msgstr "Sept."
+
+#~ msgctxt "abbrev. month"
+#~ msgid "Oct."
+#~ msgstr "Oct."
+
+#~ msgctxt "abbrev. month"
+#~ msgid "Nov."
+#~ msgstr "Nov."
+
+#~ msgctxt "abbrev. month"
+#~ msgid "Dec."
+#~ msgstr "Dec."
+
+#~ msgctxt "alt. month"
+#~ msgid "January"
+#~ msgstr "January"
+
+#~ msgctxt "alt. month"
+#~ msgid "February"
+#~ msgstr "February"
+
+#~ msgctxt "alt. month"
+#~ msgid "March"
+#~ msgstr "March"
+
+#~ msgctxt "alt. month"
+#~ msgid "April"
+#~ msgstr "April"
+
+#~ msgctxt "alt. month"
+#~ msgid "May"
+#~ msgstr "May"
+
+#~ msgctxt "alt. month"
+#~ msgid "June"
+#~ msgstr "June"
+
+#~ msgctxt "alt. month"
+#~ msgid "July"
+#~ msgstr "July"
+
+#~ msgctxt "alt. month"
+#~ msgid "August"
+#~ msgstr "August"
+
+#~ msgctxt "alt. month"
+#~ msgid "September"
+#~ msgstr "September"
+
+#~ msgctxt "alt. month"
+#~ msgid "October"
+#~ msgstr "October"
+
+#~ msgctxt "alt. month"
+#~ msgid "November"
+#~ msgstr "November"
+
+#~ msgctxt "alt. month"
+#~ msgid "December"
+#~ msgstr "December"
+
+#~ msgid "This is not a valid IPv6 address."
+#~ msgstr "This is not a valid IPv6 address."
+
+#~ msgctxt "String to return when truncating text"
+#~ msgid "%(truncated_text)s..."
+#~ msgstr "%(truncated_text)s..."
+
+#~ msgid "or"
+#~ msgstr "or"
+
+#~ msgid ", "
+#~ msgstr ", "
+
+#~ msgid "%d year"
+#~ msgid_plural "%d years"
+#~ msgstr[0] "%d year"
+
+#~ msgid "%d month"
+#~ msgid_plural "%d months"
+#~ msgstr[0] "%d month"
+
+#~ msgid "%d week"
+#~ msgid_plural "%d weeks"
+#~ msgstr[0] "%d week"
+
+#~ msgid "%d day"
+#~ msgid_plural "%d days"
+#~ msgstr[0] "%d day"
+
+#~ msgid "%d hour"
+#~ msgid_plural "%d hours"
+#~ msgstr[0] "%d hour"
+
+#~ msgid "%d minute"
+#~ msgid_plural "%d minutes"
+#~ msgstr[0] "%d minute"
+
+#~ msgid "0 minutes"
+#~ msgstr "0 minutes"
+
+#~ msgid "Forbidden"
+#~ msgstr "Forbidden"
+
+#~ msgid "CSRF verification failed. Request aborted."
+#~ msgstr "CSRF verification failed. Request aborted."
+
+#~ msgid ""
+#~ "You are seeing this message because this HTTPS site requires a 'Referer "
+#~ "header' to be sent by your Web browser, but none was sent. This header is "
+#~ "required for security reasons, to ensure that your browser is not being "
+#~ "hijacked by third parties."
+#~ msgstr ""
+#~ "You are seeing this message because this HTTPS site requires a 'Referer "
+#~ "header' to be sent by your Web browser, but none was sent. This header is "
+#~ "required for security reasons, to ensure that your browser is not being "
+#~ "hijacked by third parties."
+
+#~ msgid ""
+#~ "If you have configured your browser to disable 'Referer' headers, please "
+#~ "re-enable them, at least for this site, or for HTTPS connections, or for "
+#~ "'same-origin' requests."
+#~ msgstr ""
+#~ "If you have configured your browser to disable 'Referer' headers, please "
+#~ "re-enable them, at least for this site, or for HTTPS connections, or for "
+#~ "'same-origin' requests."
+
+#~ msgid ""
+#~ "You are seeing this message because this site requires a CSRF cookie when "
+#~ "submitting forms. This cookie is required for security reasons, to ensure "
+#~ "that your browser is not being hijacked by third parties."
+#~ msgstr ""
+#~ "You are seeing this message because this site requires a CSRF cookie when "
+#~ "submitting forms. This cookie is required for security reasons, to ensure "
+#~ "that your browser is not being hijacked by third parties."
+
+#~ msgid ""
+#~ "If you have configured your browser to disable cookies, please re-enable "
+#~ "them, at least for this site, or for 'same-origin' requests."
+#~ msgstr ""
+#~ "If you have configured your browser to disable cookies, please re-enable "
+#~ "them, at least for this site, or for 'same-origin' requests."
+
+#~ msgid "More information is available with DEBUG=True."
+#~ msgstr "More information is available with DEBUG=True."
+
+#~ msgid "Welcome to Django"
+#~ msgstr "Welcome to Django"
+
+#~ msgid "It worked!"
+#~ msgstr "It worked!"
+
+#~ msgid "Congratulations on your first Django-powered page."
+#~ msgstr "Congratulations on your first Django-powered page."
+
+#~ msgid ""
+#~ "Next, start your first app by running <code>python manage.py startapp "
+#~ "[app_label]</code>."
+#~ msgstr ""
+#~ "Next, start your first app by running <code>python manage.py startapp "
+#~ "[app_label]</code>."
+
+#~ msgid ""
+#~ "You're seeing this message because you have <code>DEBUG = True</code> in "
+#~ "your Django settings file and you haven't configured any URLs. Get to "
+#~ "work!"
+#~ msgstr ""
+#~ "You're seeing this message because you have <code>DEBUG = True</code> in "
+#~ "your Django settings file and you haven't configured any URLs. Get to "
+#~ "work!"
+
+#~ msgid "No year specified"
+#~ msgstr "No year specified"
+
+#~ msgid "Date out of range"
+#~ msgstr "Date out of range"
+
+#~ msgid "No month specified"
+#~ msgstr "No month specified"
+
+#~ msgid "No day specified"
+#~ msgstr "No day specified"
+
+#~ msgid "No week specified"
+#~ msgstr "No week specified"
+
+#~ msgid "No %(verbose_name_plural)s available"
+#~ msgstr "No %(verbose_name_plural)s available"
+
+#~ msgid ""
+#~ "Future %(verbose_name_plural)s not available because %(class_name)s."
+#~ "allow_future is False."
+#~ msgstr ""
+#~ "Future %(verbose_name_plural)s not available because %(class_name)s."
+#~ "allow_future is False."
+
+#~ msgid "Invalid date string '%(datestr)s' given format '%(format)s'"
+#~ msgstr "Invalid date string '%(datestr)s' given format '%(format)s'"
+
+#~ msgid "No %(verbose_name)s found matching the query"
+#~ msgstr "No %(verbose_name)s found matching the query"
+
+#~ msgid "Page is not 'last', nor can it be converted to an int."
+#~ msgstr "Page is not 'last', nor can it be converted to an int."
+
+#~ msgid "Invalid page (%(page_number)s): %(message)s"
+#~ msgstr "Invalid page (%(page_number)s): %(message)s"
+
+#~ msgid "Empty list and '%(class_name)s.allow_empty' is False."
+#~ msgstr "Empty list and '%(class_name)s.allow_empty' is False."
+
+#~ msgid "Directory indexes are not allowed here."
+#~ msgstr "Directory indexes are not allowed here."
+
+#~ msgid "\"%(path)s\" does not exist"
+#~ msgstr "\"%(path)s\" does not exist"
+
+#~ msgid "Index of %(directory)s"
+#~ msgstr "Index of %(directory)s"
