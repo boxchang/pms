@@ -13,7 +13,7 @@ class Bug(models.Model):
     title = models.CharField(max_length=100)
     status = models.ForeignKey('bases.Status', related_name='bug_status', on_delete=models.DO_NOTHING)
     level = models.ForeignKey('requests.Level', related_name='bus_level', on_delete=models.DO_NOTHING)
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='bugs', on_delete=models.DO_NOTHING)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='bugs', on_delete=models.DO_NOTHING, null=True)
     project = models.ForeignKey('projects.Project', related_name='bug_project', on_delete=models.CASCADE)
     desc = RichTextUploadingField(null=True, blank=True)
     create_at = models.DateTimeField(auto_now_add=True, editable=True)

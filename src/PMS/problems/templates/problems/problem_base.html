@@ -5,7 +5,13 @@
 <div class="card">
     <div class="card-header">
         <div class="row">
-            <button class="btn btn-warning" onClick="javascript:history.go(-1);"><i class="fas fa-arrow-left fa-1x"></i></button>
+            {% if problem.belong_to_type.short_name == 'R' %}
+                <a href="/requests/detail/{{ problem.belong_to }}" class="btn btn-warning"><i class="fas fa-arrow-left fa-1x"></i></a>
+            {% elif problem.belong_to_type.short_name == 'B' %}
+                <a href="/bugs/detail/{{ problem.belong_to }}" class="btn btn-warning"><i class="fas fa-arrow-left fa-1x"></i></a>
+            {% elif problem.belong_to_type.short_name == 'O' %}
+                <a href="/projects/manage/{{ problem.project.id }}" class="btn btn-warning"><i class="fas fa-arrow-left fa-1x"></i></a>
+            {% endif %}
             <div class="ml-md-auto">
                 <a class="btn btn-warning btn-sm" href="{% url 'problem_edit' pk %}" role="button"><i class="far fa-edit"></i>{% trans "problem_edit" %}</a>
                 <a class="btn btn-warning btn-sm" href="{% url 'problem_delete' pk %}" role="button" onclick="return confirm('Are you sure?')"><i class="fas fa-times"></i>{% trans "problem_delete" %}</a>
@@ -13,67 +19,69 @@
         </div>
     </div>
     <h1 class="font-weight-bold pt-3 pl-3">{{ problem.title }}&nbsp&nbsp<small style="font-size: 50%"><span class="badge badge-warning">{{ problem.problem_no }}</span></small></h1>
-    <div class="w-100"></div>
+
     <div class="card-body">
         <div class="row">
-        <div class="col-md-8">
-            <table class="table table-bordered table-sm col-12">
-                <tr>
-                    <td class="text-center align-middle table-dark">{% trans "project_belong" %}：</td>
-                    <td class="text-center align-middle" colspan="3">{{ problem.project }}</td>
-                </tr>
-                <tr>
-                    <td class="text-center align-middle table-dark" style="width:15%;">{% trans "owner" %}：</td>
-                    <td class="text-center align-middle" colspan="3">{{ problem.create_by }}</td>
-                </tr>
-                <tr>
-                    <td class="text-center align-middle table-dark" style="width:15%;">{% trans "create_at" %}：</td>
-                    <td class="text-center align-middle">{{ problem.create_at|date:"Y-m-d H:i:s" }}</td>
-                    <td class="text-center align-middle table-dark">{% trans "update_at" %}：</td>
-                    <td class="text-center align-middle">{{ problem.update_at|date:"Y-m-d H:i:s" }}</td>
-                </tr>
-                <tr>
-                    <td colspan="6" style="padding: .7rem;font-size: 1.2em;">
-                        {{ problem.desc|safe }}
-                    </td>
-                </tr>
-            </table>
-        </div>
+            <div class="col-md-8">
+                <div class="row">
+                    <table class="table table-bordered table-sm col-12">
+                        <tr>
+                            <td class="text-center align-middle table-dark">{% trans "project_belong" %}：</td>
+                            <td class="text-center align-middle" colspan="3">{{ problem.project }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center align-middle table-dark" style="width:15%;">{% trans "owner" %}：</td>
+                            <td class="text-center align-middle" colspan="3">{{ problem.create_by }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center align-middle table-dark" style="width:15%;">{% trans "create_at" %}：</td>
+                            <td class="text-center align-middle">{{ problem.create_at|date:"Y-m-d H:i:s" }}</td>
+                            <td class="text-center align-middle table-dark">{% trans "update_at" %}：</td>
+                            <td class="text-center align-middle">{{ problem.update_at|date:"Y-m-d H:i:s" }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" style="padding: .7rem;font-size: 1.2em;">
+                                {{ problem.desc|safe }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         {% if files %}
-        <div class="col-md-4">
-            <table class="table table-bordered table-sm col-12">
-                <thead class="table-dark">
-                    <tr>
-                        <th>
-                            #
-                        </th>
-                        <th>
-                            {% trans "desc" %}
-                        </th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for file in files %}
-                    <tr>
-                        <td>
-                            {{ forloop.counter }}
-                        </td>
-                        <td>
-                            {{ file.description }}
-                        </td>
-                        <td class="text-center">
-                            <a href="{{ file.files.url }}"><i class="fas fa-file-download fa-2x text-info"></i></a>
-                        </td>
-                        <td class="text-center">
-                            <a href="{% url 'request_file_delete' file.pk %}?q={{ pk }}" onclick="return confirm('Are you sure?')"><i class="fas fa-times fa-2x text-info"></i></a>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
+            <div class="col-md-4">
+                <table class="table table-bordered table-sm col-12">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>
+                                #
+                            </th>
+                            <th>
+                                {% trans "desc" %}
+                            </th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for file in files %}
+                        <tr>
+                            <td>
+                                {{ forloop.counter }}
+                            </td>
+                            <td>
+                                {{ file.description }}
+                            </td>
+                            <td class="text-center">
+                                <a href="{{ file.files.url }}"><i class="fas fa-file-download fa-2x text-info"></i></a>
+                            </td>
+                            <td class="text-center">
+                                <a href="{% url 'request_file_delete' file.pk %}?q={{ pk }}" onclick="return confirm('Are you sure?')"><i class="fas fa-times fa-2x text-info"></i></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         {% endif %}
         </div>
         <div class="row">

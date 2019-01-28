@@ -10,7 +10,6 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from bases.models import Status, FormType
-from bases.utils import get_home_url
 from bugs.models import Bug
 from problems.models import Problem
 from projects.forms import ProjectForm, ProjectSettingForm
@@ -37,8 +36,6 @@ def index(request):
         # 若沒有設定專案，就導向專案設定
         obj = CustomUser.objects.get(pk=request.user.pk)
         if obj.setting_user.first():
-            pk = obj.setting_user.first().default.pk
-            request.session["project_default"] = pk
             return redirect(reverse('home'))
         else:
             return redirect(reverse('project_setting'))
@@ -101,8 +98,6 @@ def project_list(request):
 def project_manage(request, pk):            #回傳projects/manage的頁面主體資料
     try:
         page_num = 5
-        request.session['project_pk'] = pk
-        request.session['request_pk'] = ""
 
         form_type = FormType.objects.filter(type='PROJECT').first()
 
@@ -160,9 +155,6 @@ def project_setting(request):
 
 @login_required
 def search(request):
-    if 'project_pk' in request.session:
-        project_pk = request.session['project_pk']
-
     if request.method == 'POST':
         keywords = request.POST.get('keywords')
 
@@ -170,17 +162,17 @@ def search(request):
 
         if keywords:
             for keyword in keywords.split(' '):
-                r_results = list(Request.objects.extra(select={'no': 'request_no'}).filter(Q(title__contains=keyword) | Q(desc__contains=keyword) | Q(request_no__contains=keyword), project=project_pk))
+                r_results = list(Request.objects.extra(select={'no': 'request_no'}).filter(Q(title__contains=keyword) | Q(desc__contains=keyword) | Q(request_no__contains=keyword)))
                 for r_result in r_results:
                     r_result.type = 'R'
                 results += r_results
             for keyword in keywords.split(' '):
-                p_results = list(Problem.objects.extra(select={'no': 'problem_no'}).filter(Q(title__contains=keyword) | Q(desc__contains=keyword) | Q(problem_no__contains=keyword), project=project_pk))
+                p_results = list(Problem.objects.extra(select={'no': 'problem_no'}).filter(Q(title__contains=keyword) | Q(desc__contains=keyword) | Q(problem_no__contains=keyword)))
                 for p_result in p_results:
                     p_result.type = 'P'
                 results += p_results
             for keyword in keywords.split(' '):
-                b_results = list(Bug.objects.extra(select={'no': 'bug_no'}).filter(Q(title__contains=keyword) | Q(desc__contains=keyword) | Q(bug_no__contains=keyword), project=project_pk))
+                b_results = list(Bug.objects.extra(select={'no': 'bug_no'}).filter(Q(title__contains=keyword) | Q(desc__contains=keyword) | Q(bug_no__contains=keyword)))
                 for b_result in b_results:
                     b_result.type = 'B'
                 results += b_results

@@ -2,6 +2,7 @@ import json
 
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from django.forms import HiddenInput
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
@@ -10,47 +11,65 @@ from bases.utils import *
 from requests.forms import *
 from requests.utils import *
 
+@login_required
+def request_receive(request):
+    r = request.GET.get('r')  # 專案id
+    data = Request.objects.get(pk=r)
+
+    if request.method == 'POST':
+        form = RequestReceiveForm(request.POST, instance=data)
+
+        if form.is_valid():
+            status = Status.objects.filter(status_en="On-Going").first()
+            tmp_form = form.save(commit=False)
+            tmp_form.owner = request.user
+            tmp_form.status = status
+            tmp_form.save()
+            return redirect(tmp_form.get_absolute_url())
+    else:
+        form = RequestReceiveForm(instance=data)
+    return render(request, 'requests/request_receive.html', locals())
+
 
 @login_required
 def request_create(request):
-    if 'project_pk' in request.session:
-        project = request.session['project_pk']
+    p = request.GET.get('p')  # 專案id
+    t = request.GET.get('t')  # 單號類型
+    r = request.GET.get('r')  # 需求id
 
     if request.method == 'POST':
-        form = RequestForm(project, request.POST)
+        #  STATUS/PROJECT/REQUEST由系統自動給
+        form = RequestForm(request.POST)
+        form.status = Status.objects.get(status_en='Wait')
+
         if form.is_valid():
-            try:
-                with transaction.atomic():
-                    form_type = get_form_type('REQUEST')
-                    tmp_form = form.save(commit=False)
-                    tmp_form.request_no = get_serial_num(project, form_type)  # 需求單編碼
-                    tmp_form.create_by = request.user
-                    tmp_form.status = Status.objects.filter(status_en=DEFAULT_STATUS).first()  # [INIT]
-                    tmp_form.update_by = request.user
-                    form.save()
-                    save_data_index(project, form_type)  # Save serial number after success
+            with transaction.atomic():
+                form_type = get_form_type('REQUEST')
+                tmp_form = form.save(commit=False)
+                tmp_form.project = Project.objects.get(pk=p)
+                if r:
+                    tmp_form.belong_to = Request.objects.get(pk=r)
+                tmp_form.request_no = get_serial_num(p, form_type)  # 需求單編碼
+                tmp_form.create_by = request.user
+                tmp_form.update_by = request.user
+                form.save()
+                save_data_index(p, form_type)  # Save serial number after success
 
-                    if request.FILES.get('files1'):
-                        request_file = Request_attachment(files=request.FILES['files1'])
-                        request_file.description = request.POST['description1']
-                        request_file.request = tmp_form
-                        request_file.save()
-                    if request.FILES.get('files2'):
-                        request_file = Request_attachment(files=request.FILES['files2'])
-                        request_file.description = request.POST['description2']
-                        request_file.request = tmp_form
-                        request_file.save()
-
-            except Exception as e:
-                Exception('Unexpected error: {}'.format(e))
+                if request.FILES.get('files1'):
+                    request_file = Request_attachment(files=request.FILES['files1'])
+                    request_file.description = request.POST['description1']
+                    request_file.request = tmp_form
+                    request_file.save()
+                if request.FILES.get('files2'):
+                    request_file = Request_attachment(files=request.FILES['files2'])
+                    request_file.description = request.POST['description2']
+                    request_file.request = tmp_form
+                    request_file.save()
 
             return redirect(tmp_form.get_absolute_url())
     else:
-        if 'project_pk' in request.session and 'request_pk' in request.session:
-            form = RequestForm(project, initial={'project': request.session['project_pk'], 'belong_to': request.session['request_pk']})
-        else:
-            form = RequestForm(project)
-
+        form = RequestForm()
+        form.fields['status'].widget = HiddenInput()
     return render(request, 'requests/request_edit.html', locals())
 
 
@@ -59,37 +78,30 @@ def request_edit(request, pk):
     if pk:
         require = Request.objects.get(pk=pk)
 
-    if 'project_pk' in request.session:
-        project = request.session['project_pk']
-    elif pk:
-        project = Request.project.pk
-
     if request.method == 'POST':
-
-        form = RequestForm(project, request.POST, instance=require)
+        form = RequestForm(request.POST, instance=require)
         if form.is_valid():
-            try:
-                with transaction.atomic():
-                    data = form.save(commit=False)
-                    data.process_rate = update_process_rate(require.request_no, data.status)
-                    data.save()
+            with transaction.atomic():
+                data = form.save(commit=False)
+                data.process_rate = data.status.process_rate
+                data.save()
 
-                    if request.FILES.get('files1'):
-                        request_file = Request_attachment(files=request.FILES['files1'])
-                        request_file.description = request.POST['description1']
-                        request_file.request = data
-                        request_file.save()
-                    if request.FILES.get('files2'):
-                        request_file = Request_attachment(files=request.FILES['files2'])
-                        request_file.description = request.POST['description2']
-                        request_file.request = data
-                        request_file.save()
-            except Exception as e:
-                Exception('Unexpected error: {}'.format(e))
+                update_process_rate(require.belong_to)  # 更新父層的進度
+
+                if request.FILES.get('files1'):
+                    request_file = Request_attachment(files=request.FILES['files1'])
+                    request_file.description = request.POST['description1']
+                    request_file.request = data
+                    request_file.save()
+                if request.FILES.get('files2'):
+                    request_file = Request_attachment(files=request.FILES['files2'])
+                    request_file.description = request.POST['description2']
+                    request_file.request = data
+                    request_file.save()
 
             return redirect(require.get_absolute_url())
     else:
-        form = RequestForm(project, instance=require)
+        form = RequestForm(instance=require)
     return render(request, 'requests/request_edit.html', {'form': form, 'request': require})
 
 
@@ -110,17 +122,19 @@ def request_detail(request, pk):
 
     try:
         data = Request.objects.get(pk=pk)
+        status_html = get_status_dropdown(data)
         project = data.project.pk
         request_no = data.request_no
         project = data.project.pk
         files = Request_attachment.objects.filter(request=data).all()
 
+        bread = []
+        father = data.belong_to
+        while father:
+            bread.insert(0, father)
+            father = father.belong_to
         # 子需求表格
         form = RequestForm(project, initial={'belong_to': pk})
-
-        # SESSION
-        request.session['project_pk'] = data.project.pk
-        request.session['request_pk'] = data.pk
 
         # 子需求
         sub_requests = cal_sub_requests(Request.objects.filter(belong_to=data))
@@ -184,6 +198,20 @@ def request_delete_all(obj):
     obj.delete()
 
 
+def change_status(request):
+    if request.POST:
+        request_id = request.POST.get('request_id')
+        status_id = request.POST.get('status_id')
+
+        status = Status.objects.get(pk=status_id)
+        obj = Request.objects.get(pk=request_id)
+        obj.status = status
+        if status.status_en == "Finished":
+            obj.actual_date = datetime.now()
+        obj.save()
+
+        return redirect(obj.get_absolute_url())
+    return redirect(get_home_url(request))
 
 
 # [AJAX]依參數回拋需求JSON格式

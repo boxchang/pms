@@ -18,7 +18,6 @@ var createSimpleTable = function (target_div, column_data, page_size, data_url){
     });
 }
 
-
 var createBootstrapTable = function (target_div, column_data, page_size, data_url, sub_data_url){
     $(target_div).bootstrapTable({
         uniqueId: "ID",
@@ -46,7 +45,7 @@ var createBootstrapTable = function (target_div, column_data, page_size, data_ur
 
     var buildChildTable = function ($detail,row){
         $detail.html('<table></table>').find('table').bootstrapTable({
-            url: sub_data_url+row.pk,
+            url: sub_data_url+row.id+'/requests',
             method:"get",
             queryParams:{},
             ajaxOptions:{},

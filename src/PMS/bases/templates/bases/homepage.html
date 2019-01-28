@@ -4,7 +4,7 @@
 
 {% load staticfiles %}
 {% load i18n %}
-{% block title %}{% trans "BugList" %}{% endblock %}
+{% block title %}{% trans "home" %}{% endblock %}
 {% block css %}
     <style>
         #Wait, #On-Going, #Finished, #pendding { list-style-type: none; margin: 0; float: left; padding: 5px; width: 143px;}
@@ -123,7 +123,7 @@
                         <div class="card-body">
                             <div id="On-Going" class="droptrue" style="width:100%;" data-code="2">
                                 {% for o_request in requests %}
-                                    {% if request.status.status_en == 'On-Going' %}
+                                    {% if o_request.status.status_en == 'On-Going' %}
                                         <div class="card" style="width:97%;background-color: #ffffe6;" data-position="On-Going" data-num="{{ o_request.request_no }}">
                                             <div class="card-header" style="width:97%; text-align: left">
                                                 <h7 class="card-title"><a href="{% url 'request_detail' pk=o_request.pk %}">{{ o_request.request_no }}</a></h7>
@@ -253,7 +253,7 @@
                             {{ project.short_name }}
                         </td>
                         <td>
-                            {{ project.desc }}
+                            {{ project.desc|striptags }}
                         </td>
                         <td>
                             {{ project.create_by }}
@@ -310,7 +310,7 @@
                             <a href="{% url 'bug_detail' bug.pk %}">{{ bug.bug_no }}</a>
                         </td>
                         <td>
-                            {{ bug.project.name }}
+                            {{ bug.project.short_name }}
                         </td>
                         <td>
                             {{ bug.title }}
@@ -349,7 +349,7 @@
                             #
                         </th>
                         <th>
-                            {% trans "belong" %}
+                            {% trans "belong_project" %}
                         </th>
                         <th>
                             {% trans "title" %}
@@ -378,7 +378,7 @@
                             <a href="{% url 'problem_detail' problem.pk %}">{{ problem.problem_no }}</a>
                         </td>
                         <td>
-                            {{ problem.belong_to }}
+                            {{ problem.project.short_name }}
                         </td>
                         <td>
                             {{ problem.title }}

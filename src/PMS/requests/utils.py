@@ -3,19 +3,19 @@ from requests.models import Request, Request_attachment
 
 
 #  更新完成度
-def update_process_rate(request_no, status):
+def update_process_rate(belong_to):
     rate = 0
 
-    requests = Request.objects.filter(request_no=request_no)
+    requests = Request.objects.filter(belong_to=belong_to)
 
-    if requests.count() == 1:
-        rate = status.process_rate
-    else:
-        for request in requests:
-            rate += request.status.process_rate
-        rate = rate / requests.count()
+    for request in requests:
+        rate += request.status.process_rate
+    rate = rate / requests.count()
 
-    return rate
+    obj = Request.objects.get(pk=belong_to.id)
+    obj.process_rate = rate
+    obj.save()
+
 
 #  計算子需求及完成度
 def cal_sub_requests(requests):

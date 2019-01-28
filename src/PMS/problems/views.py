@@ -10,57 +10,37 @@ from problems.models import *
 
 @login_required
 def problem_create(request):
-    belong_to = ''
-
-    p = request.GET.get('p')  #單號
+    p = request.GET.get('p')  #單號id
     t = request.GET.get('t')  #單號類型
-
-    if p:
-        belong_to = p
-    if t:
-        belong_to_type = FormType.objects.filter(tid=t).first()
-
-    if 'project_pk' in request.session:
-        s_project = request.session['project_pk']
-    if 'request_pk' in request.session:
-        s_request = request.session['request_pk']
 
     if request.method == 'POST':
         form = ProblemForm(request.POST)
         if form.is_valid():
-            try:
-                with transaction.atomic():
-                    form_type = get_form_type('PROBLEM')
-                    tmp_form = form.save(commit=False)
-                    tmp_form.problem_no = get_serial_num(s_project, form_type)  # 問題單編碼
-                    tmp_form.create_by = request.user
-                    tmp_form.update_by = request.user
-                    tmp_form.belong_to_type = belong_to_type
-                    tmp_form.belong_to = belong_to
-                    tmp_form.save()
-                    save_data_index(s_project, form_type)  # Save serial number after success
+            with transaction.atomic():
+                form_type = get_form_type('PROBLEM')
+                tmp_form = form.save(commit=False)
+                tmp_form.problem_no = get_serial_num(p, form_type)  # 問題單編碼
+                tmp_form.create_by = request.user
+                tmp_form.update_by = request.user
+                tmp_form.belong_to_type = t
+                tmp_form.belong_to = p
+                tmp_form.save()
+                save_data_index(p, form_type)  # Save serial number after success
 
-                    if request.FILES.get('files1'):
-                        problem_file = Problem_attachment(files=request.FILES['files1'])
-                        problem_file.description = request.POST['description1']
-                        problem_file.problem = tmp_form
-                        problem_file.save()
-                    if request.FILES.get('files2'):
-                        problem_file = Problem_attachment(files=request.FILES['files2'])
-                        problem_file.description = request.POST['description2']
-                        problem_file.problem = tmp_form
-                        problem_file.save()
+                if request.FILES.get('files1'):
+                    problem_file = Problem_attachment(files=request.FILES['files1'])
+                    problem_file.description = request.POST['description1']
+                    problem_file.problem = tmp_form
+                    problem_file.save()
+                if request.FILES.get('files2'):
+                    problem_file = Problem_attachment(files=request.FILES['files2'])
+                    problem_file.description = request.POST['description2']
+                    problem_file.problem = tmp_form
+                    problem_file.save()
 
-            except Exception as e:
-                Exception('Unexpected error: {}'.format(e))
-
-            return redirect(tmp_form.get_absolute_url())
+        return redirect(tmp_form.get_absolute_url())
     else:
-        if 'project_pk' in request.session and 'request_pk' in request.session:
-            form = ProblemForm(initial={'project': s_project, 'belong_to': s_request})
-        else:
-            form = ProblemForm()
-
+        form = ProblemForm()
 
     return render(request, 'problems/problem_edit.html', {'form': form})
 

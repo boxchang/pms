@@ -1,35 +1,36 @@
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from django.forms import HiddenInput
 from django.http import Http404
 from django.shortcuts import render, redirect
+from django.urls import reverse
 
 from bases.models import Status, FormType
 from bases.utils import save_data_index, get_serial_num, get_form_type, get_home_url
 from bugs.forms import BugForm
 from bugs.models import Bug, Bug_attachment
+from projects.models import Project
 
 
 @login_required
 def bug_create(request):
-    if 'project_pk' in request.session:
-        s_project = request.session['project_pk']
-    if 'request_pk' in request.session:
-        s_request = request.session['request_pk']
-
-    init_status = Status.objects.get(status_en='Wait')
+    p = request.GET.get('p')  # 專案id
 
     if request.method == 'POST':
-        form = BugForm(s_project, request.POST)
+        form = BugForm(request.POST)
+        form.status = Status.objects.get(status_en='Wait')
+
         if form.is_valid():
             try:
                 with transaction.atomic():
                     form_type = get_form_type('BUG')
                     tmp_form = form.save(commit=False)
-                    tmp_form.bug_no = get_serial_num(s_project, form_type)  # Bug單編碼
+                    tmp_form.project = Project.objects.get(pk=p)
+                    tmp_form.bug_no = get_serial_num(p, form_type)  # Bug單編碼
                     tmp_form.create_by = request.user
                     tmp_form.update_by = request.user
                     tmp_form.save()
-                    save_data_index(s_project, form_type)  # Save serial number after success
+                    save_data_index(p, form_type)  # Save serial number after success
 
                     if request.FILES.get('files1'):
                         bug_file = Bug_attachment(files=request.FILES['files1'])
@@ -46,13 +47,8 @@ def bug_create(request):
 
             return redirect(tmp_form.get_absolute_url())
     else:
-        if 'project_pk' in request.session:
-            form = BugForm(s_project, initial={'project': s_project, 'status': init_status})
-        elif 'project_pk' in request.session and 'request_pk' in request.session:
-            form = BugForm(s_project, initial={'project': s_project, 'request': s_request, 'status': init_status})
-        else:
-            form = BugForm(s_project)
-
+        form = BugForm()
+        form.fields['status'].widget = HiddenInput()
 
     return render(request, 'bugs/bug_edit.html', {'form': form})
 
@@ -63,14 +59,8 @@ def bug_edit(request, pk):
     if pk:
         bug = Bug.objects.get(pk=pk)
 
-    if 'project_pk' in request.session:
-        s_project = request.session['project_pk']
-    elif pk:
-        s_project = Bug.project.pk
-
     if request.method == 'POST':
-
-        form = BugForm(s_project, request.POST, instance=bug)
+        form = BugForm(request.POST, instance=bug)
         if form.is_valid():
             try:
                 with transaction.atomic():
@@ -90,8 +80,9 @@ def bug_edit(request, pk):
                 Exception('Unexpected error: {}'.format(e))
             return redirect(bug.get_absolute_url())
     else:
-        form = BugForm(s_project, instance=bug)
+        form = BugForm(instance=bug)
     return render(request, 'bugs/bug_edit.html', {'form': form, 'bug': bug})
+
 
 @login_required
 def bug_list(request):
@@ -105,7 +96,6 @@ def bug_detail(request, pk):
     try:
         bug = Bug.objects.get(pk=pk)
         bug_no = bug.bug_no
-
         files = Bug_attachment.objects.filter(bug=bug).all()
         form_type = FormType.objects.filter(type='BUG').first()
 

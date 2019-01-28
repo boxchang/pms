@@ -5,15 +5,14 @@
 {% block content %}
 <div style="padding-top:50px"></div>
 <div class="alert alert-warning" role="alert">
-    {% blocktrans %}
-        There_are_{{ results_count }}_results.
-    {% endblocktrans %}
+    {% blocktrans %}There_are_{{ results_count }}_results.{% endblocktrans %}
 </div>
 {% if results %}
 <table class="table table-striped">
   <thead class="thead-dark">
     <tr>
         <th scope="col">#</th>
+        <th scope="col">PROJECT</th>
         <th scope="col">FORM NO.</th>
         <th scope="col">TYPE</th>
         <th scope="col">TITLE</th>
@@ -24,7 +23,8 @@
   <tbody>
   {% for result in results %}
     <tr>
-        <th scope="row">{{ forloop.counter }}</th>
+        <td scope="row">{{ forloop.counter }}</td>
+        <td>{{ result.project }}</td>
         <td>
             {% if result.type == 'R' %}
             <a href="{% url 'request_detail' result.pk %}">{{ result.no }}</a>

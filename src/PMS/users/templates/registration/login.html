@@ -1,68 +1,110 @@
 {% extends "bases/base.html" %}
-
 {% load crispy_forms_tags %}
 
 {% load staticfiles %}
 {% load i18n %}
 {% block container %}
-<div style="padding-top: 50px;font-size: 1.2em;">
-
-<form method="post" action="{% url 'login' %}">
-  {% csrf_token %}
-
-<table class="offset-4">
-    <tr>
-        <td colspan="2">
-            {% if messages %}
-                <div class="float-left">
-                    <ul class="messages">
-                        {% for message in messages %}
-                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                        {% endfor %}
-                    </ul>
+    <div class="container">
+	<div class="d-flex justify-content-center h-100">
+        <div class="col-md-8 d-flex justify-content-center h-100">
+            <div style="text-align: center;width:100%;height:370px;margin-top: auto;margin-bottom: auto;">
+                <div id="show_time" style="font-size: 10em;color:white;"></div>
+                <div id="show_date" style="font-size: 3em;color:white;"></div>
+            </div>
+        </div>
+        <div class="col-md-4 d-flex justify-content-center h-100">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Sign In</h3>
                 </div>
-            {% endif %}
-        </td>
-    </tr>
-    <tr >
-        <td class="text-right" style="height: 50px;">
-            {% trans "Username" %}：
-        </td>
-        <td>
-            <input type="text" name="username" class="form-control">
-        </td>
-    </tr>
-    <tr>
-        <td class="text-right" style="height: 50px;">
-            {% trans "Password" %}：
-        </td>
-        <td>
-            <input type="password" name="password" class="form-control">
-        </td>
-    </tr>
-    <tr>
+                <div class="card-body">
+                    <form method="post" id="login_form" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <div class="input-group form-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        </div>
+                        <input type="text" name="username" class="form-control" placeholder="username">
 
-    </tr>
-    <tr>
-        <td colspan="2" class="text-center" style="height: 50px;">
-            <input class="btn btn-primary text-center" type="submit" value='{% trans "Submit" %}'>
-        </td>
-    </tr>
-</table>
-</form>
-<table class="offset-4">
-    <tr>
-        <td class="text-right" style="height: 50px;">
-            {% trans "Language" %}：
-        </td>
-        <td>
-           {% include 'bases/lang.html' %}
-        </td>
-    </tr>
-</table>
+                    </div>
+                    <div class="input-group form-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-key"></i></span>
+                        </div>
+                        <input type="password" name="password" class="form-control" placeholder="password">
+                    </div>
+                    </form>
+                    <div class="input-group form-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-globe-asia"></i></span>
+                        </div>
+                        {% include 'bases/lang.html' %}
+                    </div>
+                    <div class="form-group text-center pt-3">
+                        <input type="button" value="{% trans "Submit" %}" class="btn login_btn" onclick="submit('login_form');">
+                    </div>
+
+                </div>
+                <div class="card-footer">
+                    {% if messages %}
+                        <div class="float-left">
+                            <ul class="messages">
+                                {% for message in messages %}
+                                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+	</div>
 </div>
+{% endblock %}
 
-{% endblock container %}
+{% block css %}
+    <!--Custom styles-->
+	<link rel="stylesheet" type="text/css" href="{% static 'base\css\login.css' %}">
+{% endblock css %}
 
 {% block js %}
+<script language="JavaScript">
+function submit(form_div){
+    $('#'+form_div).submit();
+}
+
+$(function(){
+    ShowDate();
+    ShowTime();
+});
+
+function ShowDate(){
+  var weekday = new Array(7);
+  weekday[0] =  "Sunday";
+  weekday[1] = "Monday";
+  weekday[2] = "Tuesday";
+  weekday[3] = "Wednesday";
+  weekday[4] = "Thursday";
+  weekday[5] = "Friday";
+  weekday[6] = "Saturday";
+  var TimeNow=new Date();
+  var yyyy = TimeNow.getFullYear();
+  var MM = (TimeNow.getMonth()+1<10 ? '0' : '')+(TimeNow.getMonth()+1);
+  var dd = (TimeNow.getDate()<10 ? '0' : '')+TimeNow.getDate();
+  var n = weekday[TimeNow.getDay()];
+  $('#show_date').html(yyyy+'/'+MM+'/'+dd+' '+n);
+}
+
+function ShowTime(){
+　var TimeNow=new Date();
+　var h = (TimeNow.getHours()<10 ? '0' : '')+TimeNow.getHours();
+  var m = (TimeNow.getMinutes()<10 ? '0' : '')+TimeNow.getMinutes();
+  var s = (TimeNow.getSeconds()<10 ? '0' : '')+TimeNow.getSeconds(); 　
+
+　$('#show_time').html(h+':'+m);
+　setTimeout('ShowTime()',1000);
+}
+
+</script>
+
 {% endblock js %}

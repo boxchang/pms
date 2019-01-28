@@ -7,6 +7,7 @@
 {{ block.super }}
     <li class="breadcrumb-item active" aria-current="page">{{ project_form.name }}</li>
 {% endblock %}
+
 {% block content %}
 <div class="card">
     <div class="card-header">
@@ -56,9 +57,9 @@
                            aria-selected="false">{% trans "problem" %}</a>
 
                     </div>
-                    <a class="btn btn-success m-1" href="{% url "request_create" %}" role="button"><i class="fas fa-plus"></i>{% trans "request_create" %}</a>
-                    <a class="btn btn-success m-1" href="{% url "bug_create" %}" role="button"><i class="fas fa-plus"></i>{% trans "bug_create" %}</a>
-                    <a class="btn btn-success m-1" href="{% url "problem_create" %}?t={{ form_type.tid }}&p={{ project_form.short_name }}" role="button"><i class="fas fa-plus"></i>{% trans "problem_create" %}</a>
+                    <a class="btn btn-success m-1" href="{% url "request_create" %}?t={{ form_type.tid }}&p={{ project_form.id }}" role="button"><i class="fas fa-plus"></i>{% trans "request_create" %}</a>
+                    <a class="btn btn-success m-1" href="{% url "bug_create" %}?t={{ form_type.tid }}&p={{ project_form.id }}" role="button"><i class="fas fa-plus"></i>{% trans "bug_create" %}</a>
+                    <a class="btn btn-success m-1" href="{% url "problem_create" %}?t={{ form_type.tid }}&p={{ project_form.id }}" role="button"><i class="fas fa-plus"></i>{% trans "problem_create" %}</a>
                 </nav>
                 <div class="tab-content" id="nav-tabContent2">
                     <div class="tab-pane fade show active" id="project1-require-index" role="tabpanel"
@@ -100,44 +101,59 @@
 <script src="{% static 'bootstrap_table/table.js' %}"></script>
 <script>
 $(function(){
+    //REQUEST
+    function urlRFormatter(value, row, index) {
+        {% if user.is_authenticated %}
+            return "<a href='/requests/detail/"+row.id+"'>"+value+"</a>";
+        {% else %}
+            return "<a href='/requests/"+value+"'>"+value+"</a>";
+        {% endif %}
+    }
+
     var data_column = [{
-            field: 'num', title: '{% trans "request_no" %}', sortable:true, width: '10%', halign:'center',
+            field: 'request_no', title: '{% trans "request_no" %}', sortable:true, width: '10%', halign:'center', formatter: urlRFormatter
         }, {
-            field: 'title', title: '{% trans "title" %}', sortable:true, width: '35%'
+            field: 'title', title: '{% trans "title" %}', sortable:true, width: '20%'
         }, {
-            field: 'level', title: '{% trans "level" %}', sortable:true, width: '10%', align:'center', halign:'center',
+            field: 'level.level_en', title: '{% trans "level" %}', sortable:true, width: '10%', align:'center', halign:'center',
         }, {
-            field: 'status', title: '{% trans "status" %}', sortable:true, width: '10%', align:'center', halign:'center',
+            field: 'status.status_en', title: '{% trans "status" %}', sortable:true, width: '10%', align:'center', halign:'center',
         }, {
-            field: 'owner', title: '{% trans "owner" %}', sortable:true, width: '10%', align:'center', halign:'center',
+            field: 'owner.username', title: '{% trans "owner" %}', sortable:true, width: '10%', align:'center', halign:'center',
         }, {
-            field: 'starttime', title: '{% trans "starttime" %}', sortable:true, width: '5%'
+            field: 'start_date', title:'{% trans "Start" %}', titleTooltip: '{% trans "starttime" %}', sortable:true, width: '9%',
         }, {
-            field: 'finishtime', title: '{% trans "finishtime" %}', sortable:true, width: '5%'
+            field: 'due_date', title:'{% trans "Finish" %}', titleTooltip: '{% trans "finishtime" %}', sortable:true, width: '9%'
         }, {
-            field: 'rate', title: '{% trans "rate" %}', sortable:true, width: '5%', align:'right'
+            field: 'process_rate', title:'{% trans "Rate" %}', titleTooltip: '{% trans "rate" %}', sortable:true, width: '5%', align:'right'
         }, {
-            field: 'subrequire', title: '{% trans "subrequire" %}', sortable:true, width: '5%', align:'center'
+            field: 'sub_request', title:'{% trans "Sub" %}', titleTooltip: '{% trans "subrequire" %}', sortable:true, width: '7%', align:'center'
         }, {
-            field: 'question', title: '{% trans "question" %}', width: '5%', align:'center'
+            field: 'problem_num', title: '{% trans "question" %}', width: '5%', align:'center'
         }, {
-            field: 'pk', title: '鍵值', visible:false
+            field: 'id', title: '鍵值', visible:false
         }]
 
-createBootstrapTable("#request_table",data_column,{{ page_num }},"getChildByProj/{{ pk }}", "getChild/")
+createBootstrapTable("#request_table",data_column,{{ page_num }},"/api/projects/{{ pk }}/requests", "/api/requests/")
+
+
+    //PROBLEM
+    function urlPFormatter(value, row, index) {
+        return "<a href='/problems/detail/"+row.id+"'>"+value+"</a>";
+    }
 
     var problem_data_column = [{
-            field: 'problem_no', title: '{% trans "problem_no" %}', width: '10%'
+            field: 'problem_no', title: '{% trans "problem_no" %}', width: '10%', formatter: urlPFormatter
         }, {
             field: 'title', title: '{% trans "title" %}', width: '35%'
         }, {
             field: 'reply_num', title: '{% trans "reply_num" %}', width: '5%', align: 'center'
         }, {
-            field: 'create_by', title: '{% trans "create_by" %}', width: '10%', align: 'center'
+            field: 'create_by.username', title: '{% trans "create_by" %}', width: '10%', align: 'center'
         }, {
             field: 'create_at', title: '{% trans "create_at" %}', width: '15%', align: 'center'
         }, {
-            field: 'update_by', title: '{% trans "update_by" %}', width: '10%', align: 'center'
+            field: 'update_by.username', title: '{% trans "update_by" %}', width: '10%', align: 'center'
         }, {
             field: 'update_at', title: '{% trans "update_at" %}', width: '15%', align: 'center'
         }, {
@@ -145,18 +161,26 @@ createBootstrapTable("#request_table",data_column,{{ page_num }},"getChildByProj
         }]
 
 
-createSimpleTable("#problem_table",problem_data_column,{{ page_num }},"getProblem/{{ pk }}");
+createSimpleTable("#problem_table",problem_data_column,{{ page_num }},"/api/projects/{{ pk }}/problems");
+
+
+    //BUG
+    function urlBFormatter(value, row, index) {
+        return "<a href='/bugs/detail/"+row.id+"'>"+value+"</a>";
+    }
 
     var bug_data_column = [{
-            field: 'bug_no', title: '{% trans "bug_no" %}', width: '10%'
+            field: 'bug_no', title: '{% trans "bug_no" %}', width: '10%', formatter: urlBFormatter
         }, {
-            field: 'title', title: '{% trans "title" %}', width: '45%'
+            field: 'title', title: '{% trans "title" %}', width: '35%'
         }, {
-            field: 'level', title: '{% trans "level" %}', width: '10%', align: 'center'
+            field: 'level.level_en', title: '{% trans "level" %}', width: '10%', align: 'center'
         }, {
-            field: 'owner', title: '{% trans "owner" %}', width: '10%', align: 'center'
+            field: 'status.status_en', title: '{% trans "status" %}', width: '10%', align: 'center'
         }, {
-            field: 'create_by', title: '{% trans "create_by" %}', width: '10%', align: 'center'
+            field: 'owner.username', title: '{% trans "owner" %}', width: '10%', align: 'center'
+        }, {
+            field: 'create_by.username', title: '{% trans "create_by" %}', width: '10%', align: 'center'
         }, {
             field: 'create_at', title: '{% trans "create_at" %}', width: '15%', align: 'center'
         }, {
@@ -164,7 +188,7 @@ createSimpleTable("#problem_table",problem_data_column,{{ page_num }},"getProble
         }]
 
 
-createSimpleTable("#bug_table",bug_data_column,{{ page_num }},"getBug/{{ pk }}");
+createSimpleTable("#bug_table",bug_data_column,{{ page_num }},"/api/projects/{{ pk }}/bugs");
 
 
 

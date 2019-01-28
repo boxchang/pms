@@ -17,16 +17,16 @@ class Request(models.Model):
         'plugin.js', )],)
     level = models.ForeignKey('requests.Level', related_name='request_level', on_delete=models.DO_NOTHING)  # 緊急程度
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='request_owner',
-                              on_delete=models.DO_NOTHING)  # 需求負責人
-    start_date = models.DateField()  # 需求開始日期
-    due_date = models.DateField()  # 完工日期
+                              on_delete=models.DO_NOTHING, null=True, blank=True)  # 需求負責人
+    start_date = models.DateField(null=True, blank=True)  # 需求開始日期
+    due_date = models.DateField(null=True, blank=True)  # 完工日期
     actual_date = models.DateField(null=True, blank=True)  # 實際完成日期
     status = models.ForeignKey('bases.Status', related_name='request_level', on_delete=models.DO_NOTHING)  # 狀態
     process_rate = models.IntegerField(default=0, null=True, blank=True)  # 完成度 系統運算
     belong_to = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)  # 上層
     file_list = models.CharField(max_length=200, blank=True)  # 要卡控檔案上限
     project = models.ForeignKey('projects.Project', related_name='request_project', on_delete=models.CASCADE)  # 歸屬專案
-    estimate_time = models.IntegerField(default=0)  # 預估時間(hr)
+    estimate_time = models.IntegerField(default=0, null=True, blank=True)  # 預估時間(hr)
     create_at = models.DateTimeField(auto_now_add=True, editable=True)  # 建立日期
     create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
                                   related_name='request_create_at')  # 建立者

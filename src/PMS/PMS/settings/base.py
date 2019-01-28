@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'bootstrap_datepicker_plus',
+    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -53,6 +54,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+MIGRATION_MODULES = {
+    'users':'migrations.users',
+    'projects':'migrations.projects',
+    'requests':'migrations.requests',
+    'problems':'migrations.problems',
+    'bugs':'migrations.bugs',
+    'bases':'migrations.bases',
+}
 
 CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_IMAGE_BACKEND = 'pillow'
