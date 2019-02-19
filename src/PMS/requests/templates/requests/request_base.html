@@ -21,7 +21,12 @@
     <div class="row">
         <div class="col-md-6">
             <h1 class="font-weight-bold pl-3 pt-3">
-                {{ data.title }}&nbsp&nbsp<small style="font-size: 50%"><span class="badge badge-warning">{{ data.request_no }}</span></small>&nbsp<small style="font-size: 50%"><span class="badge badge-warning">{{ data.status }}</span></small>&nbsp
+                {{ data.title }}&nbsp&nbsp<small style="font-size: 50%"><span class="badge badge-warning">{{ data.request_no }}</span></small>&nbsp<small style="font-size: 50%"><span class="badge badge-warning">{{ data.status }}</span></small>
+                {% if data.is_test %}
+                    {% if not data.test_data %}
+                        <small style="font-size: 50%"><span class="badge badge-warning">Not test yet</span></small>&nbsp
+                    {% endif %}
+                {% endif %}
                 <small style="font-size: 50%">
                     <a href="#" onclick="function f() {
                       $('#share_url').show();
@@ -30,15 +35,31 @@
             </h1>
         </div>
         {% if user.is_authenticated %}
-        <div class="col-md-4 text-right align-middle pt-3 pr-5">
-            {% if data.owner %}
-                <form method="post" action="/requests/change_status" id="status_form">
-                    {% csrf_token %}
-                    {{ status_html | safe }}
-                </form>
-            {% else %}
-                <a class="btn btn-success" href="/requests/receive?r={{ pk }}" role="button">{% trans "Receive Request" %}</a>
-            {% endif %}
+        <div class="col-md-6 text-right align-middle pt-3 pr-5">
+            <div class="row">
+                <div class="col-4">
+                    {% if data.owner %}
+                        <form method="post" action="/requests/change_status" id="status_form">
+                            {% csrf_token %}
+                            {{ status_html | safe }}
+                        </form>
+                    {% else %}
+                        <a class="btn btn-success" href="/requests/receive?r={{ pk }}" role="button">{% trans "Receive Request" %}</a>
+                    {% endif %}
+                </div>
+                {% if data.is_test %}
+                <div class="col-8">
+                    {% if test_no %}
+                        <a class="btn btn-success" href="/tests/edit?r={{ pk }}" role="button">{% trans "Edit Test Form" %}</a>
+                        <a class="btn btn-success" href="/tests/form/{{ test_no }}" role="button" target="_blank">{% trans "Test Form" %}</a>
+                        <a class="btn btn-success" href="/tests/result/{{ pk }}" role="button">{% trans "Test Result" %}</a>
+                        <a class="btn btn-danger" href="/tests/delete?r={{ pk }}" onclick="return confirm('Are you sure?')" role="button">{% trans "Test Delete" %}</a>
+                    {% else %}
+                        <a class="btn btn-success" href="/tests/add?r={{ pk }}" role="button">{% trans "Create Test Form" %}</a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
         </div>
         {% endif %}
     </div>
@@ -48,75 +69,80 @@
     <div class="card-body">
         <div class="row">
             <div class="col-md-12">
+                <table class="table table-bordered table-sm col-12">
+                    <tr>
+                        <td class="text-center align-middle table-dark" style="width:15%;">{% trans "project_belong" %}</td>
+                        <td class="text-center align-middle" style="width:15%;">{{ data.project }}</td>
+                        <td class="text-center align-middle table-dark" style="width:15%;">{% trans "level" %}</td>
+                        <td class="text-center align-middle" style="width:15%;">{{ data.level }}</td>
+                        <td class="text-center align-middle table-dark" style="width:15%;">{% trans "owner" %}</td>
+                        <td class="text-center align-middle" style="width:15%;">{{ data.owner }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-center align-middle table-dark">{% trans "starttime" %}</td>
+                        <td colspan="3" class="text-center align-middle">{{ data.start_date|date:"Y-m-d" }}</td>
+                        <td class="text-center align-middle table-dark">{% trans "rate" %}</td>
+                        <td class="text-center align-middle">{{ data.process_rate }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-center align-middle table-dark">{% trans "finishtime" %}</td>
+                        <td colspan="3" class="text-center align-middle">{{ data.due_date|date:"Y-m-d" }}</td>
+                        <td class="text-center align-middle table-dark">{% trans "estimate_time" %}</td>
+                        <td class="text-center align-middle">{{ data.estimate_time }}</td>
+                    </tr>
+                </table>
+                {% if files %}
                 <div class="row">
-                    <table class="table table-bordered table-sm col-12">
-                        <tr>
-                            <td class="text-center align-middle table-dark" style="width:15%;">{% trans "project_belong" %}</td>
-                            <td class="text-center align-middle" style="width:15%;">{{ data.project }}</td>
-                            <td class="text-center align-middle table-dark" style="width:15%;">{% trans "level" %}</td>
-                            <td class="text-center align-middle" style="width:15%;">{{ data.level }}</td>
-                            <td class="text-center align-middle table-dark" style="width:15%;">{% trans "owner" %}</td>
-                            <td class="text-center align-middle" style="width:15%;">{{ data.owner }}</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center align-middle table-dark">{% trans "starttime" %}</td>
-                            <td colspan="3" class="text-center align-middle">{{ data.start_date|date:"Y-m-d" }}</td>
-                            <td class="text-center align-middle table-dark">{% trans "rate" %}</td>
-                            <td class="text-center align-middle">{{ data.process_rate }}</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center align-middle table-dark">{% trans "finishtime" %}</td>
-                            <td colspan="3" class="text-center align-middle">{{ data.due_date|date:"Y-m-d" }}</td>
-                            <td class="text-center align-middle table-dark">{% trans "estimate_time" %}</td>
-                            <td class="text-center align-middle">{{ data.estimate_time }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="6" style="padding: .7rem;font-size: 1.2em;">
-                                {{ data.desc|safe }}
-                            </td>
-                        </tr>
-                    </table>
+                    <div class="col-md-12">
+                        <table class="table table-bordered table-sm">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th style="width:10%">
+                                        #
+                                    </th>
+                                    <th style="width:70%">
+                                        {% trans "desc" %}
+                                    </th>
+                                    <th style="width:10%;text-align: center;">
+                                        {% trans "attachment" %}
+                                    </th>
+                                    <th style="width:10%;text-align: center;">
+                                        {% trans "Delete" %}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for file in files %}
+                                <tr>
+                                    <td>
+                                        {{ forloop.counter }}
+                                    </td>
+                                    <td>
+                                        {{ file.description }}
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{{ file.files.url }}"><i class="fas fa-file-download fa-2x text-info"></i></a>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{% url 'request_file_delete' file.pk %}?q={{ pk }}" onclick="return confirm('Are you sure?')"><i class="fas fa-times fa-2x text-info"></i></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
-        </div>
-        {% if files %}
-        <div class="row">
-            <div class="col-md-12">
-                <table class="table table-bordered table-sm">
-                    <thead class="table-dark">
-                        <tr>
-                            <th style="width:10%">
-                                #
-                            </th>
-                            <th style="width:70%">
-                                {% trans "desc" %}
-                            </th>
-                            <th style="width:10%"></th>
-                            <th style="width:10%"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for file in files %}
-                        <tr>
-                            <td>
-                                {{ forloop.counter }}
-                            </td>
-                            <td>
-                                {{ file.description }}
-                            </td>
-                            <td class="text-center">
-                                <a href="{{ file.files.url }}"><i class="fas fa-file-download fa-2x text-info"></i></a>
-                            </td>
-                            <td class="text-center">
-                                <a href="{% url 'request_file_delete' file.pk %}?q={{ pk }}" onclick="return confirm('Are you sure?')"><i class="fas fa-times fa-2x text-info"></i></a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
+                {% endif %}
+                <table class="table table-bordered table-sm col-12">
+                  <tr>
+                        <td style="padding: 3.7rem;font-size: 1.2em;">
+                            {{ data.desc|safe }}
+                        </td>
+                    </tr>
                 </table>
             </div>
         </div>
-        {% endif %}
+
         <div class="card">
             <div class="card-header pb-1 pt-1">
                 <div class="row">

@@ -18,48 +18,41 @@
             </div>
         </div>
     </div>
-    <h1 class="font-weight-bold pt-3 pl-3">{{ problem.title }}&nbsp&nbsp<small style="font-size: 50%"><span class="badge badge-warning">{{ problem.problem_no }}</span></small></h1>
-
     <div class="card-body">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="row">
-                    <table class="table table-bordered table-sm col-12">
-                        <tr>
-                            <td class="text-center align-middle table-dark">{% trans "project_belong" %}：</td>
-                            <td class="text-center align-middle" colspan="3">{{ problem.project }}</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center align-middle table-dark" style="width:15%;">{% trans "owner" %}：</td>
-                            <td class="text-center align-middle" colspan="3">{{ problem.create_by }}</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center align-middle table-dark" style="width:15%;">{% trans "create_at" %}：</td>
-                            <td class="text-center align-middle">{{ problem.create_at|date:"Y-m-d H:i:s" }}</td>
-                            <td class="text-center align-middle table-dark">{% trans "update_at" %}：</td>
-                            <td class="text-center align-middle">{{ problem.update_at|date:"Y-m-d H:i:s" }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="6" style="padding: .7rem;font-size: 1.2em;">
-                                {{ problem.desc|safe }}
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        {% if files %}
-            <div class="col-md-4">
+        <h1 class="font-weight-bold pt-3 pl-3">{{ problem.title }}&nbsp&nbsp<small style="font-size: 50%"><span class="badge badge-warning">{{ problem.problem_no }}</span></small></h1>
+        <div class="col-md-12">
+                <table class="table table-bordered table-sm col-12">
+                    <tr>
+                        <td class="text-center align-middle table-dark">{% trans "project_belong" %}：</td>
+                        <td class="text-center align-middle" colspan="3">{{ problem.project }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-center align-middle table-dark" style="width:15%;">{% trans "owner" %}：</td>
+                        <td class="text-center align-middle" colspan="3">{{ problem.create_by }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-center align-middle table-dark" style="width:15%;">{% trans "create_at" %}：</td>
+                        <td class="text-center align-middle">{{ problem.create_at|date:"Y-m-d H:i:s" }}</td>
+                        <td class="text-center align-middle table-dark">{% trans "update_at" %}：</td>
+                        <td class="text-center align-middle">{{ problem.update_at|date:"Y-m-d H:i:s" }}</td>
+                    </tr>
+                </table>
+                {% if files %}
                 <table class="table table-bordered table-sm col-12">
                     <thead class="table-dark">
                         <tr>
-                            <th>
+                            <th style="width:10%">
                                 #
                             </th>
-                            <th>
+                            <th style="width:70%">
                                 {% trans "desc" %}
                             </th>
-                            <th></th>
-                            <th></th>
+                            <th style="width:10%;text-align: center;">
+                                {% trans "attachment" %}
+                            </th>
+                            <th style="width:10%;text-align: center;">
+                                {% trans "Delete" %}
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -81,22 +74,20 @@
                     {% endfor %}
                     </tbody>
                 </table>
+
+                {% endif %}
+                <table class="table table-bordered table-sm col-12">
+                    <tr>
+                        <td style="padding: .7rem;font-size: 1.2em;">
+                            {{ problem.desc|safe }}
+                        </td>
+                    </tr>
+                </table>
             </div>
-        {% endif %}
-        </div>
-        <div class="row">
-            <div class="col-6 text-center">
-                <form action="{% url 'problem_reply_create' pk %}" method="post">
-                {% csrf_token %}
-                {% crispy problem_reply_form %}
-                    <button type="submit" class="btn btn-warning pl-5 pr-5" id="send">Reply</button>
-                </form>
-            </div>
-            <div class="col-6">
+        <div class="col-12">
                 {% for reply in problem_replys %}
-                <div>
-                    <div class="card text-white bg-secondary mb-3">
-                        <div class="card-body">
+                    <div class="card mb-3">
+                        <div class="card-header">
                             <div class="row">
                                 <div class="col-5 text-left">
                                     {{ reply.create_at }}
@@ -105,12 +96,19 @@
                                     {{ reply.create_by }}
                                 </div>
                             </div>
+                        </div>
+                        <div class="card-body">
                             <p class="card-text p-2">{{ reply.comment|safe }}</p>
                         </div>
                     </div>
-                </div>
                 {% endfor %}
             </div>
+        <div class="col-12 text-center">
+                <form action="{% url 'problem_reply_create' pk %}" method="post">
+                {% csrf_token %}
+                {% crispy problem_reply_form %}
+                    <button type="submit" class="btn btn-warning pl-5 pr-5" id="send">Reply</button>
+                </form>
         </div>
     </div>
 </div>

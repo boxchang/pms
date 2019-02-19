@@ -6,7 +6,7 @@
 {% block title %} {{ block.super}} {% endblock title %}
 
 {% block css %}
-
+{{ block.super}}
 {% endblock css %}
 
 {% block container %}
@@ -47,13 +47,9 @@
             </ol>
         </nav>
 
-        <div class="row" style="padding-top: 20px">
-            <div class="col-1"></div>
-            <div class="col-10">
-                {% block content %}
-                {% endblock content %}
-            </div>
-            <div class="col-1"></div>
+        <div style="padding-top: 20px;">
+        {% block content %}
+        {% endblock content %}
         </div>
     </div>
 

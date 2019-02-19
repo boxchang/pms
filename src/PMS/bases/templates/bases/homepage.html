@@ -35,40 +35,6 @@
 {% endblock css %}
 {% block js %}
 
-    <script>
-        $( function() {
-            $( "div.droptrue" ).sortable({
-                connectWith: "div",
-                update: function(event,ui) {
-                    $(this).children().each(function () {
-                        console.log($(this));
-                        if($(this).attr('data-position') != $(this).parent().attr('id')){
-                            var new_position={
-                                request_no: $(this).attr('data-num'),
-                                new_status: $(this).parent().attr('data-code'),
-                                csrfmiddlewaretoken: '{{ csrf_token }}'
-                            };
-                            var me = this;
-                            $.ajax({
-                                type: 'POST',
-                                url: 'change_status',
-                                data: new_position,
-                                dataType:'json',
-                                success: function(){
-                                    alert('{% trans "DataHasBeenTransfered" %}');
-                                    $(me).attr('data-position', $(me).parent().attr('id'));
-                                }
-                            })
-
-                        }
-                    })
-
-                }
-            });
-
-            $( "#Wait, #On-Going, #Finished, #pendding" ).disableSelection();
-        });
-    </script>
 {% endblock js %}
 {% block breadcrumb %}
     <li class="breadcrumb-item active" aria-current="page">{% trans "home" %}</li>

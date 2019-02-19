@@ -5,10 +5,21 @@ from bugs.models import Bug
 from problems.models import Problem, Problem_reply
 from projects.models import Project, Project_setting
 from requests.models import Request, Level
+from tests.models import Request_test, Request_test_item
+
+
+@admin.register(Request_test)
+class RequestTestAdmin(admin.ModelAdmin):
+    list_display = ('request', 'desc', 'get_owner', )
+
+
+@admin.register(Request_test_item)
+class RequestTestAdmin(admin.ModelAdmin):
+    list_display = ('test', 'item', )
 
 
 @admin.register(Project_setting)
-class ProjectAdmin(admin.ModelAdmin):
+class ProjectSettingAdmin(admin.ModelAdmin):
     list_display = ('user',)
 
 

@@ -5,7 +5,6 @@ from django.conf import settings
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.dispatch import receiver
-from ckeditor.fields import RichTextField
 
 
 class Request(models.Model):
@@ -22,6 +21,8 @@ class Request(models.Model):
     due_date = models.DateField(null=True, blank=True)  # 完工日期
     actual_date = models.DateField(null=True, blank=True)  # 實際完成日期
     status = models.ForeignKey('bases.Status', related_name='request_level', on_delete=models.DO_NOTHING)  # 狀態
+    is_test = models.BooleanField(default=False)  # 是否需要進行測試
+    test_data = models.BooleanField(default=False)  # 是否有測試資料
     process_rate = models.IntegerField(default=0, null=True, blank=True)  # 完成度 系統運算
     belong_to = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)  # 上層
     file_list = models.CharField(max_length=200, blank=True)  # 要卡控檔案上限

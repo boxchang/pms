@@ -35,82 +35,86 @@
 
     <div class="card-body">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-12">
+                <table class="table table-bordered table-sm">
+                    <tr>
+                        <td class="text-center align-middle table-dark" style="width:15%;">{% trans "belong_project" %}</td>
+                        <td class="text-center align-middle" colspan="3" style="width:15%;">{{ bug.project }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-center align-middle table-dark" style="width:15%;">{% trans "owner" %}</td>
+                        <td class="text-center align-middle" style="width:15%;">
+                            <div class="row">
+                                <span class="col-sm-9 align-middle">
+                                    {{ bug.owner }}
+                                </span>
+                                <span class="col-sm-3 align-middle">
+                                    <img src="{% static 'pictures\IMG_6067.jpg' %}" alt="{{ bug.owner }}" class="rounded-circle" style="height:25px;width:25px;transform: rotate(90deg);">
+                                </span>
+                            </div>
+                        </td>
+                        <td class="text-center align-middle table-dark" style="width:15%;">{% trans "create_by" %}</td>
+                        <td class="text-center align-middle" style="width:15%;">{{ bug.create_by }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-center align-middle table-dark">{% trans "create_at" %}</td>
+                        <td class="text-center align-middle">{{ bug.create_at|date:"Y-m-d H:i:s" }}</td>
+                        <td class="text-center align-middle table-dark">{% trans "update_at" %}</td>
+                        <td class="text-center align-middle">{{ bug.update_at|date:"Y-m-d H:i:s" }}</td>
+                    </tr>
+                </table>
+                {% if files %}
                 <div class="row">
-                    <table class="table table-bordered table-sm">
-                        <tr>
-                            <td class="text-center align-middle table-dark" style="width:15%;">{% trans "belong_project" %}</td>
-                            <td class="text-center align-middle" colspan="3" style="width:15%;">{{ bug.project }}</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center align-middle table-dark" style="width:15%;">{% trans "owner" %}</td>
-                            <td class="text-center align-middle" style="width:15%;">
-                                <div class="row">
-                                    <span class="col-sm-9 align-middle">
-                                        {{ bug.owner }}
-                                    </span>
-                                    <span class="col-sm-3 align-middle">
-                                        <img src="{% static 'pictures\IMG_6067.jpg' %}" alt="{{ bug.owner }}" class="rounded-circle" style="height:25px;width:25px;transform: rotate(90deg);">
-                                    </span>
-                                </div>
-                            </td>
-                            <td class="text-center align-middle table-dark" style="width:15%;">{% trans "create_by" %}</td>
-                            <td class="text-center align-middle" style="width:15%;">{{ bug.create_by }}</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center align-middle table-dark">{% trans "create_at" %}</td>
-                            <td class="text-center align-middle">{{ bug.create_at|date:"Y-m-d H:i:s" }}</td>
-                            <td class="text-center align-middle table-dark">{% trans "update_at" %}</td>
-                            <td class="text-center align-middle">{{ bug.update_at|date:"Y-m-d H:i:s" }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="6" style="padding: .7rem;font-size: 1.2em">
-
-                                {{ bug.desc|safe }}
-
-                            </td>
-                        </tr>
-                    </table>
+                    <div class="col-md-12">
+                        <table class="table table-bordered table-sm col-12">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th style="width:10%">
+                                        #
+                                    </th>
+                                    <th style="width:70%">
+                                        {% trans "desc" %}
+                                    </th>
+                                    <th style="width:10%;text-align: center;">
+                                        {% trans "attachment" %}
+                                    </th>
+                                    <th style="width:10%;text-align: center;">
+                                        {% trans "Delete" %}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for file in files %}
+                                <tr>
+                                    <td>
+                                        {{ forloop.counter }}
+                                    </td>
+                                    <td>
+                                        {{ file.description }}
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{{ file.files.url }}"><i class="fas fa-file-download fa-2x text-info"></i></a>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{% url 'request_file_delete' file.pk %}?q={{ pk }}" onclick="return confirm('Are you sure?')"><i class="fas fa-times fa-2x text-info"></i></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+                {% endif %}
+                <table class="table table-bordered table-sm">
+                    <tr>
+                        <td style="padding: 3.7rem;font-size: 1.2em">
+
+                            {{ bug.desc|safe }}
+
+                        </td>
+                    </tr>
+                </table>
             </div>
-        {% if files %}
-            <div class="col-md-4">
-                <div class="row">
-                    <table class="table table-bordered table-sm col-12">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>
-                                    #
-                                </th>
-                                <th>
-                                    {% trans "desc" %}
-                                </th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% for file in files %}
-                            <tr>
-                                <td>
-                                    {{ forloop.counter }}
-                                </td>
-                                <td>
-                                    {{ file.description }}
-                                </td>
-                                <td class="text-center">
-                                    <a href="{{ file.files.url }}"><i class="fas fa-file-download fa-2x text-info"></i></a>
-                                </td>
-                                <td class="text-center">
-                                    <a href="{% url 'request_file_delete' file.pk %}?q={{ pk }}" onclick="return confirm('Are you sure?')"><i class="fas fa-times fa-2x text-info"></i></a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        {% endif %}
         </div>
         <div class="card">
             <div class="card-header pb-1 pt-1">

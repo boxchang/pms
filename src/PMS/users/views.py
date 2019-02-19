@@ -1,6 +1,7 @@
 
 from django.contrib import messages
 from django.contrib.auth import authenticate
+from django.http import HttpResponseRedirect
 
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login
@@ -38,27 +39,33 @@ def login(request):
     '''
     template = 'registration/login.html'
     if request.method == 'GET':
-        return render(request, template)
+        next = request.GET.get('next')
+        return render(request, template, locals())
+
 
     if request.method == 'POST':
-        # POST
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        if not username or not password:    # Server-side validation
-            messages.error(request, '使用者名稱或密碼未填寫！')
-            return render(request, template)
+        next_page = request.POST.get('next')
+        if request.user.is_authenticated() and next_page:
+            return HttpResponseRedirect(next_page)
+        else:
+            # POST
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            if not username or not password:    # Server-side validation
+                messages.error(request, '使用者名稱或密碼未填寫！')
+                return render(request, template)
 
-        user = authenticate(username=username, password=password)
-        if not user:    # authentication fails
-            messages.error(request, '使用者名稱或密碼不正確！')
-            return render(request, template)
+            user = authenticate(username=username, password=password)
+            if not user:    # authentication fails
+                messages.error(request, '使用者名稱或密碼不正確！')
+                return render(request, template)
 
-        # login success
-        auth_login(request, user)
+            # login success
+            auth_login(request, user)
 
-        # messages.success(request, '登入成功')
+            # messages.success(request, '登入成功')
 
-        return index(request)
+            return index(request)
 
 
 def logout(request):

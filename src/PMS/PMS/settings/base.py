@@ -36,6 +36,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'tests',
     'users',
     'projects',
     'requests',
@@ -62,6 +63,7 @@ MIGRATION_MODULES = {
     'problems':'migrations.problems',
     'bugs':'migrations.bugs',
     'bases':'migrations.bases',
+    'tests':'migrations.tests',
 }
 
 CKEDITOR_UPLOAD_PATH = "uploads/"

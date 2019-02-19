@@ -10,6 +10,8 @@ from PMS.settings.base import DEFAULT_STATUS
 from bases.utils import *
 from requests.forms import *
 from requests.utils import *
+from tests.models import Request_test
+
 
 @login_required
 def request_receive(request):
@@ -86,7 +88,8 @@ def request_edit(request, pk):
                 data.process_rate = data.status.process_rate
                 data.save()
 
-                update_process_rate(require.belong_to)  # 更新父層的進度
+                if require.belong_to:
+                    update_process_rate(require.belong_to)  # 更新父層的進度
 
                 if request.FILES.get('files1'):
                     request_file = Request_attachment(files=request.FILES['files1'])
@@ -141,6 +144,10 @@ def request_detail(request, pk):
 
         form_type = FormType.objects.filter(type='REQUEST').first()
 
+        test = Request_test.objects.filter(request=data).first()
+        if test:
+            test_no = test.pk
+
     except Request.DoesNotExist:
         raise Http404
 
@@ -156,6 +163,10 @@ def request_guest(request, no):
         files = Request_attachment.objects.filter(request=data).all()
 
         form_type = FormType.objects.filter(type='REQUEST').first()
+
+        test = Request_test.objects.filter(request=data).first()
+        if test:
+            test_no = test.pk
 
     except Request.DoesNotExist:
         raise Http404

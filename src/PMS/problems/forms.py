@@ -6,7 +6,6 @@ from django import forms
 from problems.models import Problem, Problem_reply
 from projects.models import Project
 from django.utils.translation import ugettext_lazy as _
-from requests.models import Request
 
 
 class ProblemForm(forms.ModelForm):

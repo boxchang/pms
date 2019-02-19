@@ -68,7 +68,7 @@ class RequestForm(forms.ModelForm):
         model = Request
         fields = (
         'title', 'start_date', 'due_date', 'process_rate', 'estimate_time', 'level', 'owner', 'desc',
-        'status', 'actual_date',)
+        'status', 'actual_date', 'is_test',)
 
     level = forms.ModelChoiceField(required=True, label=_('level'), queryset=Level.objects.all(), initial=2)
     title = forms.CharField(required=True, label=_('title'))
@@ -79,6 +79,7 @@ class RequestForm(forms.ModelForm):
     start_date = forms.DateField(label=_('starttime'), initial=datetime.now(), input_formats=["%Y-%m-%d"])
     due_date = forms.DateField(label=_('finishtime'), initial=datetime.now(), input_formats=["%Y-%m-%d"])
     actual_date = forms.DateField(required=False, label=_('actualtime'), input_formats=["%Y-%m-%d"])
+    is_test = forms.ChoiceField(label=_('need test'), choices=((False, 'False'), (True, 'True'),), required=False)
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -88,7 +89,10 @@ class RequestForm(forms.ModelForm):
         self.helper.form_show_errors = True
 
         self.helper.layout = Layout(
-            Div('level'),
+            Div(
+                Div('level', css_class='col-md-6'),
+                Div('is_test', css_class='col-md-6'),
+                css_class='row'),
             Div('title'),
             Div('desc'),
             Div('status'),

@@ -30,6 +30,7 @@
         <option value="$MODULE_DIR$/requests/templates" />
         <option value="$MODULE_DIR$/bugs/templates" />
         <option value="$MODULE_DIR$/bases/templates" />
+        <option value="$MODULE_DIR$/tests/templates" />
       </list>
     </option>
   </component>

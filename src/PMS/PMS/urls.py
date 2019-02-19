@@ -44,6 +44,7 @@ urlpatterns = [
     url(r'^problems/', include('problems.urls')),
     url(r'^home', include('bases.urls')),
     url(r'^bugs/', include('bugs.urls')),
+    url(r'^tests/', include('tests.urls')),
     url(r'^api/', include(router.urls)),
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url(r'^i18n/', include('django.conf.urls.i18n')),
