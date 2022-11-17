@@ -1,7 +1,7 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div
 from django import forms
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from bases.models import Status
 from bugs.models import Bug
 from projects.models import Project
@@ -15,10 +15,14 @@ class BugForm(forms.ModelForm):
         fields = ('title', 'level', 'status', 'owner', 'desc', 'belong_to')
 
     title = forms.CharField(required=True, label=_('title'))
-    level = forms.ModelChoiceField(required=True, label=_('level'), queryset=Level.objects.all(), initial=2)  # initial MEDIUM
-    status = forms.ModelChoiceField(required=True, label=_('status'), queryset=Status.objects.all(), initial=1)
-    owner = forms.ModelChoiceField(required=False, label=_('owner'), queryset=CustomUser.objects.all())
-    belong_to = forms.ModelChoiceField(required=False, label=_('belong_to'), queryset=Request.objects.all())
+    level = forms.ModelChoiceField(required=True, label=_(
+        'level'), queryset=Level.objects.all(), initial=2)  # initial MEDIUM
+    status = forms.ModelChoiceField(required=True, label=_(
+        'status'), queryset=Status.objects.all(), initial=1)
+    owner = forms.ModelChoiceField(required=False, label=_(
+        'owner'), queryset=CustomUser.objects.all())
+    belong_to = forms.ModelChoiceField(required=False, label=_(
+        'belong_to'), queryset=Request.objects.all())
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -37,7 +41,3 @@ class BugForm(forms.ModelForm):
             Div('desc'),
             Div('status'),
         )
-
-
-
-

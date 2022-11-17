@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.http import Http404, HttpResponse
 from django.shortcuts import render, redirect
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from requests.models import Request
 from tests.forms import RTestForm, RTestItemFormSet
 from tests.models import Request_test, Request_test_item, Test_result, Test_result_detail
@@ -13,7 +13,7 @@ from tests.models import Request_test, Request_test_item, Test_result, Test_resu
 
 @login_required
 def rtest_create(request):
-    r = request.GET.get('r')  #單號id
+    r = request.GET.get('r')  # 單號id
     try:
         o_request = Request.objects.get(pk=r)
     except Request.DoesNotExist:
@@ -31,7 +31,8 @@ def rtest_create(request):
                 form.save()
 
                 o_rtest = Request_test.objects.get(pk=o_rtest.id)
-                ritem_formset = RTestItemFormSet(request.POST, instance=o_rtest)
+                ritem_formset = RTestItemFormSet(
+                    request.POST, instance=o_rtest)
                 if ritem_formset.is_valid():
                     ritem_formset.save()
 
@@ -40,13 +41,14 @@ def rtest_create(request):
             errors = form.errors
 
     form = RTestForm()
-    ritem_formset = RTestItemFormSet(initial=[{'item': '程式是否符合需求'}, {'item': '程式是否已經push到git'}, ])
+    ritem_formset = RTestItemFormSet(
+        initial=[{'item': '程式是否符合需求'}, {'item': '程式是否已經push到git'}, ])
     return render(request, 'tests/test_edit.html', locals())
 
 
 @login_required
 def rtest_edit(request):
-    r = request.GET.get('r')  #單號id
+    r = request.GET.get('r')  # 單號id
     o_request = Request.objects.get(pk=r)
     o_rtest = Request_test.objects.filter(request=o_request).first()
 
@@ -91,6 +93,7 @@ def rtest_delete(request):
 
     return redirect(o_request.get_absolute_url())
 
+
 @login_required
 def rtest_form(request, pk):
     try:
@@ -103,7 +106,8 @@ def rtest_form(request, pk):
 
     class BaseTestResultForm(forms.Form):
         item = forms.IntegerField(widget=forms.HiddenInput, required=False)
-        item_result = forms.ChoiceField(label=_('result'), choices=((False, 'Failed'), (True, 'Pass'),), required=False)
+        item_result = forms.ChoiceField(label=_('result'), choices=(
+            (False, 'Failed'), (True, 'Pass'),), required=False)
 
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
@@ -121,7 +125,8 @@ def rtest_form(request, pk):
             super(BaseTestResultFormSet, self).add_fields(form, index)
             form.fields['item_result'].label = choice_list[index][1]
 
-    TestResultFormSet = forms.formset_factory(BaseTestResultForm, extra=0, formset=BaseTestResultFormSet)
+    TestResultFormSet = forms.formset_factory(
+        BaseTestResultForm, extra=0, formset=BaseTestResultFormSet)
 
     if request.method == 'POST':
         formset = TestResultFormSet(request.POST)
@@ -134,7 +139,6 @@ def rtest_form(request, pk):
                     if str(data['item_result']).lower() == 'false':
                         main_result = False
 
-
                 main = Test_result()
                 main.request = o_rtest.request
                 main.tester = request.user
@@ -144,8 +148,10 @@ def rtest_form(request, pk):
                 for f in formset:
                     data = f.cleaned_data
                     detail = Test_result_detail()
-                    detail.item = Request_test_item.objects.get(pk=data['item'])
-                    detail.item_result = str(data['item_result']).lower() == 'true'
+                    detail.item = Request_test_item.objects.get(
+                        pk=data['item'])
+                    detail.item_result = str(
+                        data['item_result']).lower() == 'true'
                     detail.test_result = Test_result.objects.get(pk=main.id)
                     detail.save()
 

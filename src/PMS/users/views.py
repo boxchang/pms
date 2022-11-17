@@ -42,11 +42,13 @@ def login(request):
         next = request.GET.get('next')
         return render(request, template, locals())
 
-
     if request.method == 'POST':
         next_page = request.POST.get('next')
-        if request.user.is_authenticated() and next_page:
-            return HttpResponseRedirect(next_page)
+        if request.user.is_authenticated:
+            if next_page != 'None':
+                return HttpResponseRedirect(next_page)
+            else:
+                return index(request)
         else:
             # POST
             username = request.POST.get('username')
@@ -75,4 +77,3 @@ def logout(request):
     auth_logout(request)
     messages.success(request, '歡迎再度光臨')
     return redirect('login')
-

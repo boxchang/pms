@@ -2,17 +2,17 @@ import os
 
 from django.db import models
 
- # Create your models here.
+# Create your models here.
 from django.db import models
 from django.dispatch import receiver
 from django.utils import timezone
-from django.utils.http import urlquote
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.core.mail import send_mail
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.core import validators
 
 from django.contrib.auth.models import BaseUserManager
+
 
 class CustomUserManager(BaseUserManager):
 
@@ -59,27 +59,28 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
                                                               _('Enter a valid username. '
                                                                 'This value may contain only letters, numbers '
                                                                 'and @/./+/-/_ characters.'), 'invalid'),
-                                ],
-                                error_messages={
+    ],
+        error_messages={
                                     'unique': _("A user with that username already exists."),
-                                })
+    })
 
     email = models.EmailField(_('email address'), max_length=254)
     first_name = models.CharField(_('first name'), max_length=30, blank=False)
     last_name = models.CharField(_('last name'), max_length=30, blank=False)
     shot = models.FileField(upload_to='uploads/profile', null=True, blank=True)
     mobile_number = models.CharField(_('mobile number'), max_length=30, blank=False,
-                    help_text=_('Required. digits and +-() only.'),
-                    validators=[validators.RegexValidator(r'^[0-9+()-]+$',
-                                                  _('Enter a valid mobile number.'),
-                                                  'invalid')])
+                                     help_text=_(
+                                         'Required. digits and +-() only.'),
+                                     validators=[validators.RegexValidator(r'^[0-9+()-]+$',
+                                                                           _('Enter a valid mobile number.'),
+                                                                           'invalid')])
     # Admin
     is_staff = models.BooleanField(_('staff status'), default=False,
-        help_text=_('Designates whether the user can log into this admin '
-                    'site.'))
+                                   help_text=_('Designates whether the user can log into this admin '
+                                               'site.'))
     is_active = models.BooleanField(_('active'), default=True,
-        help_text=_('Designates whether this user should be treated as '
-                    'active. Unselect this instead of deleting accounts.'))
+                                    help_text=_('Designates whether this user should be treated as '
+                                                'active. Unselect this instead of deleting accounts.'))
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     objects = CustomUserManager()
 

@@ -17,7 +17,8 @@ from django.urls import reverse_lazy
 
 # 因設定檔移入下一層，所以需修改BASE_DIR
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))))
 
 
 # Quick-start development settings - unsuitable for production
@@ -27,7 +28,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 # SECRET_KEY = 'ezah+g6e0w@mekz2bs_fqk_*&lgcn$g_*39%%vus5_y6kka7(x'
 #
 # # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
+DEBUG = True
 #
 ALLOWED_HOSTS = ['*']
 #ALLOWED_HOSTS = ['localhost', '0.0.0.0:8000']
@@ -57,13 +58,13 @@ INSTALLED_APPS = [
 ]
 
 MIGRATION_MODULES = {
-    'users':'migrations.users',
-    'projects':'migrations.projects',
-    'requests':'migrations.requests',
-    'problems':'migrations.problems',
-    'bugs':'migrations.bugs',
-    'bases':'migrations.bases',
-    'tests':'migrations.tests',
+    'users': 'migrations.users',
+    'projects': 'migrations.projects',
+    'requests': 'migrations.requests',
+    'problems': 'migrations.problems',
+    'bugs': 'migrations.bugs',
+    'bases': 'migrations.bases',
+    'tests': 'migrations.tests',
 }
 
 CKEDITOR_UPLOAD_PATH = "uploads/"
@@ -85,8 +86,7 @@ ROOT_URLCONF = 'PMS.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -167,12 +167,12 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
-#TIME= 240*60  #four hours  or your time
-TIME=10*60*60 #20 mins
+# TIME= 240*60  #four hours  or your time
+TIME = 10*60*60  # 20 mins
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
-SESSION_EXPIRE_AT_BROWSER_CLOSE= True
-SESSION_COOKIE_AGE = TIME    #change expired session
-SESSION_IDLE_TIMEOUT = TIME  #logout
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = TIME  # change expired session
+SESSION_IDLE_TIMEOUT = TIME  # logout
 
 LOGIN_URL = '/users/login/'
 
@@ -183,9 +183,12 @@ CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'Custom',
         'toolbar_Custom': [
-            {'name': 'document', 'items': ['Source', '-', 'Save', 'NewPage', 'Preview', 'Print', '-', 'Templates']},
-            {'name': 'clipboard', 'items': ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
-            {'name': 'editing', 'items': ['Find', 'Replace', '-', 'SelectAll']},
+            {'name': 'document', 'items': [
+                'Source', '-', 'Save', 'NewPage', 'Preview', 'Print', '-', 'Templates']},
+            {'name': 'clipboard', 'items': [
+                'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
+            {'name': 'editing', 'items': [
+                'Find', 'Replace', '-', 'SelectAll']},
             {'name': 'forms',
              'items': ['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton',
                        'HiddenField']},
@@ -200,7 +203,8 @@ CKEDITOR_CONFIGS = {
             {'name': 'insert',
              'items': ['Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe']},
             '/',
-            {'name': 'styles', 'items': ['Styles', 'Format', 'Font', 'FontSize']},
+            {'name': 'styles', 'items': [
+                'Styles', 'Format', 'Font', 'FontSize']},
             {'name': 'colors', 'items': ['TextColor', 'BGColor']},
             {'name': 'tools', 'items': ['Maximize', 'ShowBlocks']},
             {'name': 'about', 'items': ['About']},
@@ -220,7 +224,7 @@ CKEDITOR_CONFIGS = {
     'special': {
         'toolbar': 'Special',
         'toolbar_Special': [
-            ['Bold', 'CodeSnippet', 'ImageButton',]
+            ['Bold', 'CodeSnippet', 'ImageButton', ]
         ],
         'width': '100%',
         'height': 300,

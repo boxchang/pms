@@ -1,10 +1,11 @@
 from django.contrib import admin
 
 from django.contrib.auth.admin import UserAdmin
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from .models import CustomUser
 from .forms import CustomUserChangeForm, CustomUserCreationForm
+
 
 class CustomUserAdmin(UserAdmin):
     # The forms to add and change user instances
@@ -24,7 +25,7 @@ class CustomUserAdmin(UserAdmin):
         (None, {
             'classes': ('wide',),
             'fields': ('username', 'password1', 'password2')}
-        ),
+         ),
     )
     form = CustomUserChangeForm
     add_form = CustomUserCreationForm
@@ -32,5 +33,6 @@ class CustomUserAdmin(UserAdmin):
                     'mobile_number', 'is_staff')
     search_fields = ('username', 'first_name', 'last_name', 'mobile_number',)
     ordering = ('username',)
+
 
 admin.site.register(CustomUser, CustomUserAdmin)
