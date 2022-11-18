@@ -21,6 +21,5 @@ __pycache__
 .venv/
 .idea
 .idea/*
-**/migrations/*
 *venv
 *.sqlite3
