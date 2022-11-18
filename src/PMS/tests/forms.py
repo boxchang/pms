@@ -4,7 +4,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, HTML
 from django import forms
 from django.forms import inlineformset_factory
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from tests.models import Request_test, Request_test_item
 
 
@@ -12,7 +12,8 @@ class RTestForm(forms.ModelForm):
     class Meta:
         model = Request_test
         fields = ('desc',)
-    desc = forms.CharField(required=True, label=_('desc'), widget=CKEditorUploadingWidget(config_name='special'))
+    desc = forms.CharField(required=True, label=_(
+        'desc'), widget=CKEditorUploadingWidget(config_name='special'))
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -33,7 +34,8 @@ class RTestItemFormSet(BaseTestItemFormSet):
 
     def add_fields(self, form, index):
         super(RTestItemFormSet, self).add_fields(form, index)
-        form.fields['item'] = forms.CharField(label='', required=True, widget=forms.TextInput())
+        form.fields['item'] = forms.CharField(
+            label='', required=True, widget=forms.TextInput())
         form.fields['DELETE'].label = ''
 
     def __init__(self, *args, **kwargs):

@@ -1,9 +1,9 @@
-from bootstrap_datepicker_plus import DateTimePickerInput
+from bootstrap_datepicker_plus.widgets import DateTimePickerInput
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div
 from django import forms
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from bases.models import Status
 from requests.models import Request, Level
 from datetime import datetime
@@ -19,8 +19,10 @@ class RequestReceiveForm(forms.ModelForm):
         )
         estimate_time = forms.IntegerField(required=False, label=_('estimate_time'), widget=forms.NumberInput(),
                                            initial=0, )
-        start_date = forms.DateField(label=_('starttime'), initial=datetime.now(), input_formats=["%Y-%m-%d"])
-        due_date = forms.DateField(label=_('finishtime'), initial=datetime.now(), input_formats=["%Y-%m-%d"])
+        start_date = forms.DateField(
+            label=_('starttime'), initial=datetime.now(), input_formats=["%Y-%m-%d"])
+        due_date = forms.DateField(
+            label=_('finishtime'), initial=datetime.now(), input_formats=["%Y-%m-%d"])
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -61,25 +63,32 @@ class RequestReceiveForm(forms.ModelForm):
     #         raise forms.ValidationError(u"預計完成日期不能小於開始日期")
 
 
-
-
 class RequestForm(forms.ModelForm):
     class Meta:
         model = Request
         fields = (
-        'title', 'start_date', 'due_date', 'process_rate', 'estimate_time', 'level', 'owner', 'desc',
-        'status', 'actual_date', 'is_test',)
+            'title', 'start_date', 'due_date', 'process_rate', 'estimate_time', 'level', 'owner', 'desc',
+            'status', 'actual_date', 'is_test',)
 
-    level = forms.ModelChoiceField(required=True, label=_('level'), queryset=Level.objects.all(), initial=2)
+    level = forms.ModelChoiceField(required=True, label=_(
+        'level'), queryset=Level.objects.all(), initial=2)
     title = forms.CharField(required=True, label=_('title'))
-    desc = forms.CharField(required=False, label=_('desc'), widget=CKEditorUploadingWidget())
-    status = forms.ModelChoiceField(required=True, label=_('status'), queryset=Status.objects.all(), initial=1)
-    owner = forms.ModelChoiceField(required=False, label=_('owner'), queryset=CustomUser.objects.all())
-    estimate_time = forms.IntegerField(required=False, label=_('estimate_time'), widget=forms.NumberInput(), initial=0, )
-    start_date = forms.DateField(label=_('starttime'), initial=datetime.now(), input_formats=["%Y-%m-%d"])
-    due_date = forms.DateField(label=_('finishtime'), initial=datetime.now(), input_formats=["%Y-%m-%d"])
-    actual_date = forms.DateField(required=False, label=_('actualtime'), input_formats=["%Y-%m-%d"])
-    is_test = forms.ChoiceField(label=_('need test'), choices=((False, 'False'), (True, 'True'),), required=False)
+    desc = forms.CharField(required=False, label=_(
+        'desc'), widget=CKEditorUploadingWidget())
+    status = forms.ModelChoiceField(required=True, label=_(
+        'status'), queryset=Status.objects.all(), initial=1)
+    owner = forms.ModelChoiceField(required=False, label=_(
+        'owner'), queryset=CustomUser.objects.all())
+    estimate_time = forms.IntegerField(required=False, label=_(
+        'estimate_time'), widget=forms.NumberInput(), initial=0, )
+    start_date = forms.DateField(
+        label=_('starttime'), initial=datetime.now(), input_formats=["%Y-%m-%d"])
+    due_date = forms.DateField(
+        label=_('finishtime'), initial=datetime.now(), input_formats=["%Y-%m-%d"])
+    actual_date = forms.DateField(required=False, label=_(
+        'actualtime'), input_formats=["%Y-%m-%d"])
+    is_test = forms.ChoiceField(label=_('need test'), choices=(
+        (False, 'False'), (True, 'True'),), required=False)
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -131,4 +140,3 @@ class RequestForm(forms.ModelForm):
                 "showTodayButton": False,
             }
         )
-

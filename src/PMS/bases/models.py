@@ -20,7 +20,8 @@ class Status(models.Model):
 
 
 class DataIndex(models.Model):
-    project = models.ForeignKey('projects.Project', related_name='index_project')
+    project = models.ForeignKey(
+        'projects.Project', related_name='index_project', on_delete=models.CASCADE)
     data_type = models.CharField(max_length=10)
     data_date = models.CharField(max_length=8)
     current = models.IntegerField(default=0, null=True, blank=True)

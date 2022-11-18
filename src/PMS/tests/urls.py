@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.urls import re_path as url
 from tests.views import rtest_create, rtest_form, rtest_edit, rtest_result, rtest_delete
 
 urlpatterns = [

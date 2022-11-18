@@ -76,18 +76,20 @@ def project_edit(request, pk):
             # project.save()
             return redirect(project.get_absolute_url())
 
-    return render(request, 'projects/project_edit.html', {'form': form, 'project':project})
+    return render(request, 'projects/project_edit.html', {'form': form, 'project': project})
 
 
 def project_delete(request, pk):
     try:
         with transaction.atomic():
-            project = Project.objects.select_for_update().get(pk=pk)  # select_for_update鎖表，執行完後才會釋放
+            project = Project.objects.select_for_update().get(
+                pk=pk)  # select_for_update鎖表，執行完後才會釋放
             project.delete()
     except Exception as e:
         Exception('Unexpected error: {}'.format(e))
 
     return redirect(get_home_url(request))
+
 
 @login_required
 def project_list(request):
@@ -96,13 +98,13 @@ def project_list(request):
 
 
 @login_required
-def project_manage(request, pk):            #回傳projects/manage的頁面主體資料
+def project_manage(request, pk):  # 回傳projects/manage的頁面主體資料
     try:
         page_num = 5
 
         form_type = FormType.objects.filter(type='PROJECT').first()
 
-        #取得使用者專案設定
+        # 取得使用者專案設定
         if request.user.setting_user:
             project_setting = request.user.setting_user.first()
             projects = project_setting.project.all()
@@ -115,6 +117,7 @@ def project_manage(request, pk):            #回傳projects/manage的頁面主�
         raise Http404
 
     return render(request, 'projects/project_manage.html', locals())
+
 
 @login_required
 def project_setting(request):
@@ -131,9 +134,11 @@ def project_setting(request):
 
             if request.FILES.get('shot'):
                 user = CustomUser.objects.get(pk=request.user.pk)
-                name, extension = os.path.splitext(request.FILES.get('shot')._name)
+                name, extension = os.path.splitext(
+                    request.FILES.get('shot')._name)
                 # 先刪除舊的
-                fullname = os.path.join(settings.MEDIA_ROOT, 'uploads/profile', request.user.username + extension)
+                fullname = os.path.join(
+                    settings.MEDIA_ROOT, 'uploads/profile', request.user.username + extension)
                 if os.path.exists(fullname):
                     os.remove(fullname)
                 # 換檔案名稱
@@ -146,6 +151,8 @@ def project_setting(request):
 
             default_pk = obj.default.pk
             return redirect(reverse('project_manage', kwargs={'pk': default_pk}))
+        else:
+            print(form.errors)
     else:
         if data:
             form = ProjectSettingForm(instance=data)
@@ -153,6 +160,7 @@ def project_setting(request):
             form = ProjectSettingForm()
 
     return render(request, 'projects/project_setting.html', locals())
+
 
 @login_required
 def search(request):
@@ -163,20 +171,22 @@ def search(request):
 
         if keywords:
             for keyword in keywords.split(' '):
-                r_results = list(Request.objects.extra(select={'no': 'request_no'}).filter(Q(title__contains=keyword) | Q(desc__contains=keyword) | Q(request_no__contains=keyword)))
+                r_results = list(Request.objects.extra(select={'no': 'request_no'}).filter(
+                    Q(title__contains=keyword) | Q(desc__contains=keyword) | Q(request_no__contains=keyword)))
                 for r_result in r_results:
                     r_result.type = 'R'
                 results += r_results
             for keyword in keywords.split(' '):
-                p_results = list(Problem.objects.extra(select={'no': 'problem_no'}).filter(Q(title__contains=keyword) | Q(desc__contains=keyword) | Q(problem_no__contains=keyword)))
+                p_results = list(Problem.objects.extra(select={'no': 'problem_no'}).filter(
+                    Q(title__contains=keyword) | Q(desc__contains=keyword) | Q(problem_no__contains=keyword)))
                 for p_result in p_results:
                     p_result.type = 'P'
                 results += p_results
             for keyword in keywords.split(' '):
-                b_results = list(Bug.objects.extra(select={'no': 'bug_no'}).filter(Q(title__contains=keyword) | Q(desc__contains=keyword) | Q(bug_no__contains=keyword)))
+                b_results = list(Bug.objects.extra(select={'no': 'bug_no'}).filter(
+                    Q(title__contains=keyword) | Q(desc__contains=keyword) | Q(bug_no__contains=keyword)))
                 for b_result in b_results:
                     b_result.type = 'B'
                 results += b_results
         results_count = len(results)
     return render(request, 'projects/search.html', locals())
-

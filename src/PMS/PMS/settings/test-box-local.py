@@ -1,6 +1,8 @@
-# PMS/settings/test-nico.py
+from .base import *
 
-from .test import *
+SECRET_KEY = '8i7h&)&2z!$!e710^%m)i4f(7_lpn)8ofu8&)djhix$q^66k0s'
+
+ALLOWED_HOSTS = ['*']
 
 DATABASES = {
     'default': {

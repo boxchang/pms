@@ -26,13 +26,13 @@ class Project(models.Model):
 
 class Project_setting(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='setting_user',
-                                  on_delete=models.CASCADE)
-    project = models.ManyToManyField('projects.Project', related_name='setting_project')
-    default = models.ForeignKey('projects.Project', related_name='setting_default', null=True, blank=True)
+                             on_delete=models.CASCADE)
+    project = models.ManyToManyField(
+        'projects.Project', related_name='setting_project')
+    default = models.ForeignKey('projects.Project', related_name='setting_default',
+                                null=True, blank=True, on_delete=models.CASCADE)
     page_number = models.IntegerField(default=10)
     update_at = models.DateTimeField(auto_now_add=True)
 
-
     class Meta:
         unique_together = (("user",),)
-
