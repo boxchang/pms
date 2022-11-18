@@ -42,8 +42,9 @@ class ProjectSettingForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
-        # self.fields["project"].widget = CheckboxSelectMultiple(
-        #     attrs={"checked": ""})  # 下拉選項改成核取方塊
+        self.fields["project"].widget = CheckboxSelectMultiple(
+            attrs={"checked": ""})  # 下拉選項改成核取方塊
+
 
     def clean_default(self):
         default = self.cleaned_data['default']

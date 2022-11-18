@@ -50,7 +50,6 @@ urlpatterns = [
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^favicon\.ico$', RedirectView.as_view(url='/static/favicon.ico')),
-    url(r'^ckeditor/', include('ckeditor_uploader.urls')),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) \
   + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

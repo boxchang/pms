@@ -17,7 +17,10 @@ class Request(models.Model):
     request_no = models.CharField(
         'Request No.', max_length=20, unique=True)  # 需求單號
     title = models.CharField(max_length=100)  # 標題
-    desc = RichTextField(blank=True, max_length=300)
+    desc = RichTextUploadingField(null=True, blank=True, external_plugin_resources=[(
+        'youtube',
+        '/static/ckeditor/ckeditor/plugins/youtube',
+        'plugin.js', )],)
     level = models.ForeignKey(
         'requests.Level', related_name='request_level', on_delete=models.DO_NOTHING)  # 緊急程度
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='request_owner',
