@@ -11,28 +11,30 @@
 
         $(document).ready(function() {
             $("#label_form").submit(function(e) {
-                if($("#send").text()=="Preview")
+                if($("#asset_number").val().length == 0)
                 {
-                    e.preventDefault();
-                    var formData = new FormData(this);
-                    $.ajax({
-                        type: "POST",
-                        url: "/assets/preview/",
-                        data: formData,
-                        success: function(data) {
-                            $("#preview").html(data);
-                            $("#send").text("Print");
-                            console.log(data)
-                        },
-                        cache: false,
-                        contentType: false,
-                        processData: false
-                    })
+                    if($("#send").text()=="Preview")
+                    {
+                        e.preventDefault();
+                        var formData = new FormData(this);
+                        $.ajax({
+                            type: "POST",
+                            url: "/assets/preview/",
+                            data: formData,
+                            success: function(data) {
+                                $("#preview").html(data);
+                                $("#send").text("Print");
+                                console.log(data)
+                            },
+                            cache: false,
+                            contentType: false,
+                            processData: false
+                        })
+                    }
+                    else {
+                        $("#preview").html("");
+                    }
                 }
-                else {
-                    $("#preview").html("");
-                }
-
 
             });
         });
@@ -56,7 +58,15 @@
 <form action="" method="post" class="form-group font-weight-bold align-middle" id="label_form" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="card-body">
-        <div>{% trans "attachment" %}</div>
+        <div>列印資產標籤</div>
+        <div class="row">
+            <div class="input-group mb-3">
+                <input name="asset_number" id="asset_number" type="text" class="form-control" placeholder="Asset Number" aria-label="Asset Number" aria-describedby="basic-addon2">
+                <div class="input-group-append">
+                  <button class="btn btn-primary" type="submit">Print</button>
+                </div>
+              </div>
+        </div>
         <div class="row">
             <div id="div_id_files" class="form-group col-2">
                 <label for="id_files" class="form-control-label">{% trans "file" %} 1</label>
