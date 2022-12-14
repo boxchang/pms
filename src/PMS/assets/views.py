@@ -76,7 +76,6 @@ def TEXT2CSV(asset_number):
         writer.writerow({'NUMBER': asset_number})
     return file_name
 
-@login_required
 def label(request):
     if request.method == 'POST':
         asset_label = request.POST.get('asset_number', False)
