@@ -45,7 +45,7 @@ def label(request):
             request_file = Label_attachment(files=request.FILES['files1'])
             request_file.description = request.POST['description1']
             request_file.create_by = request.user
-            #request_file.save()
+            request_file.save()
             print_cmd(request_file.files.path)
 
     return render(request, 'assets/label.html', locals())
