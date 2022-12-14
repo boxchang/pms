@@ -12,7 +12,7 @@ def print_cmd(cmd):
     EXE_FILE = "C:\\\"Program Files (x86)\"\\Seagull\\\"BarTender Suite\"\\bartend.exe"
     BTW_FILE = "C:\\Users\\hsiangchih.chang\\Desktop\\Temp\\template.btw"
     EXCEL_FILE = "C:\\Users\\hsiangchih.chang\\Desktop\\Temp\\Bartender_List.xlsx"
-    PRINTER = "Microsoft Print to PDF"
+    PRINTER = "TSC TPP-345"
     CMD = """{EXE_FILE} /AF=\"{BTW_FILE}\" /D=\"{EXCEL_FILE}\" /PRN=\"{PRINTER}\" /P/X""".format(EXE_FILE=EXE_FILE, BTW_FILE=BTW_FILE, EXCEL_FILE=EXCEL_FILE, PRINTER=PRINTER)
     print(CMD)
     os.system(CMD)
