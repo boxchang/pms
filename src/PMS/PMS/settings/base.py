@@ -255,3 +255,7 @@ LANGUAGES = [
 ]
 
 LOCALE_PATHS = [os.path.join(BASE_DIR, "locale")]
+
+EXE_FILE = "C:\\\"Program Files (x86)\"\\Seagull\\\"BarTender Suite\"\\bartend.exe"
+BTW_FILE = os.path.join(BASE_DIR, 'PMS', 'settings', 'bartender', 'template.btw')
+PRINTER = "TSC TPP-345"

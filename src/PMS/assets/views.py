@@ -7,12 +7,9 @@ from assets.models import Label_attachment
 import openpyxl
 from django.http import JsonResponse
 import os
+from PMS.settings.base import BTW_FILE, EXE_FILE, PRINTER
 
-def print_cmd(cmd):
-    EXE_FILE = "C:\\\"Program Files (x86)\"\\Seagull\\\"BarTender Suite\"\\bartend.exe"
-    BTW_FILE = "C:\\Users\\hsiangchih.chang\\Desktop\\Temp\\template.btw"
-    EXCEL_FILE = "C:\\Users\\hsiangchih.chang\\Desktop\\Temp\\Bartender_List.xlsx"
-    PRINTER = "TSC TPP-345"
+def print_cmd(EXCEL_FILE):
     CMD = """{EXE_FILE} /AF=\"{BTW_FILE}\" /D=\"{EXCEL_FILE}\" /PRN=\"{PRINTER}\" /P/X""".format(EXE_FILE=EXE_FILE, BTW_FILE=BTW_FILE, EXCEL_FILE=EXCEL_FILE, PRINTER=PRINTER)
     print(CMD)
     os.system(CMD)
@@ -49,7 +46,7 @@ def label(request):
             request_file.description = request.POST['description1']
             request_file.create_by = request.user
             #request_file.save()
-            print_cmd("")
+            print_cmd(request_file.files.path)
 
     return render(request, 'assets/label.html', locals())
 
