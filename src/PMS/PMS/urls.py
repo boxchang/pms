@@ -22,7 +22,7 @@ from rest_framework.routers import DefaultRouter
 
 from bugs.ser_views import BugByPViewSet
 from problems.ser_views import ProblemByPViewSet, ProblemByRViewSet, ProblemByBViewSet
-from projects.views import index
+from bases.views import index
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -46,6 +46,8 @@ urlpatterns = [
     url(r'^home', include('bases.urls')),
     url(r'^bugs/', include('bugs.urls')),
     url(r'^tests/', include('tests.urls')),
+    url(r'^helpdesk/', include('helpdesk.urls')),
+    url(r'^assets/', include('assets.urls')),
     url(r'^api/', include(router.urls)),
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url(r'^i18n/', include('django.conf.urls.i18n')),

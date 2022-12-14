@@ -37,7 +37,7 @@ def index(request):
         # 若沒有設定專案，就導向專案設定
         obj = CustomUser.objects.get(pk=request.user.pk)
         if obj.setting_user.first():
-            return redirect(reverse('home'))
+            return redirect(reverse('pms_home'))
         else:
             return redirect(reverse('project_setting'))
     else:

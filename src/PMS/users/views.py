@@ -11,7 +11,7 @@ from django.utils import translation
 
 
 from projects.models import Project
-from projects.views import index
+from bases.views import index
 from users.forms import CurrentCustomUserForm, CustomUser
 
 

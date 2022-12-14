@@ -1,0 +1,80 @@
+{% extends 'bases/base.html' %}
+
+{% load static %}
+{% load i18n %}
+{% block head %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Index</title>
+    <script>
+
+
+        $(document).ready(function() {
+            $("#label_form").submit(function(e) {
+                if($("#send").text()=="Preview")
+                {
+                    e.preventDefault();
+                    var formData = new FormData(this);
+                    $.ajax({
+                        type: "POST",
+                        url: "/assets/preview/",
+                        data: formData,
+                        success: function(data) {
+                            alert(data)
+                            $("#preview").html(data);
+                            $("#send").text("Print");
+                            console.log(data)
+                        },
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    })
+                }
+                else {
+                    $("#preview").html("");
+                }
+
+
+            });
+        });
+
+    </script>
+{% endblock %}
+{% block breadcrumb %}
+
+{% endblock %}
+{% block container %}
+<div class="card-header">
+    {% if user.is_authenticated %}
+    <div class="row">
+        <div class="col"><h2></h2></div>
+        <div class="ml-md-auto">
+            <a class="btn btn-info" href="{% url 'logout' %}" role="button"><i class="fas fa-sign-out-alt"></i>{% trans "logout" %} ({{ user.username }})</a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+<form action="" method="post" class="form-group font-weight-bold align-middle" id="label_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="card-body">
+        <div>{% trans "attachment" %}</div>
+        <div class="row">
+            <div id="div_id_files" class="form-group col-2">
+                <label for="id_files" class="form-control-label">{% trans "file" %} 1</label>
+                <input name="files1" accept=".xls,.xlsx" class="clearablefileinput" id="id_files" type="file">
+            </div>
+            <div id="div_id_description" class="form-group col-10">
+                <label for="id_description" class="form-control-label ">{% trans "desc" %}：</label>
+                <input name="description1" maxlength="50" class="textinput textInput form-control" id="id_description" type="text">
+            </div>
+        </div>
+        <div class="row" id="preview">
+            {{ preview | safe }}
+        </div>
+    </div>
+    <div class="card-footer text-center">
+        <button type="submit" class="btn btn-primary" id="send">Preview</button>
+        <input type=button class="btn btn-primary" value="Cancel" onClick="javascript:history.go(-1);">
+    </div>
+</form>
+{% endblock %}

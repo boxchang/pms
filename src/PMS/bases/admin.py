@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from bases.models import Status, FormType
 from bugs.models import Bug
+from helpdesk.models import HelpdeskType
 from problems.models import Problem, Problem_reply
 from projects.models import Project, Project_setting
 from requests.models import Request, Level
@@ -62,3 +63,8 @@ class ProblemAdmin(admin.ModelAdmin):
 @admin.register(FormType)
 class FormTypeAdmin(admin.ModelAdmin):
     list_display = ('tid', 'type', 'short_name')
+
+
+@admin.register(HelpdeskType)
+class FormTypeAdmin(admin.ModelAdmin):
+    list_display = ('tid', 'type')

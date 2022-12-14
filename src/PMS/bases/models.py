@@ -32,3 +32,4 @@ class FormType(models.Model):
     tid = models.IntegerField()
     type = models.CharField(max_length=8)
     short_name = models.CharField(max_length=3, null=False)
+

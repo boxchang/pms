@@ -1,5 +1,5 @@
 import json
-
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.forms import HiddenInput
@@ -55,15 +55,18 @@ def request_create(request):
                 tmp_form.create_by = request.user
                 tmp_form.update_by = request.user
                 form.save()
-                save_data_index(p, form_type)  # Save serial number after success
+                # Save serial number after success
+                save_data_index(p, form_type)
 
                 if request.FILES.get('files1'):
-                    request_file = Request_attachment(files=request.FILES['files1'])
+                    request_file = Request_attachment(
+                        files=request.FILES['files1'])
                     request_file.description = request.POST['description1']
                     request_file.request = tmp_form
                     request_file.save()
                 if request.FILES.get('files2'):
-                    request_file = Request_attachment(files=request.FILES['files2'])
+                    request_file = Request_attachment(
+                        files=request.FILES['files2'])
                     request_file.description = request.POST['description2']
                     request_file.request = tmp_form
                     request_file.save()
@@ -92,12 +95,14 @@ def request_edit(request, pk):
                     update_process_rate(require.belong_to)  # 更新父層的進度
 
                 if request.FILES.get('files1'):
-                    request_file = Request_attachment(files=request.FILES['files1'])
+                    request_file = Request_attachment(
+                        files=request.FILES['files1'])
                     request_file.description = request.POST['description1']
                     request_file.request = data
                     request_file.save()
                 if request.FILES.get('files2'):
-                    request_file = Request_attachment(files=request.FILES['files2'])
+                    request_file = Request_attachment(
+                        files=request.FILES['files2'])
                     request_file.description = request.POST['description2']
                     request_file.request = data
                     request_file.save()
@@ -174,14 +179,14 @@ def request_guest(request, no):
     return render(request, 'requests/request_guest.html', locals())
 
 
-
 @login_required
 def request_delete(request, pk):
 
     try:
         with transaction.atomic():
             require = Request.objects.select_for_update().get(pk=pk)
-            Problem.objects.select_for_update().filter(belong_to=require.request_no).delete()
+            Problem.objects.select_for_update().filter(
+                belong_to=require.request_no).delete()
             request_delete_all(require)
     except Exception as e:
         Exception('Unexpected error: {}'.format(e))
@@ -231,7 +236,8 @@ def get_request(request):
 
     if request.GET.get('p'):
         # 為了取得父需求的PK值
-        father_req = Request.objects.filter(request_no=str(request.GET.get('p')))
+        father_req = Request.objects.filter(
+            request_no=str(request.GET.get('p')))
         objs = Request.objects.filter(belong_to=father_req.first().pk)
     else:
         objs = Request.objects.filter(belong_to__isnull=True)
@@ -320,6 +326,6 @@ def problemTable(problems):
 
 
 def replies(pk):
-    problem_replies = Problem_reply.objects.filter(problem_no=pk).order_by('-update_at')
+    problem_replies = Problem_reply.objects.filter(
+        problem_no=pk).order_by('-update_at')
     return problem_replies
-

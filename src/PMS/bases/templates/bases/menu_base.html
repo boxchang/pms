@@ -14,7 +14,7 @@
     {% csrf_token %}
     <nav class="navbar navbar-default navbar-expand-lg navbar-static-top navbar-dark bg-dark" role="navigation">
         {% if request.user %}
-            <a class="navbar-brand" href="{% url 'home' %}"><span style="font-family: Arial Black">PMS</span></a>
+            <a class="navbar-brand" href="{% url 'pms_home' %}"><span style="font-family: Arial Black">PMS</span></a>
         {% endif %}
         <small class="text-light">
 
