@@ -58,7 +58,7 @@
 <form action="" method="post" class="form-group font-weight-bold align-middle" id="label_form" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="card-body">
-        <div>列印資產標籤</div>
+        <div>單張資產標籤列印</div>
         <div class="row">
             <div class="input-group mb-3">
                 <input name="asset_number" id="asset_number" type="text" class="form-control" placeholder="Asset Number" aria-label="Asset Number" aria-describedby="basic-addon2">
@@ -67,14 +67,15 @@
                 </div>
               </div>
         </div>
+        <div>多張資產標籤列印</div>
         <div class="row">
             <div id="div_id_files" class="form-group col-2">
-                <label for="id_files" class="form-control-label">{% trans "file" %} 1</label>
                 <input name="files1" accept=".xls,.xlsx" class="clearablefileinput" id="id_files" type="file">
+                <button type="submit" class="btn btn-primary" id="send">Preview</button>
             </div>
-            <div id="div_id_description" class="form-group col-10">
-                <label for="id_description" class="form-control-label ">{% trans "desc" %}：</label>
-                <input name="description1" maxlength="50" class="textinput textInput form-control" id="id_description" type="text">
+            <div id="div_id_sample" class="form-group col-10">
+                Sample<br />
+                <img src="{% static "label/sample.png" %}" />
             </div>
         </div>
         <div class="row" id="preview">
@@ -82,7 +83,6 @@
         </div>
     </div>
     <div class="card-footer text-center">
-        <button type="submit" class="btn btn-primary" id="send">Preview</button>
         <input type=button class="btn btn-primary" value="Cancel" onClick="javascript:history.go(-1);">
     </div>
 </form>
