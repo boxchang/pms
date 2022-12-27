@@ -1,0 +1,42 @@
+{% extends 'bases/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load i18n %}
+{% block head %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Main Data</title>
+
+{% endblock %}
+{% block breadcrumb %}
+
+{% endblock %}
+{% block container %}
+<div class="card-header">
+    {% if user.is_authenticated %}
+    <div class="row">
+        <div class="col">
+            <a href="{% url 'assets_create' %}" class="btn btn-info">新增資產</a>
+            <a href="/admin/assets/assetcategory/" class="btn btn-info" target="_blank">編輯類別</a>
+            <a href="/admin/assets/assettype/" class="btn btn-info" target="_blank">編輯種類</a>
+            <a href="/admin/assets/brand/" class="btn btn-info" target="_blank">編輯品牌</a>
+            <a href="/admin/assets/assetstatus/" class="btn btn-info" target="_blank">編輯狀態</a>
+            <a href="/admin/assets/series/" class="btn btn-info" target="_blank">編輯序號</a>
+            <a href="{% url 'assets_import' %}" class="btn btn-info">匯入資產</a>
+        </div>
+        <div class="ml-md-auto">
+            <a class="btn btn-info" href="{% url 'logout' %}" role="button"><i class="fas fa-sign-out-alt"></i>{% trans "logout" %} ({{ user.username }})</a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+<div class="p-3">
+    <form action="{% url 'assets_search' %}" method="POST">
+        {% csrf_token %}
+        {% crispy form %}
+        <div style="text-align:center" class="p-3">
+            <input class="btn btn-info" type="submit" value="查詢" />
+        </div>
+    </form>
+</div>
+{% endblock %}

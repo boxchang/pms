@@ -1,0 +1,78 @@
+{% extends 'bases/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load i18n %}
+{% block head %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Main Data</title>
+
+{% endblock %}
+{% block breadcrumb %}
+
+{% endblock %}
+{% block js %}
+<script>
+    print_label = function(pk)
+    {
+        $.get('/assets/print_label/'+pk+'/', function (data){
+
+        })
+    }
+
+</script>
+{% endblock js %}
+{% block container %}
+<div class="card-header">
+    {% if user.is_authenticated %}
+    <div class="row">
+        <div class="col">
+            <a href="javascript:history.back()" class="btn btn-warning"><i class="fas fa-arrow-left fa-1x"></i></a>&nbsp;
+            <a href="#" class="btn btn-warning">EXCEL</a>&nbsp;
+        </div>
+        <div class="ml-md-auto">
+            <a class="btn btn-info" href="{% url 'logout' %}" role="button"><i class="fas fa-sign-out-alt"></i>{% trans "logout" %} ({{ user.username }})</a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>資產編號</th>
+            <th>資產類別</th>
+            <th>資產種類</th>
+            <th>品牌</th>
+            <th>型號</th>
+            <th>地區</th>
+            <th>負責單位</th>
+            <th>保管單位</th>
+            <th>保管人姓名</th>
+            <th>放置地點</th>
+            <th>採購日期</th>
+            <th>採購金額</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for asset in assets %}
+            <tr>
+                <td><a href="/assets/detail/{{ asset.id }}/">{{ asset.asset_no }}</a></td>
+                <td>{{ asset.category }}</td>
+                <td>{{ asset.type }}</td>
+                <td>{{ asset.brand }}</td>
+                <td>{{ asset.model }}</td>
+                <td>{{ asset.area }}</td>
+                <td>{{ asset.owner_unit }}</td>
+                <td>{{ asset.keeper_unit }}</td>
+                <td>{{ asset.keeper_name }}</td>
+                <td>{{ asset.location }}</td>
+                <td>{{ asset.pur_date }}</td>
+                <td align="right">{{ asset.pur_price }}</td>
+                <td>
+                    <button class="btn btn-info" onclick="print_label('{{ asset.id }}')">列印標籤</button>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

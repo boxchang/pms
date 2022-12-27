@@ -10,7 +10,7 @@
 
 
         $(document).ready(function() {
-            $("#label_form").submit(function(e) {
+            $("#label_form3").submit(function(e) {
                 if($("#asset_number").val().length == 0)
                 {
                     if($("#send").text()=="Preview")
@@ -55,35 +55,57 @@
     </div>
     {% endif %}
 </div>
-<form action="" method="post" class="form-group font-weight-bold align-middle" id="label_form" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="card-body">
-        <div>單張資產標籤列印</div>
-        <div class="row">
+
+<div class="card-body">
+    <div class="row">
+        <div class="col">
+            <div>單張資產標籤列印</div>
             <div class="input-group mb-3">
-                <input name="asset_number" id="asset_number" type="text" class="form-control" placeholder="Asset Number" aria-label="Asset Number" aria-describedby="basic-addon2">
-                <div class="input-group-append">
-                  <button class="btn btn-primary" type="submit">Print</button>
-                </div>
-              </div>
+                    <form action="" method="post" class="form-group font-weight-bold align-middle" id="label_form1" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input name="label_type" id="label_type" type="hidden" value="single_asset_label">
+                        <input name="asset_number" id="asset_number" type="text" class="form-control" placeholder="Asset Number" aria-label="Asset Number" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit">Print</button>
+                        </div>
+                    </form>
+            </div>
         </div>
-        <div>多張資產標籤列印</div>
-        <div class="row">
-            <div id="div_id_files" class="form-group col-2">
+        <div class="col">
+            <div>單張非資產標籤列印</div>
+            <div class="input-group mb-3">
+                <form action="" method="post" class="form-group font-weight-bold align-middle" id="label_form2" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input name="label_type" id="label_type" type="hidden" value="single_nonasset_label">
+                    <input name="non_asset" id="asset_number" type="text" class="form-control" placeholder="Asset Number" aria-label="Asset Number" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">Print</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div>多張資產標籤列印</div>
+    <div class="row">
+        <div id="div_id_files" class="form-group col-2">
+            <form action="" method="post" class="form-group font-weight-bold align-middle" id="label_form3" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input name="label_type" id="label_type" type="hidden" value="multi_asset_label">
                 <input name="files1" accept=".xls,.xlsx" class="clearablefileinput" id="id_files" type="file">
                 <button type="submit" class="btn btn-primary" id="send">Preview</button>
-            </div>
-            <div id="div_id_sample" class="form-group col-10">
-                Sample<br />
-                <img src="{% static "label/sample.png" %}" />
-            </div>
+            </form>
         </div>
-        <div class="row" id="preview">
-            {{ preview | safe }}
+        <div id="div_id_sample" class="form-group col-10">
+            Sample<br />
+            <img src="{% static "label/sample.png" %}" />
         </div>
     </div>
-    <div class="card-footer text-center">
-        <input type=button class="btn btn-primary" value="Cancel" onClick="javascript:history.go(-1);">
+    <div class="row" id="preview">
+        {{ preview | safe }}
     </div>
+</div>
+<div class="card-footer text-center">
+    <input type=button class="btn btn-primary" value="Cancel" onClick="javascript:history.go(-1);">
+</div>
 </form>
 {% endblock %}
