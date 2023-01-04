@@ -21,10 +21,14 @@
             <a href="/admin/assets/assettype/" class="btn btn-info" target="_blank">編輯種類</a>
             <a href="/admin/assets/brand/" class="btn btn-info" target="_blank">編輯品牌</a>
             <a href="/admin/assets/assetstatus/" class="btn btn-info" target="_blank">編輯狀態</a>
+            <a href="/admin/assets/unit/" class="btn btn-info" target="_blank">編輯部門</a>
+            <a href="/admin/assets/location/" class="btn btn-info" target="_blank">編輯位置</a>
             <a href="/admin/assets/series/" class="btn btn-info" target="_blank">編輯序號</a>
             <a href="{% url 'assets_import' %}" class="btn btn-info">匯入資產</a>
+            <a href="{% url 'assets_label' %}" class="btn btn-info">標籤列印</a>
         </div>
         <div class="ml-md-auto">
+            <a class="btn btn-info" href="/admin/password_change/" role="button">變更密碼</a>
             <a class="btn btn-info" href="{% url 'logout' %}" role="button"><i class="fas fa-sign-out-alt"></i>{% trans "logout" %} ({{ user.username }})</a>
         </div>
     </div>
@@ -34,6 +38,89 @@
     <form action="{% url 'assets_search' %}" method="POST">
         {% csrf_token %}
         {% crispy form %}
+        <hr />
+        <div class="row">
+            <div class="col">
+                <label>排序1</label>
+                <div>
+                    <select name="condition1" class="select custom-select" id="condition1">
+                        <option value="">---------</option>
+                        <option value="asset_no">資產編號</option>
+                        <option value="category">資產類別</option>
+                        <option value="type">資產種類</option>
+                        <option value="brand">品牌</option>
+                        <option value="area">地區</option>
+                        <option value="location">放置地點</option>
+                        <option value="keeper_unit">保管單位</option>
+                        <option value="keeper_name">保管人姓名</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <label>排序2</label>
+                <div>
+                    <select name="condition2" class="select custom-select" id="condition2">
+                        <option value="">---------</option>
+                        <option value="asset_no">資產編號</option>
+                        <option value="category">資產類別</option>
+                        <option value="type">資產種類</option>
+                        <option value="brand">品牌</option>
+                        <option value="area">地區</option>
+                        <option value="location">放置地點</option>
+                        <option value="keeper_unit">保管單位</option>
+                        <option value="keeper_name">保管人姓名</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <label>排序3</label>
+                <div>
+                    <select name="condition3" class="select custom-select" id="condition3">
+                        <option value="">---------</option>
+                        <option value="asset_no">資產編號</option>
+                        <option value="category">資產類別</option>
+                        <option value="type">資產種類</option>
+                        <option value="brand">品牌</option>
+                        <option value="area">地區</option>
+                        <option value="location">放置地點</option>
+                        <option value="keeper_unit">保管單位</option>
+                        <option value="keeper_name">保管人姓名</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <label>排序4</label>
+                <div>
+                    <select name="condition4" class="select custom-select" id="condition4">
+                        <option value="">---------</option>
+                        <option value="asset_no">資產編號</option>
+                        <option value="category">資產類別</option>
+                        <option value="type">資產種類</option>
+                        <option value="brand">品牌</option>
+                        <option value="area">地區</option>
+                        <option value="location">放置地點</option>
+                        <option value="keeper_unit">保管單位</option>
+                        <option value="keeper_name">保管人姓名</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <label>排序5</label>
+                <div>
+                    <select name="condition5" class="select custom-select" id="condition5">
+                        <option value="">---------</option>
+                        <option value="asset_no">資產編號</option>
+                        <option value="category">資產類別</option>
+                        <option value="type">資產種類</option>
+                        <option value="brand">品牌</option>
+                        <option value="area">地區</option>
+                        <option value="location">放置地點</option>
+                        <option value="keeper_unit">保管單位</option>
+                        <option value="keeper_name">保管人姓名</option>
+                    </select>
+                </div>
+            </div>
+        </div>
         <div style="text-align:center" class="p-3">
             <input class="btn btn-info" type="submit" value="查詢" />
         </div>

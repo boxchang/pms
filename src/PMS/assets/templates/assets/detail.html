@@ -76,8 +76,9 @@
     {% if user.is_authenticated %}
     <div class="row">
         <div class="col">
-            <a href="javascript:history.back()" class="btn btn-warning"><i class="fas fa-arrow-left fa-1x"></i></a>&nbsp;
+            <a href="{% url 'assets_search' %}" class="btn btn-warning"><i class="fas fa-arrow-left fa-1x"></i></a>&nbsp;
             <a href="{% url 'assets_main' %}" class="btn btn-warning"><i class="fas fa-home fa-1x"></i></a>&nbsp;
+            <a href="{% url 'assets_create' %}" class="btn btn-warning">新增資產</a>
             <a href="#" class="btn btn-warning">列印標籤</a>&nbsp;
         </div>
         <div class="ml-md-auto">
@@ -87,7 +88,6 @@
     {% endif %}
 </div>
 <div class="row">
-    <div class="col-1"></div>
     <div class="col-9">
         <fieldset>
             <legend>Main Data</legend>
@@ -144,7 +144,7 @@
                         <div class="col-2 p-2" style="text-align:right;">負責單位：</div>
                         <div class="col-2 p-2 content">{{ asset.owner_unit }}</div>
                         <div class="col-2 p-2" style="text-align:right;">保管單位：</div>
-                        <div class="col-2 p-2 content">{{ asset.keeper_unit }}</div>
+                        <div class="col-2 p-2 content">{{ asset.keeper_unit|default:"" }}</div>
                         <div class="col-2 p-2" style="text-align:right;">保管人姓名：</div>
                         <div class="col-2 p-2 content">{{ asset.keeper_name }}</div>
                     </div>
@@ -167,25 +167,85 @@
                 <li class="list-group-item">
                     <div class="row">
                         <div class="col-2 p-2" style="text-align:right;">報廢日期：</div>
-                        <div class="col-2 p-2 content">{{ asset.scrap_date }}</div>
+                        <div class="col-2 p-2 content">{{ asset.scrap_date|default:"" }}</div>
                         <div class="col-2 p-2" style="text-align:right;">報廢原因：</div>
-                        <div class="col-2 p-2 content">{{ asset.scrap_reason }}</div>
+                        <div class="col-2 p-2 content">{{ asset.scrap_reason|default:"" }}</div>
                         <div class="col-2 p-2"></div>
                         <div class="col-2 p-2"></div>
                     </div>
                 </li>
+                <li class="list-group-item"></li>
             </ul>
         </fieldset>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item">
-                <div style="text-align:center">
-                    <a href="{% url 'assets_update' asset.id %}" class="btn btn-info">修改</a>
-                    <a href="{% url 'assets_delete' asset.id %}" class="btn btn-danger" onclick="return confirm('Are you sure?')">刪除</a>
-                </div>
-            </li>
-        </ul>
-    </div>
-    <div class="col-2"></div>
-</div>
+        {% if asset.comment %}
+        <fieldset>
+            <legend>Comment</legend>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-1"></div>
+                        <div class="col-11">{{ asset.comment|safe }}</div>
+                    </div>
+                </li>
+                <li class="list-group-item"></li>
+            </ul>
+        </fieldset>
+        {% endif %}
+        {% if docs %}
+        <table class="table table-bordered table-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th style="width:10%">
+                        #
+                    </th>
+                    <th style="width:10%;text-align: center;">
+                        {% trans "attachment" %}
+                    </th>
+                    <th style="width:70%">
+                        {% trans "desc" %}
+                    </th>
 
+                </tr>
+            </thead>
+            <tbody>
+            {% for doc in docs %}
+                <tr>
+                    <td class="text-center">
+                        附件{{ forloop.counter }}
+                    </td>
+                    <td class="text-center">
+                        <a href="{{ doc.files.url }}" target="_blank"><i class="fas fa-file-download fa-2x text-info"></i></a>
+                    </td>
+                    <td>
+                        {{ doc.description }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+    <div class="col-3">
+        <div style="padding-top: 40px">
+        {% if pics %}
+            {% for pic in pics %}
+                <img src="{{ pic.files.url }}" />
+            {% endfor %}
+        {% else %}
+            <img src="/static/pictures/no_pic.jpg" />
+        {% endif %}
+        </div>
+    </div>
+</div>
+<div class="p-3">
+    {% if user.is_authenticated %}
+    <div style="text-align:left;color:#EEE">
+        最後修改：{{ asset.update_at|date:'Y-m-d' }} {{ asset.update_by }}
+    </div>
+    <div style="text-align:center">
+        <a href="{% url 'assets_update' asset.id %}" class="btn btn-info">修改</a>
+        <a href="{% url 'assets_delete' asset.id %}" class="btn btn-danger" onclick="return confirm('Are you sure?')">刪除</a>
+    </div>
+    {% endif %}
+</div>
 {% endblock %}

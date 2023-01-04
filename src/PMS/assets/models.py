@@ -10,6 +10,24 @@ class Label_attachment(models.Model):
     create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
                                   related_name='label_create_by')  # 建立者
 
+class Pic_attachment(models.Model):
+    asset = models.ForeignKey(
+        'Asset', related_name='asset_pics', on_delete=models.CASCADE)
+    files = models.FileField(upload_to='uploads/picture/')
+    description = models.CharField(max_length=50, blank=True)
+    create_at = models.DateTimeField(auto_now_add=True, editable=True)  # 建立日期
+    create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
+                                  related_name='pic_create_by')  # 建立者
+
+class Doc_attachment(models.Model):
+    asset = models.ForeignKey(
+        'Asset', related_name='asset_docs', on_delete=models.CASCADE)
+    files = models.FileField(upload_to='uploads/document/')
+    description = models.CharField(max_length=50, blank=True)
+    create_at = models.DateTimeField(auto_now_add=True, editable=True)  # 建立日期
+    create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
+                                  related_name='doc_create_by')  # 建立者
+
 
 class AssetArea(models.Model):
     area_name = models.CharField(max_length=50, blank=False, null=False)
@@ -123,6 +141,7 @@ class Asset(models.Model):
     update_at = models.DateTimeField(auto_now=True, null=True)
     update_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='asset_update_by')
+    comment = models.CharField(max_length=2000, blank=True, null=True)
 
     def __str__(self):
         return self.asset_no

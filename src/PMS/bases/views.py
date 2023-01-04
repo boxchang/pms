@@ -16,7 +16,8 @@ from users.models import CustomUser
 
 @login_required
 def index(request):
-    return render(request, 'bases/index.html', locals())
+    #return render(request, 'assets/index.html', locals())
+    return redirect(reverse('assets_main'))
 
 @login_required
 def home(request):

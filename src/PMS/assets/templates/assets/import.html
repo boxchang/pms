@@ -57,7 +57,9 @@
 <form action="" method="post" class="form-group font-weight-bold align-middle" id="import_form" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="card-body">
-        <div>請選擇Template檔案(*.xlsx)</div>
+        <div>請選擇Template檔案(*.xlsx)
+            <a href="{% static "label/import_template.xlsx" %}" target="_blank">下載範本檔</a>
+        </div>
         <div class="row">
             <div id="div_id_files" class="form-group">
                 <input name="files1" accept=".xls,.xlsx" class="clearablefileinput" id="id_files" type="file">

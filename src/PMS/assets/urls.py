@@ -1,11 +1,12 @@
 from django.urls import re_path as url
-from assets.views import TypeAPI, BrandAPI, index, label, preview, main, delete, print_label, update, create, search, import_excel, detail
+from assets.views import TypeAPI, BrandAPI, asset_doc_delete, asset_pic_delete, export_assets_xls, index, label, preview, main, delete, print_label, update, create, search, import_excel, detail
 
 urlpatterns = [
     url(r'^print_label/(?P<pk>\d+)/$', print_label, name='print_label'),
     url(r'^brandapi/(?P<category_id>\d+)', BrandAPI, name='assets_brandapi'),
     url(r'^typeapi/(?P<category_id>\d+)', TypeAPI, name='assets_typeapi'),
     url(r'^import/', import_excel, name='assets_import'),
+    url(r'^export/xls/$', export_assets_xls, name='export_assets_xls'),
     url(r'^main/', main, name='assets_main'),
     url(r'^search/', search, name='assets_search'),
     url(r'^create/', create, name='assets_create'),
@@ -14,5 +15,7 @@ urlpatterns = [
     url(r'^detail/(?P<pk>\d+)/$', detail, name='assets_detail'),
     url(r'^preview/', preview, name='label_preview'),
     url(r'^label/', label, name='assets_label'),
+    url(r'^dpic/(?P<pk>\d+)', asset_pic_delete, name="asset_pic_delete"),
+    url(r'^ddoc/(?P<pk>\d+)', asset_doc_delete, name="asset_doc_delete"),
     url(r'^', index, name='assets_index'),
 ]

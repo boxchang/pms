@@ -5,6 +5,7 @@ from crispy_forms.layout import Layout, Div, HTML, Fieldset
 from bootstrap_datepicker_plus.widgets import DateTimePickerInput
 from datetime import datetime
 from django.core.validators import RegexValidator
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
 class AssetSearchForm(forms.ModelForm):
     class Meta:
@@ -20,6 +21,10 @@ class AssetSearchForm(forms.ModelForm):
     location = forms.ModelChoiceField(required=False, label="放置地點", queryset=Location.objects.all())
     status = forms.ModelChoiceField(required=False, label="狀態", queryset=AssetStatus.objects.all())
     scrap = forms.BooleanField(required=False, initial=False, label="包含報廢")
+    location_desc = forms.CharField(required=False, label="放置地點描述")
+    keeper_unit = forms.ModelChoiceField(required=False, label="保管單位", queryset=Unit.objects.all())
+    keeper_name = forms.CharField(required=False, label="保管人姓名")
+    desc = forms.CharField(required=False, label="描述")
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -43,6 +48,12 @@ class AssetSearchForm(forms.ModelForm):
                 Div(
                     Div('area', css_class='col-md-4'),
                     Div('location', css_class='col-md-4'),
+                    Div('location_desc', css_class='col-md-4'),
+                    css_class='row'),
+                Div(
+                    Div('keeper_unit', css_class='col-md-4'),
+                    Div('keeper_name', css_class='col-md-4'),
+                    Div('desc', css_class='col-md-4'),
                     css_class='row'),
             )
         )
@@ -52,12 +63,12 @@ class AssetModelForm(forms.ModelForm):
     class Meta:
         model = Asset
         fields = ('asset_no', 'auto_encode', 'category', 'type', 'brand', 'model', 'desc', 'owner_unit', 'keeper_unit',
-            'keeper_name', 'location', 'location_desc', 'pur_date', 'pur_price', 'area', 'status')
+            'keeper_name', 'location', 'location_desc', 'pur_date', 'pur_price', 'area', 'status', 'comment')
 
     asset_no = forms.CharField(required=False, label="資產編號")
     auto_encode = forms.BooleanField(required=False, initial=True, label="自動編碼")
     pur_price = forms.IntegerField(required=True, label="採購金額", widget=forms.NumberInput(), initial=0)
-    pur_date = forms.CharField(initial=datetime.strftime(datetime.now(), "%Y-%m"), label="採購年月")
+    pur_date = forms.CharField(required=False, initial=datetime.strftime(datetime.now(), "%Y-%m"), label="採購年月")
     category = forms.ModelChoiceField(required=True, label="資產類別", queryset=AssetCategory.objects.all())
     type = forms.ModelChoiceField(required=True, label="資產種類", queryset=AssetType.objects.all())
     brand = forms.ModelChoiceField(required=True, label="品牌", queryset=Brand.objects.all())
@@ -70,8 +81,9 @@ class AssetModelForm(forms.ModelForm):
     location = forms.ModelChoiceField(required=True, label="放置地點", queryset=Location.objects.all())
     location_desc = forms.CharField(required=False, label="放置地點描述")
     status = forms.ModelChoiceField(required=True, label="狀態", queryset=AssetStatus.objects.all())
-    scrap_date = forms.CharField(required=False, label="報廢日期")
+    scrap_date = forms.CharField(required=False, initial="", label="報廢日期")
     scrap_reason = forms.CharField(required=False, initial="", label="報廢原因")
+    comment = forms.CharField(required=False, label="備註", widget=CKEditorUploadingWidget())
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -122,6 +134,10 @@ class AssetModelForm(forms.ModelForm):
                     Div('scrap_reason', css_class='col-md-4'),
                     css_class='row'),
             ),
+            HTML('<hr>'),
+            Div(
+                Div('comment', css_class='col-md-12'),
+                css_class='row'),
         )
 
         self.fields['pur_date'].widget = DateTimePickerInput(
@@ -144,12 +160,4 @@ class AssetModelForm(forms.ModelForm):
 
     def clean_pur_date(self):
         value = self.cleaned_data['pur_date'][0:7]
-        return value
-
-    def clean_scrap_date(self):
-        value = self.cleaned_data['scrap_date'] + ""
-        return value
-
-    def clean_scrap_reason(self):
-        value = self.cleaned_data['scrap_reason'] + ""
         return value

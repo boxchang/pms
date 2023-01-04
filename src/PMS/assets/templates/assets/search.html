@@ -11,24 +11,14 @@
 {% block breadcrumb %}
 
 {% endblock %}
-{% block js %}
-<script>
-    print_label = function(pk)
-    {
-        $.get('/assets/print_label/'+pk+'/', function (data){
-
-        })
-    }
-
-</script>
-{% endblock js %}
 {% block container %}
 <div class="card-header">
     {% if user.is_authenticated %}
     <div class="row">
         <div class="col">
             <a href="javascript:history.back()" class="btn btn-warning"><i class="fas fa-arrow-left fa-1x"></i></a>&nbsp;
-            <a href="#" class="btn btn-warning">EXCEL</a>&nbsp;
+            <a href="{% url 'assets_main' %}" class="btn btn-warning"><i class="fas fa-home fa-1x"></i></a>&nbsp;
+            <a href="{% url 'export_assets_xls' %}" class="btn btn-warning" target="_blank">EXCEL</a>&nbsp;
         </div>
         <div class="ml-md-auto">
             <a class="btn btn-info" href="{% url 'logout' %}" role="button"><i class="fas fa-sign-out-alt"></i>{% trans "logout" %} ({{ user.username }})</a>
@@ -49,12 +39,12 @@
             <th>保管單位</th>
             <th>保管人姓名</th>
             <th>放置地點</th>
-            <th>採購日期</th>
-            <th>採購金額</th>
+            <th>描述</th>
+            <th>狀態</th>
         </tr>
     </thead>
     <tbody>
-        {% for asset in assets %}
+        {% for asset in page_results %}
             <tr>
                 <td><a href="/assets/detail/{{ asset.id }}/">{{ asset.asset_no }}</a></td>
                 <td>{{ asset.category }}</td>
@@ -63,16 +53,39 @@
                 <td>{{ asset.model }}</td>
                 <td>{{ asset.area }}</td>
                 <td>{{ asset.owner_unit }}</td>
-                <td>{{ asset.keeper_unit }}</td>
+                <td>{{ asset.keeper_unit|default:"" }}</td>
                 <td>{{ asset.keeper_name }}</td>
                 <td>{{ asset.location }}</td>
-                <td>{{ asset.pur_date }}</td>
-                <td align="right">{{ asset.pur_price }}</td>
-                <td>
-                    <button class="btn btn-info" onclick="print_label('{{ asset.id }}')">列印標籤</button>
-                </td>
+                <td>{{ asset.desc }}</td>
+                <td>{{ asset.status }}</td>
             </tr>
         {% endfor %}
     </tbody>
 </table>
+<!--頁碼實現-->
+<ul class="pagination">
+    <li class="page-item">
+    <!--判斷是否有上一頁-->
+    {% if page_results.has_previous %}
+        <a class="page-link" href="?page={{ page_results.previous_page_number }}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span></a>
+    {% else %}
+        <span class="page-link" aria-hidden="true">&laquo;</span>
+    {% endif %}
+    </li>
+    {% for page_num in page_results.paginator.page_range%}
+    <li class="page-item"><a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a></li>
+    {% endfor %}
+    <!--是否有下一頁 -->
+    <li class="page-item">
+    <!--判斷是否有上一頁-->
+    {% if page_results.has_next %}
+        <a class="page-link" href="?page={{ page_results.next_page_number }}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+        </a>
+    {% else %}
+        <span class="page-link" aria-hidden="true">&raquo;</span>
+    {% endif %}
+    </li>
+</ul>
 {% endblock %}

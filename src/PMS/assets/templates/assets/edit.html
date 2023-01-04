@@ -76,8 +76,11 @@
     {% if user.is_authenticated %}
     <div class="row">
         <div class="col">
-            <a href="javascript:history.back()" class="btn btn-warning"><i class="fas fa-arrow-left fa-1x"></i></a>&nbsp;
-            <a href="#" class="btn btn-warning">列印標籤</a>&nbsp;
+            {% if asset.pk %}
+                <a href="{% url 'assets_detail' asset.pk %}" class="btn btn-warning"><i class="fas fa-arrow-left fa-1x"></i></a>&nbsp;
+            {% else %}
+                <a href="javascript:history.back()" class="btn btn-warning"><i class="fas fa-arrow-left fa-1x"></i></a>&nbsp;
+            {% endif %}
         </div>
         <div class="ml-md-auto">
             <a class="btn btn-info" href="{% url 'logout' %}" role="button"><i class="fas fa-sign-out-alt"></i>{% trans "logout" %} ({{ user.username }})</a>
@@ -88,10 +91,86 @@
 <div class="row">
     <div class="col-1"></div>
     <div class="col-10">
-        <form id="edit_form" action="" method="POST">
+        <form id="edit_form" action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group">
-                    {% crispy form %}
+                {% crispy form %}
+                <fieldset>
+                    <legend>Attachment</legend>
+                    <div class="row">
+                        <table class="table table-bordered table-sm">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th style="width:10%">
+                                        #
+                                    </th>
+                                    <th style="width:70%">
+                                        {% trans "desc" %}
+                                    </th>
+                                    <th style="width:10%;text-align: center;">
+                                        {% trans "attachment" %}
+                                    </th>
+                                    <th style="width:10%;text-align: center;">
+                                        {% trans "Delete" %}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for pic in pics %}
+                                <tr>
+                                    <td>
+                                        圖片{{ forloop.counter }}
+                                    </td>
+                                    <td>
+                                        {{ pic.description }}
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{{ pic.files.url }}" target="_blank"><i class="fas fa-file-download fa-2x text-info"></i></a>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{% url 'asset_pic_delete' pic.pk %}?q={{ pk }}" onclick="return confirm('Are you sure?')"><i class="fas fa-times fa-2x text-info"></i></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            {% for doc in docs %}
+                                <tr>
+                                    <td>
+                                        附件{{ forloop.counter }}
+                                    </td>
+                                    <td>
+                                        {{ doc.description }}
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{{ doc.files.url }}" target="_blank"><i class="fas fa-file-download fa-2x text-info"></i></a>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{% url 'asset_doc_delete' doc.pk %}?q={{ pk }}" onclick="return confirm('Are you sure?')"><i class="fas fa-times fa-2x text-info"></i></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <div id="div_id_files" class="form-group col-2">
+                            <label for="id_files" class="form-control-label">物品圖片</label>
+                            <input name="pic1" accept="image/*" class="clearablefileinput" id="id_pic1" type="file">
+                        </div>
+                        <div id="div_id_description" class="form-group col-10">
+                            <label for="id_description" class="form-control-label ">{% trans "desc" %}：</label>
+                            <input name="pic_desc1" maxlength="50" class="textinput textInput form-control" id="id_pic_desc1" type="text">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="div_id_files" class="form-group col-2">
+                            <label for="id_files" class="form-control-label">相關附件</label>
+                            <input name="doc1" accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,
+                            text/plain, application/pdf, image/*" class="clearablefileinput" id="id_doc1" type="file">
+                        </div>
+                        <div id="div_id_description" class="form-group col-10">
+                            <label for="id_description" class="form-control-label ">{% trans "desc" %}：</label>
+                            <input name="doc_desc1" maxlength="50" class="textinput textInput form-control" id="id_doc_desc1" type="text">
+                        </div>
+                    </div>
+                </fieldset>
             </div>
             <div class="pb-4" style="text-align: center;">
                 <input class="btn btn-success" type="submit" value="儲存" />
