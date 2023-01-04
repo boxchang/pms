@@ -522,7 +522,7 @@ def label(request):
                 wb = openpyxl.load_workbook(excel_file)
                 sheet = wb.worksheets[0]
                 csv = Excel2CSV(sheet)
-                print_cmd(csv)
+                print_cmd(csv, ASSET_BTW_FILE)
                 delete_csv(csv)
 
     return render(request, 'assets/label.html', locals())
@@ -721,7 +721,7 @@ def print_label(request, pk):
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerow({'NUMBER': asset.asset_no})
-    print_cmd(file_name)
+    print_cmd(file_name, ASSET_BTW_FILE)
     delete_csv(file_name)
 
     return JsonResponse("success", safe = False)

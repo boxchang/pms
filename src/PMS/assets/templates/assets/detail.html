@@ -68,6 +68,11 @@
             asset_no.prop('readonly', false);
         })
 
+        $("#print_label").click(function(){
+            $.get('/assets/print_label/{{ asset.pk }}/', function (data){
+
+            })
+        })
     })
 </script>
 {% endblock js %}
@@ -79,7 +84,7 @@
             <a href="{% url 'assets_search' %}" class="btn btn-warning"><i class="fas fa-arrow-left fa-1x"></i></a>&nbsp;
             <a href="{% url 'assets_main' %}" class="btn btn-warning"><i class="fas fa-home fa-1x"></i></a>&nbsp;
             <a href="{% url 'assets_create' %}" class="btn btn-warning">新增資產</a>
-            <a href="#" class="btn btn-warning">列印標籤</a>&nbsp;
+            <button class="btn btn-warning" id="print_label">列印標籤</button>&nbsp;
         </div>
         <div class="ml-md-auto">
             <a class="btn btn-info" href="{% url 'logout' %}" role="button"><i class="fas fa-sign-out-alt"></i>{% trans "logout" %} ({{ user.username }})</a>
