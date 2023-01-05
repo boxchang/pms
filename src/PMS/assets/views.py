@@ -79,6 +79,11 @@ def export_assets_xls(request):
 
     for data in assets:
         row_num += 1
+        if data.keeper_unit:
+            _keeper_unit = data.keeper_unit.unit_name
+        else:
+            _keeper_unit = ""
+
         ws.write(row_num, 0, data.asset_no, font_style)
         ws.write(row_num, 1, data.category.category_name, font_style)
         ws.write(row_num, 2, data.type.type_name, font_style)
@@ -86,7 +91,7 @@ def export_assets_xls(request):
         ws.write(row_num, 4, data.model, font_style)
         ws.write(row_num, 5, data.area.area_name, font_style)
         ws.write(row_num, 6, data.owner_unit.unit_name, font_style)
-        ws.write(row_num, 7, data.keeper_unit.unit_name, font_style)
+        ws.write(row_num, 7, _keeper_unit, font_style)
         ws.write(row_num, 8, data.keeper_name, font_style)
         ws.write(row_num, 9, data.location.location_name, font_style)
         ws.write(row_num, 10, data.location_desc, font_style)
