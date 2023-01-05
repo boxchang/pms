@@ -78,19 +78,22 @@
 {% endblock js %}
 {% block container %}
 <div class="card-header">
-    {% if user.is_authenticated %}
     <div class="row">
         <div class="col">
             <a href="{% url 'assets_search' %}" class="btn btn-warning"><i class="fas fa-arrow-left fa-1x"></i></a>&nbsp;
             <a href="{% url 'assets_main' %}" class="btn btn-warning"><i class="fas fa-home fa-1x"></i></a>&nbsp;
+            {% if user.is_authenticated %}
             <a href="{% url 'assets_create' %}" class="btn btn-warning">新增資產</a>
+            {% endif %}
             <button class="btn btn-warning" id="print_label">列印標籤</button>&nbsp;
         </div>
+        {% if user.is_authenticated %}
         <div class="ml-md-auto">
             <a class="btn btn-info" href="{% url 'logout' %}" role="button"><i class="fas fa-sign-out-alt"></i>{% trans "logout" %} ({{ user.username }})</a>
         </div>
+        {% endif %}
     </div>
-    {% endif %}
+
 </div>
 <div class="row">
     <div class="col-9">

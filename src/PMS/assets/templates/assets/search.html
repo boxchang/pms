@@ -13,18 +13,18 @@
 {% endblock %}
 {% block container %}
 <div class="card-header">
-    {% if user.is_authenticated %}
     <div class="row">
         <div class="col">
             <a href="javascript:history.back()" class="btn btn-warning"><i class="fas fa-arrow-left fa-1x"></i></a>&nbsp;
             <a href="{% url 'assets_main' %}" class="btn btn-warning"><i class="fas fa-home fa-1x"></i></a>&nbsp;
             <a href="{% url 'export_assets_xls' %}" class="btn btn-warning" target="_blank">EXCEL</a>&nbsp;
         </div>
+        {% if user.is_authenticated %}
         <div class="ml-md-auto">
             <a class="btn btn-info" href="{% url 'logout' %}" role="button"><i class="fas fa-sign-out-alt"></i>{% trans "logout" %} ({{ user.username }})</a>
         </div>
+        {% endif %}
     </div>
-    {% endif %}
 </div>
 <table class="table table-bordered table-striped">
     <thead class="thead-dark">
