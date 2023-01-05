@@ -289,25 +289,29 @@ def search(request):
         request.session['scrap'] = _scrap
         assets = assets.exclude(status=AssetStatus.objects.get(status_name="已報廢"))
 
+    _orderby = []
     if _condition1:
         request.session['condition1'] = _condition1
-        assets = assets.order_by(_condition1)
+        _orderby.append(_condition1)
 
     if _condition2:
         request.session['condition2'] = _condition1
-        assets = assets.order_by(_condition2)
+        _orderby.append(_condition2)
 
     if _condition3:
         request.session['condition3'] = _condition1
-        assets = assets.order_by(_condition3)
+        _orderby.append(_condition3)
 
     if _condition4:
         request.session['condition4'] = _condition1
-        assets = assets.order_by(_condition4)
+        _orderby.append(_condition4)
 
     if _condition5:
         request.session['condition5'] = _condition1
-        assets = assets.order_by(_condition5)
+        _orderby.append(_condition5)
+
+    if _orderby:
+        assets = assets.order_by(*_orderby)
 
     results = list(assets)
     page_obj = Paginator(results, 200)
