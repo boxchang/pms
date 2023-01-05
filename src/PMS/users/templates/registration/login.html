@@ -24,14 +24,21 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-user"></i></span>
                         </div>
-                        <input type="text" name="username" class="form-control" placeholder="username">
+                        <input type="text" name="username" class="form-control" placeholder="username" value="{{ cookies_username }}">
 
                     </div>
                     <div class="input-group form-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-key"></i></span>
                         </div>
-                        <input type="password" name="password" class="form-control" placeholder="password">
+                        <input type="password" name="password" class="form-control" placeholder="password" value="{{ cookies_password }}">
+                    </div>
+                    <div class="input-group form-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-robot"></i></span>
+                        </div>
+                        <input type="checkbox" name="remember" class="form-control" value="on" checked>
+                        <span style="color:#FFF;font-size:1.3em;">Remember Password</sapn>
                     </div>
                         <input type="hidden" name="next" value="{{ next }}" />
                     </form>

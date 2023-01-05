@@ -483,6 +483,8 @@ def main(request):
         del request.session['desc']
     if 'scrap' in request.session:
         del request.session['scrap']
+    if 'status' in request.session:
+        del request.session['status']
 
     form = AssetSearchForm()
     return render(request, 'assets/main.html', locals())

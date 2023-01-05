@@ -1,4 +1,5 @@
-
+import datetime
+from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.http import HttpResponseRedirect
@@ -34,6 +35,12 @@ def register(request):
 
 
 def login(request):
+    if 'username' in request.COOKIES:
+        cookies_username = request.COOKIES['username']
+
+    if 'password' in request.COOKIES:
+        cookies_password = request.COOKIES['password']
+
     '''
     Login an existing user
     '''
@@ -62,12 +69,19 @@ def login(request):
                 messages.error(request, '使用者名稱或密碼不正確！')
                 return render(request, template)
 
+            response = redirect(reverse('assets_main'))
+            if request.POST.get('remember') == "on":
+                response.set_cookie("username", username, expires=timezone.now()+datetime.timedelta(days=30))
+                response.set_cookie("password", password, expires=timezone.now()+datetime.timedelta(days=30))
+            else:
+                response.delete_cookie("username")
+                response.delete_cookie("password")
             # login success
             auth_login(request, user)
 
             # messages.success(request, '登入成功')
 
-            return index(request)
+            return response
 
 
 def logout(request):
