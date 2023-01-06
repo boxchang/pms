@@ -24,7 +24,7 @@ class AssetSearchForm(forms.ModelForm):
     location_desc = forms.CharField(required=False, label="放置地點描述")
     keeper_unit = forms.ModelChoiceField(required=False, label="保管單位", queryset=Unit.objects.all())
     keeper_name = forms.CharField(required=False, label="保管人姓名")
-    desc = forms.CharField(required=False, label="描述")
+    desc = forms.CharField(required=False, label="描述及備註")
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)

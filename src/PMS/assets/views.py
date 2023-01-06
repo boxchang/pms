@@ -17,6 +17,7 @@ from django.conf import settings
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.core.paginator import Paginator
 import xlwt
+from django.db.models import Q
 
 def print_cmd(EXCEL_FILE, BTW_FILE):
     CMD = """{EXE_FILE} /AF=\"{BTW_FILE}\" /D=\"{EXCEL_FILE}\" /PRN=\"{PRINTER}\" /P/X""".format(EXE_FILE=EXE_FILE, BTW_FILE=BTW_FILE, EXCEL_FILE=EXCEL_FILE, PRINTER=PRINTER)
@@ -283,7 +284,7 @@ def search(request):
 
     if _desc:
         request.session['desc'] = _desc
-        assets = assets.filter(desc__icontains=_desc)
+        assets = assets.filter(Q(desc__icontains=_desc) | Q(comment__icontains=_desc))
 
     if not _scrap:
         request.session['scrap'] = _scrap
