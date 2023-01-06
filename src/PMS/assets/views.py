@@ -495,6 +495,8 @@ def main(request):
         del request.session['scrap']
     if 'status' in request.session:
         del request.session['status']
+    if 'brand' in request.session:
+        del request.session['brand']
 
     form = AssetSearchForm()
     return render(request, 'assets/main.html', locals())
