@@ -163,6 +163,7 @@ def search(request):
     _status = ""
     _category = ""
     _type = ""
+    _brand = ""
     _area = ""
     _location = ""
     _location_desc = ""
@@ -182,6 +183,7 @@ def search(request):
         _status = request.POST.get('status')
         _category = request.POST.get('category')
         _type = request.POST.get('type')
+        _brand = request.POST.get('brand')
         _area = request.POST.get('area')
         _location = request.POST.get('location')
         _location_desc = request.POST.get('location_desc')
@@ -208,6 +210,9 @@ def search(request):
 
         if 'type' in request.session:
             _type = request.session['type']
+
+        if 'brand' in request.session:
+            _brand = request.session['brand']
 
         if 'area' in request.session:
             _area = request.session['area']
@@ -261,6 +266,10 @@ def search(request):
     if _type:
         request.session['type'] = _type
         assets = assets.filter(type=_type)
+
+    if _brand:
+        request.session['brand'] = _brand
+        assets = assets.filter(brand=_brand)
 
     if _area:
         request.session['area'] = _area
