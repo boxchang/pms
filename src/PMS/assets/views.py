@@ -110,7 +110,7 @@ def get_assets_queryset(request):
     assets = Asset.objects.all()
     if 'asset_no' in request.session:
         _asset_no = request.session['asset_no']
-        assets = assets.filter(asset_no=_asset_no)
+        assets = assets.filter(asset_no__icontains=_asset_no)
 
     if 'status' in request.session:
         _status = request.session['status']
@@ -253,7 +253,7 @@ def search(request):
 
     if _asset_no:
         request.session['asset_no'] = _asset_no
-        assets = assets.filter(asset_no=_asset_no)
+        assets = assets.filter(asset_no__icontains=_asset_no)
 
     if _status:
         request.session['status'] = _status
@@ -325,6 +325,7 @@ def search(request):
 
     results = list(assets)
     page_obj = Paginator(results, 200)
+    row_count = assets.count()
 
     if page_number:
         page_results = page_obj.page(page_number)
