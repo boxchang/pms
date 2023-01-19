@@ -238,7 +238,7 @@ AMS - Asset Detail
         <div style="padding-top: 40px">
         {% if pics %}
             {% for pic in pics %}
-                <img src="{{ pic.files.url }}" />
+                <a href="{{ pic.files.url }}" target="_blank"><img src="{{ pic.files.url }}" /></a>
             {% endfor %}
         {% else %}
             <img src="/static/pictures/no_pic.jpg" />
