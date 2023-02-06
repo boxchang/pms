@@ -68,7 +68,7 @@ class RequestForm(forms.ModelForm):
         model = Request
         fields = (
             'title', 'start_date', 'due_date', 'process_rate', 'estimate_time', 'level', 'owner', 'desc',
-            'status', 'actual_date', 'is_test',)
+            'status', 'actual_date',)
 
     level = forms.ModelChoiceField(required=True, label=_(
         'level'), queryset=Level.objects.all(), initial=2)
@@ -82,13 +82,11 @@ class RequestForm(forms.ModelForm):
     estimate_time = forms.IntegerField(required=False, label=_(
         'estimate_time'), widget=forms.NumberInput(), initial=0, )
     start_date = forms.DateField(
-        label=_('starttime'), initial=datetime.now(), input_formats=["%Y-%m-%d"])
+        label=_('starttime'), initial=datetime.now(), input_formats=["%Y/%m/%d"])
     due_date = forms.DateField(
-        label=_('finishtime'), initial=datetime.now(), input_formats=["%Y-%m-%d"])
+        label=_('finishtime'), initial=datetime.now(), input_formats=["%Y/%m/%d"])
     actual_date = forms.DateField(required=False, label=_(
-        'actualtime'), input_formats=["%Y-%m-%d"])
-    is_test = forms.ChoiceField(label=_('need test'), choices=(
-        (False, 'False'), (True, 'True'),), required=False)
+        'actualtime'), input_formats=["%Y/%m/%d"])
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -100,11 +98,10 @@ class RequestForm(forms.ModelForm):
         self.helper.layout = Layout(
             Div(
                 Div('level', css_class='col-md-6'),
-                Div('is_test', css_class='col-md-6'),
+                Div('status', css_class='col-md-6'),
                 css_class='row'),
             Div('title'),
             Div('desc'),
-            Div('status'),
             Div('actual_date'),
             Div(Div('start_date', css_class='col-md-6'),
                 Div('due_date', css_class='col-md-6'),
@@ -114,27 +111,9 @@ class RequestForm(forms.ModelForm):
                 css_class='row'),
         )
 
-        self.fields['start_date'].widget = DateTimePickerInput(
-            options={
-                "format": "YYYY-MM-DD",
-                "showClose": False,
-                "showClear": False,
-                "showTodayButton": False,
-            }
-        ).start_of('request days')
-
-        self.fields['due_date'].widget = DateTimePickerInput(
-            options={
-                "format": "YYYY-MM-DD",
-                "showClose": False,
-                "showClear": False,
-                "showTodayButton": False,
-            }
-        ).end_of('request days')
-
         self.fields['actual_date'].widget = DateTimePickerInput(
             options={
-                "format": "YYYY-MM-DD",
+                "format": "YYYY/MM/DD",
                 "showClose": False,
                 "showClear": False,
                 "showTodayButton": False,

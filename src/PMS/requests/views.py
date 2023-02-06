@@ -42,8 +42,6 @@ def request_create(request):
     if request.method == 'POST':
         #  STATUS/PROJECT/REQUEST由系統自動給
         form = RequestForm(request.POST)
-        form.status = Status.objects.get(status_en='Wait')
-
         if form.is_valid():
             with transaction.atomic():
                 form_type = get_form_type('REQUEST')
@@ -74,7 +72,6 @@ def request_create(request):
             return redirect(tmp_form.get_absolute_url())
     else:
         form = RequestForm()
-        form.fields['status'].widget = HiddenInput()
     return render(request, 'requests/request_edit.html', locals())
 
 

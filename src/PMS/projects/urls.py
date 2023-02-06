@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^manage/(?P<pk>\d+)/$', project_manage, name="project_manage"),
     url(r'^setting/$', project_setting, name="project_setting"),
     url(r'^search/$', search, name="search"),
+    url(r'^home', pms_home, name='pms_home'),
 ]

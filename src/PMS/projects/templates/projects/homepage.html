@@ -204,6 +204,7 @@
                         <th>
                             {% trans "create_at" %}
                         </th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -227,7 +228,13 @@
                         <td>
                             {{ project.create_at }}
                         </td>
-
+                        <td>
+                            <a href="{% url "project_create" %}" role="button"><i class="fa fa-plus fa-3"></i></a>
+                            <a href="{% url "project_edit" project.pk %}" role="button"><i class="fa fa-edit fa-3"></i></a>
+                            {% if project.create_by == user %}
+                            <a href="{% url 'project_delete' project.pk %}" role="button" onclick="return confirm('Are you sure?')"><i class="fa fa-times fa-3"></i></a>
+                            {% endif %}
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

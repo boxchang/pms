@@ -9,87 +9,52 @@
 {% endblock %}
 
 {% block content %}
-<div class="card">
-    <div class="card-header">
-        <div class="row">
-            <div class="ml-md-auto">
-                <a class="btn btn-primary m-1" href="{% url "project_create" %}" role="button"><i class="fas fa-plus"></i>{% trans "project_create" %}</a>
-                <a class="btn btn-primary m-1" href="{% url "project_edit" pk %}" role="button"><i class="fas fa-edit"></i>{% trans "project_edit" %}</a>
-                {% if project_form.create_by == user %}
-                <a class="btn btn-danger m-1" href="{% url 'project_delete' pk %}" role="button" onclick="return confirm('Are you sure?')"><i class="fas fa-times"></i>{% trans "project_delete" %}</a>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-    <div class="card-body">
+<div class="tab-content" id="nav-tabContent" style="padding:0 1rem">
+    <div class="tab-pane fade show active" id="project1-contact" role="tabpanel" aria-labelledby="project1">
         <nav class="navbar navbar-expand-lg">
             <div class="nav nav-tabs mr-auto" role="tablist">
-            {% for form in projects %}
-                {% if pk == form.pk|stringformat:"i" %}
-                    <a class="nav-item nav-link active" data-toggle="tab" href=""
-                   role="tab" aria-controls="nav-home" aria-selected="true">{{ form.name }}</a>
-                {% else %}
-                    <a class="nav-item nav-link" href="{% url 'project_manage' pk=form.pk %}" role="tab"
-                   aria-controls="nav-profile" aria-selected="false">{{ form.name }}</a>
-                    <!-- 刪掉 data-toggle="tab"，連結才能正常動 -->
-                {% endif %}
-            {% endfor %}
 
+                <a class="nav-item nav-link active" id="project1-require" data-toggle="tab"
+                    href="#project1-require-index" role="tab" aria-controls="nav-home"
+                    aria-selected="true">{% trans "request" %}</a>
+                <a class="nav-item nav-link" id="project1-bug" data-toggle="tab"
+                    href="#project1-bug-index" role="tab" aria-controls="nav-profile"
+                    aria-selected="false">BUG</a>
+                <a class="nav-item nav-link" id="project1-question" data-toggle="tab"
+                    href="#project1-question-index" role="tab" aria-controls="nav-contact"
+                    aria-selected="false">{% trans "problem" %}</a>
 
             </div>
+            <a class="btn btn-success m-1" href="{% url "request_create" %}?t={{ form_type.tid }}&p={{ project_form.id }}" role="button"><i class="fas fa-plus"></i>{% trans "request_create" %}</a>
+            <a class="btn btn-success m-1" href="{% url "bug_create" %}?t={{ form_type.tid }}&p={{ project_form.id }}" role="button"><i class="fas fa-plus"></i>{% trans "bug_create" %}</a>
+            <a class="btn btn-success m-1" href="{% url "problem_create" %}?t={{ form_type.tid }}&p={{ project_form.id }}" role="button"><i class="fas fa-plus"></i>{% trans "problem_create" %}</a>
         </nav>
-        <div class="tab-content" id="nav-tabContent" style="padding:0 1rem">
-            <div class="tab-pane fade show active" id="project1-contact" role="tabpanel"
-                 aria-labelledby="project1">
-                <h3>{% trans "project_name" %} : {{ project_form.name }}</h3><br>
-                {{ project_form.desc|safe }}
-                <nav class="navbar navbar-expand-lg">
-                    <div class="nav nav-tabs mr-auto" role="tablist">
+        <div class="tab-content" id="nav-tabContent2">
+            <div class="tab-pane fade show active" id="project1-require-index" role="tabpanel"
+                    aria-labelledby="project1-require">
+                <table class="table" id="request_table" data-pagination="true" data-side-pagination="client">
 
-                        <a class="nav-item nav-link active" id="project1-require" data-toggle="tab"
-                           href="#project1-require-index" role="tab" aria-controls="nav-home"
-                           aria-selected="true">{% trans "request" %}</a>
-                        <a class="nav-item nav-link" id="project1-bug" data-toggle="tab"
-                           href="#project1-bug-index" role="tab" aria-controls="nav-profile"
-                           aria-selected="false">BUG</a>
-                        <a class="nav-item nav-link" id="project1-question" data-toggle="tab"
-                           href="#project1-question-index" role="tab" aria-controls="nav-contact"
-                           aria-selected="false">{% trans "problem" %}</a>
-
-                    </div>
-                    <a class="btn btn-success m-1" href="{% url "request_create" %}?t={{ form_type.tid }}&p={{ project_form.id }}" role="button"><i class="fas fa-plus"></i>{% trans "request_create" %}</a>
-                    <a class="btn btn-success m-1" href="{% url "bug_create" %}?t={{ form_type.tid }}&p={{ project_form.id }}" role="button"><i class="fas fa-plus"></i>{% trans "bug_create" %}</a>
-                    <a class="btn btn-success m-1" href="{% url "problem_create" %}?t={{ form_type.tid }}&p={{ project_form.id }}" role="button"><i class="fas fa-plus"></i>{% trans "problem_create" %}</a>
-                </nav>
-                <div class="tab-content" id="nav-tabContent2">
-                    <div class="tab-pane fade show active" id="project1-require-index" role="tabpanel"
-                         aria-labelledby="project1-require">
-                        <table class="table" id="request_table" data-pagination="true" data-side-pagination="client">
-
-                        </table>
-                    </div>
-                    <div class="tab-pane fade" id="project1-bug-index" role="tabpanel"
-                         aria-labelledby="project1-bug">
-                        <table class="table" id="bug_table" data-pagination="true" data-side-pagination="client">
-
-                        </table>
-                    </div>
-                    <div class="tab-pane fade" id="project1-question-index" role="tabpanel"
-                         aria-labelledby="project1-question">
-                        <table class="table" id="problem_table" data-pagination="true" data-side-pagination="client">
-
-                        </table>
-                    </div>
-                </div>
-
+                </table>
             </div>
-            <div class="tab-pane fade" id="project2-contact" role="tabpanel"
-                 aria-labelledby="project2">...</div>
-            <div class="tab-pane fade" id="project3-contact" role="tabpanel"
-                 aria-labelledby="project3">...</div>
+            <div class="tab-pane fade" id="project1-bug-index" role="tabpanel"
+                    aria-labelledby="project1-bug">
+                <table class="table" id="bug_table" data-pagination="true" data-side-pagination="client">
+
+                </table>
+            </div>
+            <div class="tab-pane fade" id="project1-question-index" role="tabpanel"
+                    aria-labelledby="project1-question">
+                <table class="table" id="problem_table" data-pagination="true" data-side-pagination="client">
+
+                </table>
+            </div>
         </div>
 
     </div>
+    <div class="tab-pane fade" id="project2-contact" role="tabpanel"
+            aria-labelledby="project2">...</div>
+    <div class="tab-pane fade" id="project3-contact" role="tabpanel"
+            aria-labelledby="project3">...</div>
 </div>
 {% endblock content %}
 

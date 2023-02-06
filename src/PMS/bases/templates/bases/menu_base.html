@@ -41,16 +41,13 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb" style="padding:0px 20px">
                 {% block breadcrumb %}
-                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'pms_home' %}">Home</a></li>
                 {% endblock %}
 
             </ol>
         </nav>
-
-        <div style="padding-top: 20px;">
         {% block content %}
         {% endblock content %}
-        </div>
     </div>
 
 {% endblock container %}

@@ -190,3 +190,23 @@ def search(request):
                 results += b_results
         results_count = len(results)
     return render(request, 'projects/search.html', locals())
+
+
+@login_required
+def pms_home(request):
+
+    # 在index就有判斷使用者設定，理論上這邊一定會有值
+    obj = CustomUser.objects.get(pk=request.user.pk)
+    pk = obj.setting_user.first().default.pk
+    assert obj != None, u'user setting can\'t get at bases\\views.py'
+
+    # project_setting = Project_setting.objects.user.filter().first()
+    project_setting = Project_setting.objects.get(user=obj)
+    projects = project_setting.project.all()
+
+    # projects = Project.objects.all()
+    bugs = Bug.objects.filter(project__in=projects).all()
+    problems = Problem.objects.filter(project__in=projects).all()
+    requests = Request.objects.filter(project__in=projects).all()
+
+    return render(request, 'projects/homepage.html', locals())

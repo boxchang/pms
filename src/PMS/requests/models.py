@@ -67,7 +67,7 @@ class Level(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='level_update_at')
 
     def __str__(self):
-        return self.level_en
+        return self.level_cn
 
 
 class Request_attachment(models.Model):
