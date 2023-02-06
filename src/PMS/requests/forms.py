@@ -1,4 +1,4 @@
-from bootstrap_datepicker_plus.widgets import DateTimePickerInput
+from bootstrap_datepicker_plus.widgets import DateTimePickerInput, DatePickerInput
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div
@@ -82,11 +82,11 @@ class RequestForm(forms.ModelForm):
     estimate_time = forms.IntegerField(required=False, label=_(
         'estimate_time'), widget=forms.NumberInput(), initial=0, )
     start_date = forms.DateField(
-        label=_('starttime'), initial=datetime.now(), input_formats=["%Y/%m/%d"])
+        label=_('starttime'), initial=datetime.now())
     due_date = forms.DateField(
-        label=_('finishtime'), initial=datetime.now(), input_formats=["%Y/%m/%d"])
+        label=_('finishtime'), initial=datetime.now())
     actual_date = forms.DateField(required=False, label=_(
-        'actualtime'), input_formats=["%Y/%m/%d"])
+        'actualtime'))
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -111,9 +111,27 @@ class RequestForm(forms.ModelForm):
                 css_class='row'),
         )
 
+        self.fields['start_date'].widget = DatePickerInput(
+            options={
+                "format": "YYYY-MM-DD",
+                "showClose": False,
+                "showClear": False,
+                "showTodayButton": False,
+            }
+        )
+
+        self.fields['due_date'].widget = DatePickerInput(
+            options={
+                "format": "YYYY-MM-DD",
+                "showClose": False,
+                "showClear": False,
+                "showTodayButton": False,
+            }
+        )
+
         self.fields['actual_date'].widget = DateTimePickerInput(
             options={
-                "format": "YYYY/MM/DD",
+                "format": "YYYY-MM-DD",
                 "showClose": False,
                 "showClear": False,
                 "showTodayButton": False,
