@@ -32,6 +32,20 @@ def request_receive(request):
         form = RequestReceiveForm(instance=data)
     return render(request, 'requests/request_receive.html', locals())
 
+@login_required
+def request_reply(request):
+    r = request.GET.get('r')  # 需求id
+
+    if request.method == 'POST':
+        form = RequestReplyForm(request.POST)
+        if form.is_valid():
+            with transaction.atomic():
+                tmp_form = form.save(commit=False)
+                tmp_form.request = Request.objects.get(pk=r)
+                tmp_form.create_by = request.user
+                form.save()
+            return redirect(tmp_form.get_absolute_url())
+
 
 @login_required
 def request_create(request):
@@ -140,6 +154,9 @@ def request_detail(request, pk):
             father = father.belong_to
         # 子需求表格
         form = RequestForm(project, initial={'belong_to': pk})
+
+        # Reply
+        reply_form = RequestReplyForm()
 
         # 子需求
         sub_requests = cal_sub_requests(Request.objects.filter(belong_to=data))

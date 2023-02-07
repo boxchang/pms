@@ -15,4 +15,5 @@ urlpatterns = [
     url(r'change_status', change_status, name="change_status"),
     url(r'^rfd/(?P<pk>\d+)', request_file_delete, name="request_file_delete"),
     url(r'^(?P<no>\w+)$', request_guest, name="request_guest"),
+    url(r'^reply/$', request_reply, name="request_reply"),
 ]

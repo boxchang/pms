@@ -83,3 +83,11 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
     if instance.files:
         if os.path.isfile(instance.files.path):
             os.remove(instance.files.path)
+
+class Request_reply(models.Model):
+    request = models.ForeignKey(
+        'Request', related_name='request_reply', on_delete=models.CASCADE)
+    desc = RichTextUploadingField(null=True, blank=True)
+    create_at = models.DateTimeField(auto_now_add=True, editable=True)  # 建立日期
+    create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
+                                  related_name='request_reply_create_at')  # 建立者

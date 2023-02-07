@@ -5,7 +5,7 @@ from crispy_forms.layout import Layout, Div
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from bases.models import Status
-from requests.models import Request, Level
+from requests.models import Request, Level, Request_reply
 from datetime import datetime
 
 from users.models import CustomUser
@@ -62,6 +62,26 @@ class RequestReceiveForm(forms.ModelForm):
     #     else:
     #         raise forms.ValidationError(u"預計完成日期不能小於開始日期")
 
+class RequestReplyForm(forms.ModelForm):
+    class Meta:
+        model = Request_reply
+        fields = ('desc',)
+
+        desc = forms.CharField(required=False, widget=CKEditorUploadingWidget())
+
+    def __init__(self, *args, submit_title='Submit', **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.form_show_errors = True
+        self.fields['desc'].label = ""
+        self.helper.layout = Layout(
+            Div(
+                Div('desc', css_class='col-12'),
+                css_class='row'
+            )
+        )
 
 class RequestForm(forms.ModelForm):
     class Meta:
