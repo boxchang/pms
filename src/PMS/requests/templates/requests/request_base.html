@@ -1,7 +1,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% load i18n %}
-<div class="card">
+<div class="card" style="background:#CCC">
     <div class="card-header">
 
         <div class="row">
@@ -135,7 +135,7 @@
                 {% endif %}
                 <table class="table table-bordered table-sm col-10">
                   <tr>
-                        <td style="padding: 3.7rem;font-size: 1.2em;">
+                        <td style="padding: 3.7rem;font-size: 1.2em;background:#FFF;">
                             {{ data.desc|safe }}
                         </td>
                     </tr>
@@ -143,7 +143,7 @@
             </div>
         </div>
         {% for reply in replies %}
-        <table class="table table-bordered table-sm col-10">
+        <table class="table table-bordered table-sm col-10" style="background:#FFF;">
             <tr>
                 <td align="right">
                     {{ reply.create_at|date:"Y-m-d H:i" }} {{ reply.create_by }}
