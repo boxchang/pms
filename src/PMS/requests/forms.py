@@ -20,9 +20,9 @@ class RequestReceiveForm(forms.ModelForm):
         estimate_time = forms.IntegerField(required=False, label=_('estimate_time'), widget=forms.NumberInput(),
                                            initial=0, )
         start_date = forms.DateField(
-            label=_('starttime'), initial=datetime.now(), input_formats=["%Y-%m-%d"])
+            label=_('starttime'), initial=datetime.now())
         due_date = forms.DateField(
-            label=_('finishtime'), initial=datetime.now(), input_formats=["%Y-%m-%d"])
+            label=_('finishtime'), initial=datetime.now())
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -38,7 +38,7 @@ class RequestReceiveForm(forms.ModelForm):
             Div('estimate_time'),
         )
 
-        self.fields['start_date'].widget = DateTimePickerInput(
+        self.fields['start_date'].widget = DatePickerInput(
             options={
                 "format": "YYYY-MM-DD",
                 "showClose": False,
@@ -47,7 +47,7 @@ class RequestReceiveForm(forms.ModelForm):
             }
         ).start_of('request days')
 
-        self.fields['due_date'].widget = DateTimePickerInput(
+        self.fields['due_date'].widget = DatePickerInput(
             options={
                 "format": "YYYY-MM-DD",
                 "showClose": False,

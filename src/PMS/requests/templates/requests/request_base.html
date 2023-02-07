@@ -142,7 +142,25 @@
                 </table>
             </div>
         </div>
+        {% for reply in replies %}
+        <table class="table table-bordered table-sm col-10">
+            <tr>
+                <td align="right">
+                    {{ reply.create_at|date:"Y-m-d H:i" }} {{ reply.create_by }}
+                    {% if reply.create_by == user %}
+                    <a href="{% url 'reply_delete' reply.pk %}" role="button" onclick="return confirm('Are you sure?')"><span style="color:#000;padding-left:5px;"><i class="fa fa-times fa-3"></i></span></a>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 3.7rem;font-size: 1.2em;">
+                    {{ reply.desc|safe }}
+                </td>
+            </tr>
+        </table>
+        {% endfor %}
         {% if user.is_authenticated %}
+        <form action="/requests/reply/{{ pk }}/" method="post" class="form-group font-weight-bold align-middle" id="request_form" enctype="multipart/form-data">
         <div class="card">
             <div class="card-header pb-1 pt-1">
                 <div class="row">
@@ -150,19 +168,18 @@
                         COMMENT
                     </div>
                     <div class="ml-md-auto">
-                        <a class="btn btn-warning btn-sm" href="{% url 'request_reply' %}?r={{ pk }}" role="button">{% trans "New" %}</a>
+                        <button type="submit" class="btn btn-warning btn-sm" id="send">{% trans "New" %}</button>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col">
-                    <form action="" method="post" class="form-group font-weight-bold align-middle" id="request_form" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {% crispy reply_form %}
-                    </form>
+                    {% csrf_token %}
+                    {% crispy reply_form %}
                 </div>
             </div>
         </div>
+        </form>
         {% endif %}
         <div class="card">
             <div class="card-header pb-1 pt-1">

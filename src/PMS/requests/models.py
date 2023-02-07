@@ -91,3 +91,6 @@ class Request_reply(models.Model):
     create_at = models.DateTimeField(auto_now_add=True, editable=True)  # 建立日期
     create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
                                   related_name='request_reply_create_at')  # 建立者
+
+    def get_absolute_url(self):
+        return reverse('request_detail', kwargs={'pk': self.pk})

@@ -33,18 +33,17 @@ def request_receive(request):
     return render(request, 'requests/request_receive.html', locals())
 
 @login_required
-def request_reply(request):
-    r = request.GET.get('r')  # 需求id
-
+def request_reply(request, pk):
     if request.method == 'POST':
         form = RequestReplyForm(request.POST)
         if form.is_valid():
             with transaction.atomic():
                 tmp_form = form.save(commit=False)
-                tmp_form.request = Request.objects.get(pk=r)
+                req = Request.objects.get(pk=pk)
+                tmp_form.request = req
                 tmp_form.create_by = request.user
                 form.save()
-            return redirect(tmp_form.get_absolute_url())
+            return redirect(req.get_absolute_url())
 
 
 @login_required
@@ -157,6 +156,7 @@ def request_detail(request, pk):
 
         # Reply
         reply_form = RequestReplyForm()
+        replies = Request_reply.objects.filter(request=data).all()
 
         # 子需求
         sub_requests = cal_sub_requests(Request.objects.filter(belong_to=data))
@@ -206,6 +206,18 @@ def request_delete(request, pk):
         Exception('Unexpected error: {}'.format(e))
 
     return redirect(get_home_url(request))
+
+@login_required
+def reply_delete(request, pk):
+    try:
+        with transaction.atomic():
+            obj = Request_reply.objects.select_for_update().get(pk=pk)
+            require = Request.objects.get(pk=obj.request.pk)
+            obj.delete()
+    except Exception as e:
+        Exception('Unexpected error: {}'.format(e))
+
+    return redirect(require.get_absolute_url())
 
 
 @login_required
