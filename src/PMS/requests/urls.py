@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'^(?P<no>\w+)$', request_guest, name="request_guest"),
     url(r'^reply/(?P<pk>\d+)/$', request_reply, name="request_reply"),
     url(r'^reply_delete/(?P<pk>\d+)/$', reply_delete, name="reply_delete"),
+    url(r'^reply_edit/(?P<pk>\d+)/$', reply_edit, name="reply_edit"),
 ]

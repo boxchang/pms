@@ -122,6 +122,22 @@ def request_edit(request, pk):
         form = RequestForm(instance=require)
     return render(request, 'requests/request_edit.html', {'form': form, 'request': require})
 
+@login_required
+def reply_edit(request, pk):
+    if pk:
+        reply = Request_reply.objects.get(pk=pk)
+
+    if request.method == 'POST':
+        form = RequestReplyForm(request.POST, instance=reply)
+        if form.is_valid():
+            with transaction.atomic():
+                req = Request.objects.get(pk=reply.request.pk)
+                data = form.save(commit=False)
+                data.save()
+            return redirect(req.get_absolute_url())
+    else:
+        form = RequestReplyForm(instance=reply)
+    return render(request, 'requests/reply_edit.html', {'form': form, 'reply': reply})
 
 @login_required
 def request_list(request):
