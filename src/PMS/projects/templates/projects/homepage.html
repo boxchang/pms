@@ -119,7 +119,7 @@
                         <div class="card-body">
                             <div id="Finished" class="droptrue" style="width:100%;" data-code="4">
                                 {% for o_request in requests %}
-                                    {% if o_request.status.status_en == 'Finished' %}
+                                    {% if o_request.status.status_en == 'done' %}
                                         <div class="card" style="width:97%;background-color: #ffffe6;"data-position="Finished" data-num="{{ o_request.request_no }}">
                                             <div class="card-header" style="width:97%; text-align: left">
                                                 <h7 class="card-title"><a href="{% url 'request_detail' pk=o_request.pk %}">{{ o_request.request_no }}</a></h7>
@@ -148,9 +148,9 @@
                     <div class="card">
                         <div class="card-header big">{% trans "pending" %}</div>
                         <div class="card-body">
-                            <div id="pendding" class="droptrue" style="width:100%;" data-code="5">
+                            <div id="pending" class="droptrue" style="width:100%;" data-code="5">
                                 {% for o_request in requests %}
-                                    {% if o_request.status.status_en == 'pendding' %}
+                                    {% if o_request.status.status_en == 'pending' %}
                                         <div class="card" style="width:97%;background-color: #ffffe6;" data-position="pendding" data-num="{{ o_request.request_no }}">
                                             <div class="card-header" style="width:97%; text-align: left">
                                                 <h7 class="card-title"><a href="{% url 'request_detail' pk=o_request.pk %}">{{ o_request.request_no }}</a></h7>
