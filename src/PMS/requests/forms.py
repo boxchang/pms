@@ -190,7 +190,7 @@ class RequestForm(forms.ModelForm):
             }
         )
 
-        self.fields['actual_date'].widget = DateTimePickerInput(
+        self.fields['actual_date'].widget = DatePickerInput(
             options={
                 "format": "YYYY-MM-DD",
                 "showClose": False,
