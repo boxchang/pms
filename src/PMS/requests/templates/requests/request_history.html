@@ -5,7 +5,8 @@
 {% block title %} {% trans "project_manage" %} {% endblock %}
 {% block breadcrumb %}
 {{ block.super }}
-    <li class="breadcrumb-item active" aria-current="page">{{ project_form.name }}</li>
+    <li class="breadcrumb-item">{{ project_form.name }}</li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans "Receive Request" %}</li>
 {% endblock %}
 
 {% block content %}
@@ -51,7 +52,7 @@
                 <td>{{ require.owner|default:"" }}</td>
                 <td>{{ require.start_date|date:'Y-m-d' }}</td>
                 <td>{{ require.due_date|date:'Y-m-d' }}</td>
-                <td>{{ require.actual_date|default:"" }}</td>
+                <td>{{ require.actual_date|default:""|date:'Y-m-d' }}</td>
                 <td>{{ require.status }}</td>
                 <td>{{ require.create_by }}</td>
                 <td>{{ require.create_at|date:'Y-m-d' }}</td>
