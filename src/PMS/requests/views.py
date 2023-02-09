@@ -158,7 +158,7 @@ def request_history(request):
             requires = requires.filter(status=_status)
 
         if _start_date and _due_date:
-            requires = requires.filter(start_date__gte=_start_date, due_date__lte=_due_date)
+            requires = requires.filter(create_at__gte=_start_date, create_at__lte=_due_date)
 
         form = RequestHistoryForm(request.POST)
     else:
