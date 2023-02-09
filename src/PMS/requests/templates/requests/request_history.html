@@ -4,9 +4,8 @@
 {% load i18n %}
 {% block title %} {% trans "project_manage" %} {% endblock %}
 {% block breadcrumb %}
-{{ block.super }}
-    <li class="breadcrumb-item">{{ project_form.name }}</li>
-    <li class="breadcrumb-item active" aria-current="page">{% trans "Receive Request" %}</li>
+    {{ block.super }}
+    <li class="breadcrumb-item active" aria-current="page">Request History</li>
 {% endblock %}
 
 {% block content %}
