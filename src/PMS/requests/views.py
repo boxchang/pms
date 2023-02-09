@@ -148,6 +148,25 @@ def request_list(request):
 
 
 @login_required
+def request_history(request):
+    if request.method == 'POST':
+        _status = request.POST['status']
+        _start_date = str(request.POST['start_date']).replace('/', '-')
+        _due_date = str(request.POST['due_date']).replace('/', '-')
+        requires = Request.objects.all()
+        if _status:
+            requires = requires.filter(status=_status)
+
+        if _start_date and _due_date:
+            requires = requires.filter(start_date__gte=_start_date, due_date__lte=_due_date)
+
+        form = RequestHistoryForm(request.POST)
+    else:
+        form = RequestHistoryForm()
+    return render(request, 'requests/request_history.html', locals())
+
+
+@login_required
 def request_detail(request, pk):
     FULL_URL_WITH_QUERY_STRINg = request.build_absolute_uri()
     FULL_URL = request.build_absolute_uri('?')

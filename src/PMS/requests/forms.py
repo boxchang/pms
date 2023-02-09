@@ -6,10 +6,51 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 from bases.models import Status
 from requests.models import Request, Level, Request_reply
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from users.models import CustomUser
 
+class RequestHistoryForm(forms.ModelForm):
+    class Meta:
+        model = Request
+        fields = ('status', 'start_date', 'due_date',)
+
+    status = forms.ModelChoiceField(required=False, label=_(
+        'status'), queryset=Status.objects.all(), initial=1)
+    start_date = forms.DateField(label="建立日期(起)", initial=datetime.now()- timedelta(days = 45))
+    due_date = forms.DateField(label="建立日期(迄)", initial=datetime.now())
+
+    def __init__(self, *args, submit_title='Submit', **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.form_show_errors = True
+
+        self.helper.layout = Layout(
+            Div(Div('start_date', css_class='col-md-4'),
+                Div('due_date', css_class='col-md-4'),
+                Div('status', css_class='col-md-4'),
+                css_class='row'),
+        )
+
+        self.fields['start_date'].widget = DatePickerInput(
+                options={
+                    "format": "YYYY-MM-DD",
+                    "showClose": False,
+                    "showClear": False,
+                    "showTodayButton": False,
+                }
+            )
+
+        self.fields['due_date'].widget = DatePickerInput(
+            options={
+                "format": "YYYY-MM-DD",
+                "showClose": False,
+                "showClear": False,
+                "showTodayButton": False,
+            }
+        )
 
 class RequestReceiveForm(forms.ModelForm):
     class Meta:
