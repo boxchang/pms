@@ -15,7 +15,6 @@ class LevelSerializer(serializers.ModelSerializer):
 
 class RequestSerializer(serializers.ModelSerializer):
     sub_request = serializers.SerializerMethodField()
-    problem_num = serializers.SerializerMethodField()
     nested = serializers.SerializerMethodField()
     status = StatusSerializer(many=False, read_only=True)
     level = LevelSerializer(many=False, read_only=True)
@@ -44,7 +43,7 @@ class RequestSerializer(serializers.ModelSerializer):
         return sub_num
 
     def get_problem_num(self, obj):
-        problem_num = Problem.objects.filter(belong_to=obj.request_no).count()
+        problem_num = Problem.objects.all().count()
 
         return problem_num
 

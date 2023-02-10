@@ -11,8 +11,6 @@ from problems.models import *
 @login_required
 def problem_create(request):
     p = request.GET.get('p')  #單號id
-    t = request.GET.get('t')  #單號類型
-
     if request.method == 'POST':
         form = ProblemForm(request.POST)
         if form.is_valid():
@@ -20,10 +18,9 @@ def problem_create(request):
                 form_type = get_form_type('PROBLEM')
                 tmp_form = form.save(commit=False)
                 tmp_form.problem_no = get_serial_num(p, form_type)  # 問題單編碼
+                tmp_form.project = Project.objects.get(pk=p)
                 tmp_form.create_by = request.user
                 tmp_form.update_by = request.user
-                tmp_form.belong_to_type = t
-                tmp_form.belong_to = p
                 tmp_form.save()
                 save_data_index(p, form_type)  # Save serial number after success
 
@@ -38,7 +35,7 @@ def problem_create(request):
                     problem_file.problem = tmp_form
                     problem_file.save()
 
-        return redirect(tmp_form.get_absolute_url())
+            return redirect(tmp_form.get_absolute_url())
     else:
         form = ProblemForm()
 

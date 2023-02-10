@@ -7,12 +7,19 @@ from django.dispatch import receiver
 from django.conf import settings
 from django.urls import reverse
 
+class ProblemType(models.Model):
+    type_name = models.CharField(max_length=50, blank=True)
+    create_at = models.DateTimeField(auto_now_add=True, editable=True)
+    create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
+                                  related_name='problemtype_create_by')
+
+    def __str__(self):
+        return self.type_name
 
 class Problem(models.Model):
     problem_no = models.CharField('Problem No.', max_length=20, unique=True)
-    belong_to_type = models.ForeignKey(
-        'bases.FormType', related_name='problem_formtype', on_delete=models.CASCADE)
-    belong_to = models.CharField(max_length=16)  # 上層
+    problem_type = models.ForeignKey(
+        'problems.ProblemType', related_name='problem_type', on_delete=models.DO_NOTHING)
     title = models.CharField(max_length=100)
     project = models.ForeignKey(
         'projects.Project', related_name='problem_super', on_delete=models.CASCADE)

@@ -27,7 +27,7 @@
             </div>
             <a class="btn btn-success m-1" href="{% url "request_create" %}?t={{ form_type.tid }}&p={{ project_form.id }}" role="button"><i class="fas fa-plus"></i>{% trans "request_create" %}</a>
             <a class="btn btn-success m-1" href="{% url "bug_create" %}?t={{ form_type.tid }}&p={{ project_form.id }}" role="button"><i class="fas fa-plus"></i>{% trans "bug_create" %}</a>
-            <a class="btn btn-success m-1" href="{% url "problem_create" %}?t={{ form_type.tid }}&p={{ project_form.id }}" role="button"><i class="fas fa-plus"></i>{% trans "problem_create" %}</a>
+            <a class="btn btn-success m-1" href="{% url "problem_create" %}?p={{ project_form.id }}" role="button"><i class="fas fa-plus"></i>{% trans "problem_create" %}</a>
             <a class="btn btn-success m-1" href="{% url "request_history" %}" role="button"><i class="fas fa-book"></i>歷史紀錄</a>
         </nav>
         <div class="tab-content" id="nav-tabContent2">
@@ -94,8 +94,6 @@ $(function(){
             field: 'process_rate', title:'{% trans "Rate" %}', titleTooltip: '{% trans "rate" %}', sortable:true, width: '5%', align:'right'
         }, {
             field: 'sub_request', title:'{% trans "Sub" %}', titleTooltip: '{% trans "subrequire" %}', sortable:true, width: '5%', align:'center'
-        }, {
-            field: 'problem_num', title: '{% trans "question" %}', width: '5%', align:'center'
         }, {
             field: 'id', title: '鍵值', visible:false
         }]

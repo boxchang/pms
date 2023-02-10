@@ -3,7 +3,7 @@ from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div
 from django import forms
-from problems.models import Problem, Problem_reply
+from problems.models import Problem, Problem_reply, ProblemType
 from projects.models import Project
 from django.utils.translation import gettext_lazy as _
 
@@ -11,13 +11,11 @@ from django.utils.translation import gettext_lazy as _
 class ProblemForm(forms.ModelForm):
     class Meta:
         model = Problem
-        fields = ('project', 'title', 'desc')
+        fields = ('problem_type', 'title', 'desc')
 
-    project = forms.ModelChoiceField(required=True, label=_(
-        'project'), queryset=Project.objects.all(), widget=forms.HiddenInput())
+    problem_type = forms.ModelChoiceField(required=False, label="問題類型", queryset=ProblemType.objects.all(), initial=1)
     title = forms.CharField(required=True, label=_('title'))
-    desc = forms.CharField(required=False, label=_(
-        'desc'), widget=CKEditorWidget())
+    desc = forms.CharField(required=False, label=_('desc'), widget=CKEditorWidget())
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -28,8 +26,10 @@ class ProblemForm(forms.ModelForm):
         # if submit_title:
         #     self.helper.add_input(Submit('submit', submit_title))
         self.helper.layout = Layout(
-            Div('project'),
-            Div('title'),
+            Div(
+                Div('problem_type', css_class='col-md-3'),
+                Div('title', css_class='col-md-9'),
+                css_class='row'),
             Div('desc'),
         )
 

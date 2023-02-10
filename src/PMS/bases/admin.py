@@ -3,7 +3,7 @@ from django.contrib import admin
 from bases.models import Status, FormType
 from bugs.models import Bug
 from helpdesk.models import HelpdeskType
-from problems.models import Problem, Problem_reply
+from problems.models import Problem, Problem_reply, ProblemType
 from projects.models import Project, Project_setting
 from requests.models import Request, Level
 from tests.models import Request_test, Request_test_item
@@ -53,12 +53,17 @@ class BugAdmin(admin.ModelAdmin):
 
 @admin.register(Problem)
 class ProblemAdmin(admin.ModelAdmin):
-    list_display = ('problem_no', 'belong_to', 'title')
+    list_display = ('problem_no', 'title')
 
 
 @admin.register(Problem_reply)
-class ProblemAdmin(admin.ModelAdmin):
+class ProblemReplyAdmin(admin.ModelAdmin):
     list_display = ('problem_no', 'comment')
+
+
+@admin.register(ProblemType)
+class ProblemTypeAdmin(admin.ModelAdmin):
+    list_display = ('type_name', 'create_by')
 
 
 @admin.register(FormType)
