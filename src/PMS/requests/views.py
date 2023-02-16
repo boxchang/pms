@@ -234,8 +234,6 @@ def request_delete(request, pk):
     try:
         with transaction.atomic():
             require = Request.objects.select_for_update().get(pk=pk)
-            Problem.objects.select_for_update().filter(
-                belong_to=require.request_no).delete()
             request_delete_all(require)
     except Exception as e:
         Exception('Unexpected error: {}'.format(e))
