@@ -222,6 +222,10 @@ def request_guest(request, no):
         if test:
             test_no = test.pk
 
+        # Reply
+        reply_form = RequestReplyForm()
+        replies = Request_reply.objects.filter(request=data).all()
+
     except Request.DoesNotExist:
         raise Http404
 
