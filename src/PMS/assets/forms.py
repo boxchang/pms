@@ -2,7 +2,7 @@ from django import forms
 from .models import Asset, AssetCategory, AssetType, Brand, Location, AssetArea, AssetStatus, Unit
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, HTML, Fieldset
-from bootstrap_datepicker_plus.widgets import DateTimePickerInput
+from bootstrap_datepicker_plus.widgets import DatePickerInput
 from datetime import datetime
 from django.core.validators import RegexValidator
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
@@ -63,7 +63,7 @@ class AssetModelForm(forms.ModelForm):
     class Meta:
         model = Asset
         fields = ('asset_no', 'auto_encode', 'category', 'type', 'brand', 'model', 'desc', 'owner_unit', 'keeper_unit',
-            'keeper_name', 'location', 'location_desc', 'pur_date', 'pur_price', 'area', 'status', 'comment')
+            'keeper_name', 'location', 'location_desc', 'pur_date', 'pur_price', 'area', 'status', 'comment', 'scrap_date', 'scrap_reason')
 
     asset_no = forms.CharField(required=False, label="資產編號")
     auto_encode = forms.BooleanField(required=False, initial=True, label="自動編碼")
@@ -140,7 +140,7 @@ class AssetModelForm(forms.ModelForm):
                 css_class='row'),
         )
 
-        self.fields['pur_date'].widget = DateTimePickerInput(
+        self.fields['pur_date'].widget = DatePickerInput(
             options={
                 "format": "YYYY-MM",
                 "showClose": False,
@@ -149,7 +149,7 @@ class AssetModelForm(forms.ModelForm):
             }
         )
 
-        self.fields['scrap_date'].widget = DateTimePickerInput(
+        self.fields['scrap_date'].widget = DatePickerInput(
             options={
                 "format": "YYYY-MM-DD",
                 "showClose": False,
