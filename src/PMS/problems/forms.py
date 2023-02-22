@@ -15,7 +15,7 @@ class ProblemForm(forms.ModelForm):
 
     problem_type = forms.ModelChoiceField(required=False, label="問題類型", queryset=ProblemType.objects.all(), initial=1)
     title = forms.CharField(required=True, label=_('title'))
-    desc = forms.CharField(required=False, label=_('desc'), widget=CKEditorWidget())
+    desc = forms.CharField(required=False, label=_('desc'), widget=CKEditorUploadingWidget())
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -46,4 +46,4 @@ class ProblemReplyForm(forms.ModelForm):
         self.helper.form_tag = False
 
     comment = forms.CharField(
-        required=True, label='', widget=CKEditorUploadingWidget(config_name='special'))
+        required=True, label='', widget=CKEditorUploadingWidget())
