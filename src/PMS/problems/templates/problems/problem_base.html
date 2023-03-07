@@ -24,13 +24,13 @@
                 <table class="table table-bordered table-sm col-12">
                     <tr>
                         <td class="text-center align-middle table-dark">{% trans "project_belong" %}：</td>
-                        <td class="text-center align-middle" colspan="3">{{ problem.project }}</td>
+                        <td class="text-center align-middle">{{ problem.project }}</td>
+                        <td class="text-center align-middle table-dark">問題類型：</td>
+                        <td class="text-center align-middle">{{ problem.problem_type }}</td>
                     </tr>
                     <tr>
                         <td class="text-center align-middle table-dark" style="width:15%;">{% trans "owner" %}：</td>
-                        <td class="text-center align-middle" colspan="3">{{ problem.create_by }}</td>
-                    </tr>
-                    <tr>
+                        <td class="text-center align-middle">{{ problem.create_by }}</td>
                         <td class="text-center align-middle table-dark" style="width:15%;">{% trans "create_at" %}：</td>
                         <td class="text-center align-middle">{{ problem.create_at|date:"Y-m-d H:i:s" }}</td>
                         <td class="text-center align-middle table-dark">{% trans "update_at" %}：</td>
