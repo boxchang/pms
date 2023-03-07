@@ -11,8 +11,8 @@ class RequestByPViewSet(ListModelMixin, GenericViewSet):
 
     def get_queryset(self):
         p_id = self.kwargs['project_id']
-        exclude_list = ['6','8']
-        queryset = Request.objects.filter(project=p_id, belong_to=None).exclude(exclude_list).order_by('level')
+        exclude_list = [6,8]
+        queryset = Request.objects.filter(project=p_id, belong_to=None).exclude(status__in=exclude_list).order_by('level')
 
         return queryset
 
