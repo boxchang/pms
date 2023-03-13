@@ -23,7 +23,7 @@ class SubRequestViewSet(ListModelMixin, GenericViewSet):
 
     def get_queryset(self):
         r_id = self.kwargs['request_id']
-        queryset = Request.objects.filter(belong_to=r_id)
+        queryset = Request.objects.filter(belong_to=r_id).order_by('due_date')
 
         return queryset
 
