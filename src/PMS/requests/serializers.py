@@ -32,7 +32,7 @@ class RequestSerializer(serializers.ModelSerializer):
     def get_sub_request(self, obj):
         sub_num = '-'
         f_num = 0
-        sub_requests = Request.objects.filter(belong_to=obj)
+        sub_requests = Request.objects.filter(belong_to=obj).order_by('due_date')
 
         if sub_requests.count() > 0:
             for sub_request in sub_requests:
