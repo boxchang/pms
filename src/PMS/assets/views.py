@@ -293,7 +293,7 @@ def search(request):
 
     if _desc:
         request.session['desc'] = _desc
-        assets = assets.filter(Q(desc__icontains=_desc) | Q(comment__icontains=_desc))
+        assets = assets.filter(Q(desc__icontains=_desc) | Q(comment__icontains=_desc) | Q(model__icontains=_desc))
 
     if not _scrap:
         request.session['scrap'] = _scrap
