@@ -433,7 +433,7 @@ def get_series_number(asset_category, asset_type, asset_location):
         loc_obj = Location.objects.filter(id=asset_location_id)
         location_code = loc_obj[0].location_code
         series_code = "A-" + location_code + "-" + type_code + "-"
-        _key = asset_category_id.zfill(3) + asset_location_id.zfill(3) + asset_type_id.zfill(3)
+        _key = asset_category_id.zfill(3) + location_code.zfill(3) + type_code.zfill(3)
         _key_name = asset_category_name + "_" + asset_location_name + "_" + asset_type_name
 
     # 滾序號
@@ -563,6 +563,7 @@ def import_excel(request):
                     break
 
                 asset = Asset()
+                asset.auto_encode = False
                 asset.asset_no = sheet.cell(row = iRow, column = 1).value or ''
                 if sheet.cell(row = iRow, column = 2).value:
                     asset.status = AssetStatus.objects.get(status_name=sheet.cell(row = iRow, column = 2).value)
