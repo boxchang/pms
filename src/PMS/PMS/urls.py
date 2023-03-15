@@ -32,9 +32,9 @@ router = DefaultRouter()
 router.register(r'requests/(?P<request_id>\d+)/requests', SubRequestViewSet)
 router.register(r'requests/(?P<request_id>\w+)/problems', ProblemByRViewSet)
 
-router.register(r'projects/(?P<project_id>\d+)/requests', RequestByPViewSet)
-router.register(r'projects/(?P<project_id>\d+)/problems', ProblemByPViewSet)
-router.register(r'projects/(?P<project_id>\d+)/bugs', BugByPViewSet)
+router.register(r'projects/(?P<project_id>\d+)/(?P<user_id>\d+)/requests', RequestByPViewSet)
+router.register(r'projects/(?P<project_id>\d+)/(?P<user_id>\d+)/problems', ProblemByPViewSet)
+router.register(r'projects/(?P<project_id>\d+)/(?P<user_id>\d+)/bugs', BugByPViewSet)
 
 router.register(r'bugs/(?P<bug_id>\d+)/problems', ProblemByBViewSet)
 

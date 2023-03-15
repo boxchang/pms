@@ -98,7 +98,7 @@ $(function(){
             field: 'id', title: '鍵值', visible:false
         }]
 
-createBootstrapTable("#request_table",data_column,{{ page_num }},"/api/projects/{{ pk }}/requests", "/api/requests/")
+createBootstrapTable("#request_table",data_column,{{ page_num }},"/api/projects/{{ pk }}/{{ user.id }}/requests", "/api/requests/")
 
 
     //PROBLEM
@@ -125,7 +125,7 @@ createBootstrapTable("#request_table",data_column,{{ page_num }},"/api/projects/
         }]
 
 
-createSimpleTable("#problem_table",problem_data_column,{{ page_num }},"/api/projects/{{ pk }}/problems");
+createSimpleTable("#problem_table",problem_data_column,{{ page_num }},"/api/projects/{{ pk }}/{{ user.id }}/problems");
 
 
     //BUG
@@ -152,7 +152,7 @@ createSimpleTable("#problem_table",problem_data_column,{{ page_num }},"/api/proj
         }]
 
 
-createSimpleTable("#bug_table",bug_data_column,{{ page_num }},"/api/projects/{{ pk }}/bugs");
+createSimpleTable("#bug_table",bug_data_column,{{ page_num }},"/api/projects/{{ pk }}/{{ user.id }}/bugs");
 
 
 
