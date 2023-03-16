@@ -425,6 +425,8 @@ def get_series_number(asset_category, asset_type, asset_location):
             series_code = "TWKHHD"
         elif type_name == "MOBILE":
             series_code = "TWKHHM"
+        elif type_name == "PROJECTOR":
+            series_code = "TWKHHO"
         else:
             series_code = "IT-" + type_code + "-"
         _key = asset_category_id.zfill(3) + asset_type_id.zfill(3)
