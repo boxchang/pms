@@ -68,7 +68,7 @@ class AssetModelForm(forms.ModelForm):
     asset_no = forms.CharField(required=False, label="資產編號")
     auto_encode = forms.BooleanField(required=False, initial=True, label="自動編碼")
     pur_price = forms.IntegerField(required=True, label="採購金額", widget=forms.NumberInput(), initial=0)
-    pur_date = forms.CharField(required=False, initial=datetime.strftime(datetime.now(), "%Y-%m"), label="採購年月")
+    pur_date = forms.CharField(required=False, label="採購年月")
     category = forms.ModelChoiceField(required=True, label="資產類別", queryset=AssetCategory.objects.all())
     type = forms.ModelChoiceField(required=True, label="資產種類", queryset=AssetType.objects.all())
     brand = forms.ModelChoiceField(required=True, label="品牌", queryset=Brand.objects.all())
