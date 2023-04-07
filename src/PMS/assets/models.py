@@ -141,7 +141,7 @@ class Asset(models.Model):
     update_at = models.DateTimeField(auto_now=True, null=True)
     update_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='asset_update_by')
-    comment = models.CharField(max_length=2000, blank=True, null=True)
+    comment = models.CharField(max_length=5000, blank=True, null=True)
 
     def __str__(self):
         return self.asset_no
