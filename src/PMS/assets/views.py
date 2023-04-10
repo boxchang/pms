@@ -179,6 +179,7 @@ def search(request):
 
     assets = Asset.objects.all()
     if request.method == "POST":
+        clean_session(request)
         _asset_no = request.POST.get('asset_no')
         _status = request.POST.get('status')
         _category = request.POST.get('category')
@@ -471,8 +472,8 @@ def detail(request, pk):
 
     return render(request, 'assets/detail.html', locals())
 
-#回主頁
-def main(request):
+# 清除Session
+def clean_session(request):
     """清除session"""
     if 'asset_no' in request.session:
         del request.session['asset_no']
@@ -501,6 +502,10 @@ def main(request):
     if 'brand' in request.session:
         del request.session['brand']
 
+
+# 回主頁
+def main(request):
+    clean_session(request)
     form = AssetSearchForm()
     return render(request, 'assets/main.html', locals())
 
