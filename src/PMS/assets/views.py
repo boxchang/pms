@@ -746,7 +746,11 @@ def print_label(request, pk):
     asset = Asset.objects.get(pk=pk)
     now = datetime.now()
     file_name = datetime.strftime(now, '%Y%m%d %H%M%S') + ".csv"
-    file_name = os.path.join(BASE_DIR, 'media', 'uploads', 'label', file_name)
+    directory = os.path.dirname(os.path.join(BASE_DIR, 'media', 'uploads', 'label'))
+    file_name = os.path.join(directory, file_name)
+
+    if not os.path.exists(directory):
+        os.makedirs(directory)
 
     with open(file_name, 'w', newline='') as csvfile:
         fieldnames = ['NUMBER']
