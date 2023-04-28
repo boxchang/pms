@@ -296,9 +296,11 @@ def search(request):
         request.session['desc'] = _desc
         assets = assets.filter(Q(desc__icontains=_desc) | Q(comment__icontains=_desc) | Q(model__icontains=_desc))
 
-    if not _scrap:
+    if _scrap:
         request.session['scrap'] = _scrap
+    else:
         assets = assets.exclude(status=AssetStatus.objects.get(status_name="已報廢"))
+
 
     _orderby = []
     if _condition1:
