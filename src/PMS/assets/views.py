@@ -601,7 +601,7 @@ def import_excel(request):
     return render(request, 'assets/import.html', locals())
 
 #Sheet轉Table
-def Sheet2Table(sheet):
+def Sheet2LabelTable(sheet):
     html = """<table border='1'>
                 {Rows}
             </table>"""
@@ -623,7 +623,7 @@ def Sheet2Table(sheet):
     return html
 
 #Sheet轉Object
-def Sheet2Object(sheet):
+def Sheet2AssetObject(sheet):
     assets = []
     for iRow in range(2, sheet.max_row+1):
         print("目前第{iRow}行".format(iRow=iRow))
@@ -657,7 +657,7 @@ def Sheet2Object(sheet):
     return assets
 
 #Object轉Table
-def Object2Table(assets, sheet):
+def Object2AssetTable(assets, sheet):
     html = """<table border='1'>
                 {Rows}
             </table>"""
@@ -712,16 +712,28 @@ def Excel2CSV(sheet):
     return file_name
 
 #API預覽
-def preview(request):
+def import_assets_preview(request):
     result = ""
     if request.method == 'POST':
         excel_file = request.FILES.get('files1')
         if excel_file:
             wb = openpyxl.load_workbook(excel_file)
             sheet = wb.worksheets[0]
-            obj = Sheet2Object(sheet)
-            result = Object2Table(obj, sheet)
+            obj = Sheet2AssetObject(sheet)
+            result = Object2AssetTable(obj, sheet)
     return JsonResponse(result, safe=False)
+
+#API預覽
+def label_preview(request):
+    result = ""
+    if request.method == 'POST':
+        excel_file = request.FILES.get('files1')
+        if excel_file:
+            wb = openpyxl.load_workbook(excel_file)
+            sheet = wb.worksheets[0]
+            result = Sheet2LabelTable(sheet)
+    return JsonResponse(result, safe=False)
+
 
 #API類別
 def TypeAPI(request, category_id):

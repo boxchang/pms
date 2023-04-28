@@ -22,8 +22,11 @@ AMS - Import Excel Data
                 var formData = new FormData(this);
                 $.ajax({
                     type: "POST",
-                    url: "/assets/preview/",
+                    url: "{% url 'import_assets_preview' %}",
                     data: formData,
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert(jqXHR.responseText);
+                    },
                     success: function(data) {
                         $("#preview").html(data);
                         $("#send").text("Save");

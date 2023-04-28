@@ -1,5 +1,6 @@
 from django.urls import re_path as url
-from assets.views import TypeAPI, BrandAPI, asset_doc_delete, asset_pic_delete, export_assets_xls, index, label, preview, main, delete, print_label, update, create, search, import_excel, detail
+from assets.views import TypeAPI, BrandAPI, asset_doc_delete, asset_pic_delete, export_assets_xls, index, label, \
+    main, delete, print_label, update, create, search, import_excel, detail, import_assets_preview, label_preview
 
 urlpatterns = [
     url(r'^print_label/(?P<pk>\d+)/$', print_label, name='print_label'),
@@ -13,7 +14,8 @@ urlpatterns = [
     url(r'^delete/(?P<pk>\d+)/$', delete, name='assets_delete'),
     url(r'^update/(?P<pk>\d+)/$', update, name='assets_update'),
     url(r'^detail/(?P<pk>\d+)/$', detail, name='assets_detail'),
-    url(r'^preview/', preview, name='label_preview'),
+    url(r'^import_assets_preview/', import_assets_preview, name='import_assets_preview'),
+    url(r'^label_preview/', label_preview, name='label_preview'),
     url(r'^label/', label, name='assets_label'),
     url(r'^dpic/(?P<pk>\d+)', asset_pic_delete, name="asset_pic_delete"),
     url(r'^ddoc/(?P<pk>\d+)', asset_doc_delete, name="asset_doc_delete"),

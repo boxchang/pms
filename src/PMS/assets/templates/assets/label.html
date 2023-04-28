@@ -18,7 +18,7 @@
                         var formData = new FormData(this);
                         $.ajax({
                             type: "POST",
-                            url: "/assets/preview/",
+                            url: "{% url 'label_preview' %}",
                             data: formData,
                             success: function(data) {
                                 $("#preview").html(data);
