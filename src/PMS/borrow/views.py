@@ -3,7 +3,7 @@ from django.urls import reverse
 import json
 from PMS.database import database
 from assets.models import AssetType, AssetCategory, Asset
-from borrow.forms import BorrowForm
+from borrow.forms import BorrowForm, BorrowAdminForm
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from borrow.models import Borrow, BorrowItem
@@ -118,9 +118,23 @@ def apply(request):
     return render(request, 'borrow/application.html', locals())
 
 
+def update(request, pk):
+    if request.method == 'POST':
+        borrow = Borrow.objects.get(form_no=pk)
+        if request.POST.get('lend_date'):
+            borrow.lend_owner = request.user
+        if request.POST.get('return_date'):
+            borrow.return_owner = request.user
+        form = BorrowAdminForm(request.POST, instance=borrow)
+        if form.is_valid():
+            tmp_form = form.save(commit=False)
+            tmp_form.save()
+    return render(request, 'borrow/record.html', locals())
+
 def detail(request, form_no):
     borrow = Borrow.objects.get(form_no=form_no)
     items = borrow.borrow_item.all()
+    admin_form = BorrowAdminForm()
     return render(request, 'borrow/detail.html', locals())
 
 

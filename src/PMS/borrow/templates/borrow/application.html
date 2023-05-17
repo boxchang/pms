@@ -1,9 +1,9 @@
-{% extends 'bases/base.html' %}
+{% extends 'borrow/base.html' %}
 {% load crispy_forms_tags %}
 {% block title %}
     資訊借物申請單
 {% endblock %}
-{% block container %}
+{% block sub_container %}
 <div class="row">
     <div class="col-1"></div>
     <div class="col-10">
@@ -97,7 +97,7 @@
     </div>
     <div class="col-1"></div>
 </div>
-{% endblock %}
+{% endblock sub_container %}
 
 {% block js %}
 <script>

@@ -1,10 +1,10 @@
-{% extends 'bases/base.html' %}
+{% extends 'borrow/base.html' %}
 {% load crispy_forms_tags %}
 {% load static %}
 {% block title %}
     資訊借物申請單
 {% endblock %}
-{% block container %}
+{% block sub_container %}
 <fieldset>
     <legend>借用資訊</legend>
     <ul class="list-group list-group-flush">
@@ -81,27 +81,30 @@
         </li>
     </ul>
 </fieldset>
+{% if user.is_authenticated %}
 <fieldset>
     <legend>管理者</legend>
     <ul class="list-group list-group-flush">
         <li class="list-group-item">
             <div class="p-3">
-                {% if user.is_authenticated %}
-
-                <div style="text-align:center">
-                    <a href="" class="btn btn-info">修改</a>
-                    <a href="" class="btn btn-danger" onclick="return confirm('Are you sure?')">刪除</a>
-                </div>
-                {% endif %}
+                <form method="post" action="{% url 'borrow_update' borrow.pk %}">
+                  {% csrf_token %}
+                  {% crispy admin_form %}
+                    <div class="pb-4" style="text-align: center;">
+                        <input class="btn btn-success" type="submit" value="修改" />
+                        <a href="" class="btn btn-danger" onclick="return confirm('Are you sure?')">刪除</a>
+                    </div>
+                </form>
             </div>
         </li>
     </ul>
 </fieldset>
+{% endif %}
 <div style="text-align:left;color:#EEE">
     最後修改：{{ borrow.update_at|date:'Y-m-d' }} {{ borrow.update_by }}
 </div>
 
-{% endblock %}
+{% endblock sub_container %}
 
 {% block js %}
 

@@ -52,8 +52,47 @@ class BorrowForm(forms.ModelForm):
             }
         )
 
-class BorrowModifiedForm(forms.ModelForm):
+class BorrowAdminForm(forms.ModelForm):
     class Meta:
         model = Borrow
         fields = (
             'lend_date', 'return_date', 'admin_comment')
+
+    admin_comment = forms.CharField(required=False, label="備註")
+    lend_date = forms.CharField(required=False, label="實際借出日期")
+    return_date = forms.CharField(required=False, label="實際歸還日期")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.form_show_errors = True
+
+        self.helper.layout = Layout(
+            Div(
+                Div('lend_date', css_class='col-md-6'),
+                Div('return_date', css_class='col-md-6'),
+                css_class='row'),
+            Div(
+                Div('admin_comment', css_class='col-md-12'),
+                css_class='row'),
+        )
+
+        self.fields['lend_date'].widget = DatePickerInput(
+            options={
+                "format": "YYYY-MM-DD",
+                "showClose": False,
+                "showClear": False,
+                "showTodayButton": False,
+            }
+        )
+
+        self.fields['return_date'].widget = DatePickerInput(
+            options={
+                "format": "YYYY-MM-DD",
+                "showClose": False,
+                "showClear": False,
+                "showTodayButton": False,
+            }
+        )
