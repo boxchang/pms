@@ -36,7 +36,7 @@ class database:
     def create_connection(self):
         try:
             conn = pyodbc.connect("DRIVER={{SQL Server}};SERVER={server}; database={database}; \
-                   trusted_connection=no;UID={uid};PWD={pwd}".format(server="10.96.101.4", database="EFGP_Test", uid="sa", pwd="134"))
+                   trusted_connection=no;UID={uid};PWD={pwd}".format(server="10.96.101.4", database="NaNa", uid="sa", pwd="134"))
 
             return conn
         except Error as e:
