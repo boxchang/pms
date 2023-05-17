@@ -8,6 +8,7 @@ from projects.models import Project, Project_setting
 from requests.models import Request, Level
 from tests.models import Request_test, Request_test_item
 from assets.models import *
+from users.models import UserType
 
 
 @admin.register(Request_test)
@@ -119,3 +120,6 @@ class UnitAdmin(admin.ModelAdmin):
 class SeriesAdmin(admin.ModelAdmin):
     list_display = ('desc', 'key', 'series')
 
+@admin.register(UserType)
+class CarStatusAdmin(admin.ModelAdmin):
+    list_display = ('type_name',)

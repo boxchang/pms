@@ -10,8 +10,19 @@ from django.utils.translation import gettext_lazy as _
 from django.core.mail import send_mail
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.core import validators
-
 from django.contrib.auth.models import BaseUserManager
+from django.conf import settings
+
+
+class UserType(models.Model):
+    type_id = models.IntegerField(primary_key=True)
+    type_name = models.CharField(_('類別'), max_length=50)
+    create_at = models.DateTimeField(default=timezone.now)
+    create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
+                                  related_name='user_type_create_at')
+
+    def __str__(self):
+        return self.type_name
 
 
 class CustomUserManager(BaseUserManager):
@@ -51,6 +62,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     Email and password are required. Other fields are optional.
     """
+    emp_no = models.CharField("工號", max_length=30, blank=False, null=False)
     username = models.CharField(_('username'), max_length=30, unique=True,
                                 help_text=_('Required. 30 characters or fewer. Letters, digits and '
                                             '@/./+/-/_ only.'),
@@ -64,7 +76,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
                                     'unique': _("A user with that username already exists."),
     })
 
-    email = models.EmailField(_('email address'), max_length=254)
+    email = models.EmailField(_('email address'), max_length=254, null=True, blank=True)
+    user_type = models.ForeignKey(UserType, related_name='user_type', null=True, on_delete=models.DO_NOTHING)
     first_name = models.CharField(_('first name'), max_length=30, blank=False)
     last_name = models.CharField(_('last name'), max_length=30, blank=False)
     shot = models.FileField(upload_to='uploads/profile', null=True, blank=True)
@@ -91,11 +104,18 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         verbose_name = _('user')
         verbose_name_plural = _('users')
 
+        permissions = (
+            ('perm_pms', '專案管理系統權限'),
+            ('perm_ams', '資產管理系統權限'),
+            ('perm_workhour', '產線報工'),
+            ('perm_user_manage', '使用者管理'),
+        )
+
     def get_full_name(self):
         """
         Returns the first_name plus the last_name, with a space in between.
         """
-        full_name = '%s %s' % (self.first_name, self.last_name)
+        full_name = '%s%s' % (self.last_name,self.first_name)
         return full_name.strip()
 
     def get_short_name(self):
@@ -107,6 +127,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         Sends an email to this User.
         """
         send_mail(subject, message, from_email, [self.email])
+
+
 
 
 @receiver(models.signals.post_delete, sender=CustomUser)

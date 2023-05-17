@@ -37,6 +37,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'borrow',
     'assets',
     'helpdesk',
     'tests',
@@ -173,6 +174,8 @@ CKEDITOR_UPLOAD_SLUGIFY_FILENAME = False
 #LOGIN_REDIRECT_URL = reverse_lazy('manage')
 
 AUTH_USER_MODEL = 'users.CustomUser'
+
+AUTHENTICATION_BACKENDS = ['users.backends.EmpNoBackend']
 
 # TIME= 240*60  #four hours  or your time
 TIME = 10*60*60  # 20 mins

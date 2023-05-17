@@ -20,6 +20,7 @@ from django.conf.urls.i18n import i18n_patterns
 from django.views.generic import RedirectView
 from rest_framework.routers import DefaultRouter
 
+from borrow.ser_views import BorrowByViewSet
 from bugs.ser_views import BugByPViewSet
 from problems.ser_views import ProblemByPViewSet, ProblemByRViewSet, ProblemByBViewSet
 from bases.views import index
@@ -31,15 +32,15 @@ from requests.ser_views import SubRequestViewSet, RequestByPViewSet
 router = DefaultRouter()
 router.register(r'requests/(?P<request_id>\d+)/requests', SubRequestViewSet)
 router.register(r'requests/(?P<request_id>\w+)/problems', ProblemByRViewSet)
-
 router.register(r'projects/(?P<project_id>\d+)/(?P<user_id>\d+)/requests', RequestByPViewSet)
 router.register(r'projects/(?P<project_id>\d+)/(?P<user_id>\d+)/problems', ProblemByPViewSet)
 router.register(r'projects/(?P<project_id>\d+)/(?P<user_id>\d+)/bugs', BugByPViewSet)
-
 router.register(r'bugs/(?P<bug_id>\d+)/problems', ProblemByBViewSet)
+router.register(r'borrow', BorrowByViewSet)
 
 urlpatterns = [
     url('admin/', admin.site.urls),
+    url(r'^borrow/', include('borrow.urls')),
     url(r'^projects/', include('projects.urls')),
     url(r'^requests/', include('requests.urls')),
     url(r'^problems/', include('problems.urls')),

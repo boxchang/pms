@@ -1,26 +1,36 @@
 import datetime
+from django.contrib.auth.models import Permission
 from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth import authenticate
-from django.http import HttpResponseRedirect
-
+from django.http import HttpResponseRedirect, JsonResponse
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.urls import reverse
 from django.utils import translation
-
-
+from django.db.models import Q
 from projects.models import Project
 from bases.views import index
-from users.forms import CurrentCustomUserForm, CustomUser
+from users.forms import CurrentCustomUserForm, CustomUser, UserInfoForm
+
+
+def add_permission(user, codename):
+    perm = Permission.objects.get(codename=codename)
+    user.user_permissions.add(perm)
+
+
+def remove_permission(user, codename):
+    perm = Permission.objects.get(codename=codename)
+    user.user_permissions.remove(perm)
 
 
 def register(request):
     '''
     Register a new user
     '''
-    template = 'registration/register.html'
+    template = 'users/register.html'
     if request.method == 'GET':
         return render(request, template, {'userForm': CurrentCustomUserForm()})
 
@@ -35,8 +45,8 @@ def register(request):
 
 
 def login(request):
-    if 'username' in request.COOKIES:
-        cookies_username = request.COOKIES['username']
+    if 'emp_no' in request.COOKIES:
+        cookies_username = request.COOKIES['emp_no']
 
     if 'password' in request.COOKIES:
         cookies_password = request.COOKIES['password']
@@ -44,7 +54,7 @@ def login(request):
     '''
     Login an existing user
     '''
-    template = 'registration/login.html'
+    template = 'users/login.html'
     if request.method == 'GET':
         next = request.GET.get('next')
         return render(request, template, locals())
@@ -58,23 +68,23 @@ def login(request):
                 return index(request)
         else:
             # POST
-            username = request.POST.get('username')
+            emp_no = request.POST.get('emp_no')
             password = request.POST.get('password')
-            if not username or not password:    # Server-side validation
+            if not emp_no or not password:    # Server-side validation
                 messages.error(request, '使用者名稱或密碼未填寫！')
                 return render(request, template)
 
-            user = authenticate(username=username, password=password)
+            user = authenticate(username=emp_no, password=password)
             if not user:    # authentication fails
                 messages.error(request, '使用者名稱或密碼不正確！')
                 return render(request, template)
 
             response = redirect(reverse('assets_main'))
             if request.POST.get('remember') == "on":
-                response.set_cookie("username", username, expires=timezone.now()+datetime.timedelta(days=30))
+                response.set_cookie("emp_no", emp_no, expires=timezone.now()+datetime.timedelta(days=30))
                 response.set_cookie("password", password, expires=timezone.now()+datetime.timedelta(days=30))
             else:
-                response.delete_cookie("username")
+                response.delete_cookie("emp_no")
                 response.delete_cookie("password")
             # login success
             auth_login(request, user)
@@ -91,3 +101,169 @@ def logout(request):
     auth_logout(request)
     messages.success(request, '歡迎再度光臨')
     return redirect('login')
+
+
+# Create
+@login_required
+def create(request):
+    template = 'users/create.html'
+    if request.method == 'GET':
+        form = CurrentCustomUserForm()
+        form.fields['password1'].required = True
+        form.fields['password2'].required = True
+
+        return render(request, template, {'userForm': form})
+
+    if request.method == 'POST':
+        form = CurrentCustomUserForm(request.POST)
+        form.fields['password1'].required = True
+        form.fields['password2'].required = True
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.create_by = request.user
+            user.update_by = request.user
+            user.set_password(form.cleaned_data["password1"])
+            user.save()
+            #messages.success(request, '歡迎註冊')
+            return redirect('user_list')
+        else:
+            return render(request, template, {'userForm': form})
+
+
+@login_required
+def detail(request):
+    template = 'users/edit.html'
+    if request.method == 'POST':
+        pk = request.POST.get('pk')
+        member = CustomUser.objects.get(pk=pk)
+        perm_pms = member.has_perm('users.perm_pms')
+        perm_ams = member.has_perm('users.perm_ams')
+        perm_workhour = member.has_perm('users.perm_workhour')
+        perm_user_manage = member.has_perm('users.perm_user_manage')
+
+        form = CurrentCustomUserForm(instance=member)
+        form.fields['emp_no'].widget.attrs['readonly'] = True
+
+        return render(request, template, locals())
+
+# Edit
+@login_required
+def user_edit(request):
+    template = 'users/edit.html'
+    if request.method == 'POST':
+        pk = request.POST.get('pk')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        member = CustomUser.objects.get(pk=pk)
+        form = CurrentCustomUserForm(request.POST, instance=member)
+
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.create_by = request.user
+            user.update_by = request.user
+            if password1 and password2:
+                user.set_password(password1)
+            user.save()
+            return redirect('user_list')
+    return render(request, template, locals())
+
+
+# Edit
+@login_required
+def user_info(request):
+    template = 'users/info.html'
+    pk = request.user.pk
+    member = CustomUser.objects.get(pk=pk)
+
+    if request.method == 'POST':
+        password = request.POST.get('password0')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+
+        form = UserInfoForm(request.POST, instance=member)
+
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.update_by = request.user
+            if password1 and password2:
+                user.set_password(password1)
+            user.save()
+            messages.info(request, '修改成功!')
+    else:
+        form = UserInfoForm(instance=member)
+    return render(request, template, locals())
+
+
+@login_required
+def user_list(request):
+    template = 'users/list.html'
+
+    user_keyword = ""
+
+    query = Q(user_type__isnull=False)  # 排除超級管理者
+    members = CustomUser.objects.filter(query)
+
+    member_all = members.count()
+    admin_count = members.filter(user_type=1).count()
+    member_count = members.filter(user_type=2).count()
+
+    if request.method == 'POST':
+        user_keyword = request.POST.get('user_keyword')
+        request.session['user_keyword'] = user_keyword
+
+    if request.method == 'GET':
+        if 'user_keyword' in request.session:
+            user_keyword = request.session['user_keyword']
+
+    if user_keyword:
+        query.add(Q(emp_no__icontains=user_keyword), Q.AND)
+        query.add(Q(first_name__icontains=user_keyword), Q.OR)
+        query.add(Q(last_name__icontains=user_keyword), Q.OR)
+        query.add(Q(email__icontains=user_keyword), Q.OR)
+        members = CustomUser.objects.filter(query)
+
+    for member in members:
+        if member.is_active:
+            member.is_active_text = "啟用"
+            member.is_active_color = "bg-success"
+        else:
+            member.is_active_text = "停用"
+            member.is_active_color = "bg-danger"
+
+        if member.last_login:
+            member.last_login_color = "bg-light"
+        else:
+            member.last_login_color = "bg-secondary"
+
+    return render(request, template, locals())
+
+# Ajax API
+@login_required
+def user_auth_api(request):
+    if request.method == 'POST':
+        pk = request.POST.get('pk')
+
+        user = CustomUser.objects.get(pk=pk)
+
+        if request.POST.get('perm_pms'):
+            add_permission(user, 'perm_pms')
+        else:
+            remove_permission(user, 'perm_pms')
+
+        if request.POST.get('perm_ams'):
+            add_permission(user, 'perm_ams')
+        else:
+            remove_permission(user, 'perm_ams')
+
+        if request.POST.get('perm_workhour'):
+            add_permission(user, 'perm_workhour')
+        else:
+            remove_permission(user, 'perm_workhour')
+
+        if request.POST.get('perm_user_manage'):
+            add_permission(user, 'perm_user_manage')
+        else:
+            remove_permission(user, 'perm_user_manage')
+
+        msg = "權限更新完成"
+        return JsonResponse(msg, safe=False)

@@ -197,7 +197,10 @@ def pms_home(request):
 
     # 在index就有判斷使用者設定，理論上這邊一定會有值
     obj = CustomUser.objects.get(pk=request.user.pk)
-    pk = obj.setting_user.first().default.pk
+    if obj.setting_user.first():
+        pk = obj.setting_user.first().default.pk
+    else:
+        return redirect(reverse('project_setting'))
     assert obj != None, u'user setting can\'t get at bases\\views.py'
 
     # project_setting = Project_setting.objects.user.filter().first()
