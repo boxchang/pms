@@ -46,7 +46,7 @@ def get_deptuser_api(request):
         sql = """SELECT u.id, u.userName
                   FROM Users u, Functions f, OrganizationUnit ou 
                   where leaveDate is null and f.occupantOID = u.OID and f.isMain = 1
-                  and f.organizationUnitOID = ou.OID and ou.organizationUnitName = '{unitName}'""".format(unitName=unitName)
+                  and f.organizationUnitOID = ou.OID and ou.organizationUnitName = '{unitName}' and ou.validType=1""".format(unitName=unitName)
         db = database()
         rows = db.select_sql(sql)
         html = "<option value="" selected>---------</option>"
