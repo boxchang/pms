@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.urls import reverse
 import json
 from PMS.database import database
-from assets.models import AssetType, AssetCategory, Asset
+from assets.models import AssetType, AssetCategory, Asset, AssetStatus
 from borrow.forms import BorrowForm, BorrowAdminForm
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -31,7 +31,7 @@ def find_asset_api(request):
 def get_asset_api(request):
     if request.method == 'POST':
         typeId = request.POST.get('typeId')
-        assets = Asset.objects.filter(type=typeId, status__in=(2, 4))  # 狀態2閒置中, 狀態4出借中
+        assets = Asset.objects.filter(type=typeId, status__in=(9, 4))  # 狀態9可出借, 狀態4出借中
         html = ""
 
         for asset in assets:
@@ -69,8 +69,9 @@ def createDeptOption():
 
 
 def createAssetTypeOption():
-    it = AssetCategory.objects.get(category_name="資訊設備")
-    types = AssetType.objects.filter(category=it)
+    status = AssetStatus.objects.get(status_name="可出借")
+    assets = Asset.objects.filter(status=status).values("type").distinct()
+    types = AssetType.objects.filter(id__in=assets)
     html = "<option value="" selected>---------</option>"
 
     for type in types:
@@ -125,6 +126,12 @@ def update(request, pk):
             borrow.lend_owner = request.user
         if request.POST.get('return_date'):
             borrow.return_owner = request.user
+        items = BorrowItem.objects.filter(borrow=borrow)
+        for item in items:
+            asset = Asset.objects.get(id=item.asset.id)
+            asset.status = AssetStatus.objects.get(status_name="出借中")
+            asset.save()
+
         form = BorrowAdminForm(request.POST, instance=borrow)
         if form.is_valid():
             tmp_form = form.save(commit=False)
