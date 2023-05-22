@@ -1,6 +1,5 @@
 from django.db import models
 from django.conf import settings
-
 from assets.models import Asset
 
 
@@ -20,6 +19,7 @@ class Borrow(models.Model):
     update_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='borrow_update_by', null=True)
     admin_comment = models.CharField(max_length=500, blank=False, null=False)
+    finished = models.BooleanField(default=False)
 
 
 class BorrowItem(models.Model):

@@ -121,16 +121,25 @@ def apply(request):
 
 def update(request, pk):
     if request.method == 'POST':
+        lend_date = request.POST.get('lend_date')
+        return_date = request.POST.get('return_date')
         borrow = Borrow.objects.get(form_no=pk)
-        if request.POST.get('lend_date'):
-            borrow.lend_owner = request.user
-        if request.POST.get('return_date'):
-            borrow.return_owner = request.user
         items = BorrowItem.objects.filter(borrow=borrow)
-        for item in items:
-            asset = Asset.objects.get(id=item.asset.id)
-            asset.status = AssetStatus.objects.get(status_name="出借中")
-            asset.save()
+
+        if borrow.finished is False:
+            if lend_date and not return_date:
+                borrow.lend_owner = request.user
+                for item in items:
+                    asset = Asset.objects.get(id=item.asset.id)
+                    asset.status = AssetStatus.objects.get(id=4)  # 出借中
+                    asset.save()
+
+            if return_date:
+                borrow.return_owner = request.user
+                for item in items:
+                    asset = Asset.objects.get(id=item.asset.id)
+                    asset.status = AssetStatus.objects.get(id=9)  # 可出借
+                    asset.save()
 
         form = BorrowAdminForm(request.POST, instance=borrow)
         if form.is_valid():
@@ -138,20 +147,23 @@ def update(request, pk):
             tmp_form.save()
     return render(request, 'borrow/record.html', locals())
 
+
 def detail(request, form_no):
     borrow = Borrow.objects.get(form_no=form_no)
     items = borrow.borrow_item.all()
-    admin_form = BorrowAdminForm()
+    admin_form = BorrowAdminForm(instance=borrow)
     return render(request, 'borrow/detail.html', locals())
 
 
 def form_delete(request, form_no):
     borrow = Borrow.objects.get(form_no=form_no)
-    items = borrow.borrow_item.all()
-    return render(request, 'borrow/detail.html', locals())
+    borrow.delete()
+    return render(request, 'borrow/record.html', locals())
 
 
-def item_delete(request, form_no):
+def item_delete(request, form_no, asset_no):
     borrow = Borrow.objects.get(form_no=form_no)
-    items = borrow.borrow_item.all()
-    return render(request, 'borrow/detail.html', locals())
+    asset = Asset.objects.get(asset_no=asset_no)
+    item = BorrowItem.objects.get(asset=asset)
+    item.delete()
+    return render(request, 'borrow/record.html', locals())

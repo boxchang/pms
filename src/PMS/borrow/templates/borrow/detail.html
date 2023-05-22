@@ -72,7 +72,7 @@
                             <td>{{ item.asset.brand }}</td>
                             <td>{{ item.asset.model }}</td>
                             <td>{{ item.asset.comment }}</td>
-                            <td style="text-align: center"><a href="" class="btn btn-danger" onclick="return confirm('Are you sure?')">刪除</a></td>
+                            <td style="text-align: center"><a href="{% url 'item_delete' borrow.form_no item.asset.asset_no %}" class="btn btn-danger" onclick="return confirm('Are you sure?')">刪除</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -92,7 +92,7 @@
                   {% crispy admin_form %}
                     <div class="pb-4" style="text-align: center;">
                         <input class="btn btn-success" type="submit" value="修改" />
-                        <a href="" class="btn btn-danger" onclick="return confirm('Are you sure?')">刪除</a>
+                        <a href="{% url 'form_delete' borrow.form_no %}" class="btn btn-danger" onclick="return confirm('Are you sure?')">刪除</a>
                     </div>
                 </form>
             </div>
