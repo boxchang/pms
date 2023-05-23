@@ -186,7 +186,7 @@ AMS - Asset Detail
                 <li class="list-group-item"></li>
             </ul>
         </fieldset>
-        {% if asset.comment %}
+        {% if asset.comment and user.is_authenticated %}
         <fieldset>
             <legend>Comment</legend>
             <ul class="list-group list-group-flush">
