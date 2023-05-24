@@ -3,6 +3,8 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
+
+from assets.encode import EncodeInterface, EncodeIT, EncodeGeneral, EncodeOffice
 from assets.forms import AssetModelForm, AssetSearchForm
 from assets.models import Asset, AssetArea, AssetCategory, AssetStatus, AssetType, Brand, Doc_attachment, Label_attachment, Pic_attachment, Series, Location, Unit
 import openpyxl
@@ -410,55 +412,14 @@ def update(request, pk):
 
 #滾序號
 def get_series_number(asset_category, asset_type, asset_location):
-    type_code = asset_type.type_code  # 縮寫
-    type_name = asset_type.type_name.upper()
     asset_category_id = str(asset_category.id)
-    asset_category_name = str(asset_category.category_name)
-    asset_location_id = str(asset_location.id)
-    asset_location_name = str(asset_location.location_name)
-    asset_type_id = str(asset_type.id)
-    asset_type_name = str(asset_type.type_name)
-
-    _key = ""
-    _key_name = ""
     if asset_category_id == "1":  # 資訊設備
-        if type_name == "NOTEBOOK":
-            series_code = "TWKHHN"
-        elif type_name == "COMPUTER":
-            series_code = "TWKHHD"
-        elif type_name == "MOBILE":
-            series_code = "TWKHHM"
-        elif type_name == "PROJECTOR":
-            series_code = "TWKHHO"
-        else:
-            series_code = "IT-" + type_code + "-"
-        _key = asset_category_id.zfill(3) + asset_type_id.zfill(3)
-        _key_name = asset_category_name + "_" + asset_type_name
+        encode = EncodeInterface(EncodeIT(asset_category=asset_category, asset_type=asset_type))
     elif asset_category_id == "2":  # 辦公設備
-        loc_obj = Location.objects.filter(id=asset_location_id)
-        location_code = loc_obj[0].location_code
-        series_code = "A-" + location_code + "-" + type_code + "-"
-        _key = asset_category_id.zfill(3) + location_code.zfill(3) + type_code.zfill(3)
-        _key_name = asset_category_name + "_" + asset_location_name + "_" + asset_type_name
-
-    # 滾序號
-    obj = Series.objects.filter(key=_key)
-    if obj:
-        _series = obj[0].series + 1
-        obj.update(series=_series, desc=_key_name)
+        encode = EncodeInterface(EncodeOffice(asset_category=asset_category, asset_type=asset_type, asset_location=asset_location))
     else:
-        _series = 1
-        series = Series.objects.create(key=_key, series=1, desc=_key_name)
-
-    if asset_category_id == "1":  # 資訊設備
-        if type_name == "NOTEBOOK" or type_name == "COMPUTER":
-            series_format = str(_series).zfill(4)
-        else:
-            series_format = str(_series).zfill(5)
-    elif asset_category_id == "2":  # 辦公設備
-        series_format = str(_series).zfill(3)
-
-    series_code = series_code + series_format
+        encode = EncodeInterface(EncodeGeneral())
+    series_code = encode.run()
 
     return series_code
 

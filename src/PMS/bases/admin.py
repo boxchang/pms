@@ -89,7 +89,7 @@ class AssetCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(AssetType)
 class AssetTypeAdmin(admin.ModelAdmin):
-    list_display = ('category', 'type_name', 'type_code')
+    list_display = ('category', 'type_name', 'type_code', 'prefix', 'series_len')
 
 
 @admin.register(Location)

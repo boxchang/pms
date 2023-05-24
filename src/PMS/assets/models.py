@@ -53,6 +53,8 @@ class AssetType(models.Model):
         AssetCategory, related_name='category_type', on_delete=models.CASCADE)
     type_name = models.CharField(max_length=50, blank=False, null=False)
     type_code = models.CharField(max_length=50, blank=False, null=False)
+    prefix = models.CharField(max_length=50, blank=True, null=True)
+    series_len = models.IntegerField(default=5)
     create_at = models.DateTimeField(auto_now_add=True, editable=True)  # 建立日期
     create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
                                   related_name='type_create_by')  # 建立者
