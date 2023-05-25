@@ -1,9 +1,10 @@
 #!/usr/bin/python
 # coding=utf-8
+from django.core import serializers
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
-
+from django.db.models import Count
 from assets.encode import EncodeInterface, EncodeIT, EncodeGeneral, EncodeOffice
 from assets.forms import AssetModelForm, AssetSearchForm
 from assets.models import Asset, AssetArea, AssetCategory, AssetStatus, AssetType, Brand, Doc_attachment, Label_attachment, Pic_attachment, Series, Location, Unit
@@ -747,6 +748,7 @@ def asset_pic_delete(request, pk):
         obj.delete()
     return redirect(asset.get_absolute_url())
 
+
 #刪除附件
 def asset_doc_delete(request, pk):
     q = request.GET.get('q')
@@ -756,3 +758,141 @@ def asset_doc_delete(request, pk):
     if obj:
         obj.delete()
     return redirect(asset.get_absolute_url())
+
+
+def chart(request):
+    return render(request, 'assets/chart.html', locals())
+
+def chart_api(request):
+    _asset_no = ""
+    _status = ""
+    _category = ""
+    _type = ""
+    _brand = ""
+    _area = ""
+    _location = ""
+    _location_desc = ""
+    _scrap = ""
+    _keeper_unit = ""
+    _keeper_name = ""
+    _desc = ""
+    _condition1 = ""
+    _condition2 = ""
+    _condition3 = ""
+    _condition4 = ""
+    _condition5 = ""
+
+    assets = Asset.objects.all()
+
+    if 'asset_no' in request.session:
+        _asset_no = request.session['asset_no']
+
+    if 'status' in request.session:
+        _status = request.session['status']
+
+    if 'category' in request.session:
+        _category = request.session['category']
+
+    if 'type' in request.session:
+        _type = request.session['type']
+
+    if 'brand' in request.session:
+        _brand = request.session['brand']
+
+    if 'area' in request.session:
+        _area = request.session['area']
+
+    if 'location' in request.session:
+        _location = request.session['location']
+
+    if 'location_desc' in request.session:
+        _location_desc = request.session['location_desc']
+
+    if 'scrap' in request.session:
+        _scrap = request.session['scrap']
+
+    if 'keeper_unit' in request.session:
+        _keeper_unit = request.session['keeper_unit']
+
+    if 'keeper_name' in request.session:
+        _keeper_name = request.session['keeper_name']
+
+    if 'desc' in request.session:
+        _desc = request.session['desc']
+
+    if 'condition1' in request.session:
+        _condition1 = request.session['condition1']
+
+    if 'condition2' in request.session:
+        _condition2 = request.session['condition2']
+
+    if 'condition3' in request.session:
+        _condition3 = request.session['condition3']
+
+    if 'condition4' in request.session:
+        _condition4 = request.session['condition4']
+
+    if 'condition5' in request.session:
+        _condition5 = request.session['condition5']
+
+
+    if _asset_no:
+        request.session['asset_no'] = _asset_no
+        assets = assets.filter(asset_no__icontains=_asset_no)
+
+    if _status:
+        request.session['status'] = _status
+        assets = assets.filter(status=_status)
+
+    if _category:
+        request.session['category'] = _category
+        assets = assets.filter(category=_category)
+
+    if _type:
+        request.session['type'] = _type
+        assets = assets.filter(type=_type)
+
+    if _brand:
+        request.session['brand'] = _brand
+        assets = assets.filter(brand=_brand)
+
+    if _area:
+        request.session['area'] = _area
+        assets = assets.filter(area=_area)
+
+    if _location:
+        request.session['location'] = _location
+        assets = assets.filter(location=_location)
+
+    if _location_desc:
+        request.session['location_desc'] = _location_desc
+        assets = assets.filter(location_desc__icontains=_location)
+
+    if _keeper_unit:
+        request.session['keeper_unit'] = _keeper_unit
+        assets = assets.filter(keeper_unit=_keeper_unit)
+
+    if _keeper_name:
+        request.session['keeper_name'] = _keeper_name
+        assets = assets.filter(keeper_name__icontains=_keeper_name)
+
+    if _desc:
+        request.session['desc'] = _desc
+        assets = assets.filter(Q(desc__icontains=_desc) | Q(comment__icontains=_desc) | Q(model__icontains=_desc))
+
+    if _scrap:
+        request.session['scrap'] = _scrap
+    else:
+        assets = assets.exclude(status=AssetStatus.objects.get(status_name="已報廢"))
+
+    asset_types = assets.all().values('type').annotate(total=Count('type')).order_by('-total')
+
+    types = []
+    qty = []
+    for asset_type in asset_types:
+        types.append(AssetType.objects.get(id=asset_type['type']).type_name)
+        qty.append(asset_type['total'])
+
+    _json = {"types": types, "qty": qty}
+
+    return JsonResponse(_json, safe=False)

@@ -18,7 +18,9 @@ AMS Search
         <div class="col">
             <a href="javascript:history.back()" class="btn btn-warning"><i class="fas fa-arrow-left fa-1x"></i></a>&nbsp;
             <a href="{% url 'assets_main' %}" class="btn btn-warning"><i class="fas fa-home fa-1x"></i></a>&nbsp;
+            <a href="{% url 'assets_chart' %}" class="btn btn-warning"><i class="fas fa-signal fa-1x"></i></a>&nbsp;
             <a href="{% url 'export_assets_xls' %}" class="btn btn-warning" target="_blank">EXCEL</a>&nbsp;
+
         </div>
         {% if user.is_authenticated %}
         <div class="ml-md-auto">
