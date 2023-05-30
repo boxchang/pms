@@ -115,20 +115,20 @@
         <div class="box-nav">
             {% if perms.users.perm_pms %}
             <a class="box-nav-btn" href="{% url 'pms_home' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="專案管理系統">
-                <i class="fab fa-qq fa-lg"></i>
+                <i class="fa fa-tasks"></i>
             </a>
             {% endif %}
             {% if perms.users.perm_ams %}
             <a class="box-nav-btn" href="{% url 'assets_main' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="資產管理系統">
-                <i class="fas fa-horse"></i>
+                <i class="fa fa-book"></i>
             </a>
             {% endif %}
             <a class="box-nav-btn" href="{% url 'apply' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="資訊設備借出單">
-                <i class="fas fa-vihara"></i>
+                <i class="fas fa-check-square"></i>
             </a>
             {% if perms.users.perm_workhour %}
             <a class="box-nav-btn" href="#" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="產線報工">
-                <i class="fas fa-paw"></i>
+                <i class="fas fa-users"></i>
             </a>
             {% endif %}
             <a class="box-nav-btn" href="{% url 'user_info' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="個人設定">
