@@ -4,6 +4,7 @@ from projects.ajax_views import *
 from requests.views import *
 
 urlpatterns = [
+    url(r'^page/(?P<pk>\d+)/$', request_page, name="request_page"),
     url(r'^edit/(?P<pk>\d+)/$', request_edit, name="request_edit"),
     url(r'^add/$', request_create, name="request_create"),
     url(r'^list/$', request_list, name="request_list"),

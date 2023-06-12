@@ -7,6 +7,7 @@ from django.urls import reverse
 
 from bases.models import Status, FormType
 from bases.utils import save_data_index, get_serial_num, get_form_type, get_home_url
+from bases.views import get_user_setting_pagenum
 from bugs.forms import BugForm
 from bugs.models import Bug, Bug_attachment
 from projects.models import Project
@@ -15,7 +16,7 @@ from projects.models import Project
 @login_required
 def bug_create(request):
     p = request.GET.get('p')  # 專案id
-
+    project = Project.objects.get(pk=p)
     if request.method == 'POST':
         form = BugForm(request.POST)
         form.status = Status.objects.get(status_en='Wait')
@@ -25,7 +26,7 @@ def bug_create(request):
                 with transaction.atomic():
                     form_type = get_form_type('BUG')
                     tmp_form = form.save(commit=False)
-                    tmp_form.project = Project.objects.get(pk=p)
+                    tmp_form.project = project
                     tmp_form.bug_no = get_serial_num(p, form_type)  # Bug單編碼
                     tmp_form.create_by = request.user
                     tmp_form.update_by = request.user
@@ -50,7 +51,7 @@ def bug_create(request):
         form = BugForm()
         form.fields['status'].widget = HiddenInput()
 
-    return render(request, 'bugs/bug_edit.html', {'form': form})
+    return render(request, 'bugs/bug_edit.html', locals())
 
 
 
@@ -81,7 +82,7 @@ def bug_edit(request, pk):
             return redirect(bug.get_absolute_url())
     else:
         form = BugForm(instance=bug)
-    return render(request, 'bugs/bug_edit.html', {'form': form, 'bug': bug})
+    return render(request, 'bugs/bug_edit.html', locals())
 
 
 @login_required
@@ -121,3 +122,15 @@ def bug_file_delete(request, pk):
     if obj:
         obj.delete()
     return redirect(bug.get_absolute_url())
+
+
+@login_required
+def bug_page(request, pk):
+    try:
+        page_num = get_user_setting_pagenum(request)
+        form_type = FormType.objects.filter(type='PROJECT').first()
+        project_form = Project.objects.get(pk=pk)  # 專案詳細資料
+    except Project.DoesNotExist:
+        raise Http404
+    return render(request, 'bugs/bug_page.html', locals())
+

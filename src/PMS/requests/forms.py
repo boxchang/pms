@@ -1,7 +1,7 @@
 from bootstrap_datepicker_plus.widgets import DateTimePickerInput, DatePickerInput
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div
+from crispy_forms.layout import Layout, Div, Submit
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from bases.models import Status
@@ -28,9 +28,10 @@ class RequestHistoryForm(forms.ModelForm):
         self.helper.form_show_errors = True
 
         self.helper.layout = Layout(
-            Div(Div('start_date', css_class='col-md-4'),
-                Div('due_date', css_class='col-md-4'),
-                Div('status', css_class='col-md-4'),
+            Div(Div('start_date', css_class='col-md-3'),
+                Div('due_date', css_class='col-md-3'),
+                Div('status', css_class='col-md-3'),
+                Div(Submit('submit', '查詢', css_class='btn btn-info'), css_class='col-md-3 d-flex align-items-center'),
                 css_class='row'),
         )
 

@@ -5,7 +5,8 @@
 {% block title %} {% trans "project_manage" %} {% endblock %}
 {% block breadcrumb %}
     {{ block.super }}
-    <li class="breadcrumb-item active" aria-current="page">Request History</li>
+    <li class="breadcrumb-item"><a href="{% url 'request_page' pk=project.pk %}">{{ project.name }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">需求紀錄</li>
 {% endblock %}
 
 {% block content %}
@@ -19,9 +20,6 @@
         <form action="" method="post" class="form-group font-weight-bold align-middle" id="request_form" enctype="multipart/form-data">
             {% csrf_token %}
             {% crispy form %}
-            <div style="text-align:center">
-                <input class="btn btn-info" type="submit" value="查詢" />
-            </div>
         </form>
     </div>
 </div>

@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect
 
 from PMS.settings.base import DEFAULT_STATUS
 from bases.utils import *
+from bases.views import get_user_setting_pagenum
 from requests.forms import *
 from requests.utils import *
 from tests.models import Request_test
@@ -51,7 +52,7 @@ def request_create(request):
     p = request.GET.get('p')  # 專案id
     t = request.GET.get('t')  # 單號類型
     r = request.GET.get('r')  # 需求id
-
+    project = Project.objects.get(pk=p)
     if request.method == 'POST':
         #  STATUS/PROJECT/REQUEST由系統自動給
         form = RequestForm(request.POST)
@@ -59,7 +60,7 @@ def request_create(request):
             with transaction.atomic():
                 form_type = get_form_type('REQUEST')
                 tmp_form = form.save(commit=False)
-                tmp_form.project = Project.objects.get(pk=p)
+                tmp_form.project = project
                 if r:
                     tmp_form.belong_to = Request.objects.get(pk=r)
                 tmp_form.request_no = get_serial_num(p, form_type)  # 需求單編碼
@@ -120,7 +121,7 @@ def request_edit(request, pk):
             return redirect(require.get_absolute_url())
     else:
         form = RequestForm(instance=require)
-    return render(request, 'requests/request_edit.html', {'form': form, 'request': require})
+    return render(request, 'requests/request_edit.html', locals())
 
 @login_required
 def reply_edit(request, pk):
@@ -149,11 +150,13 @@ def request_list(request):
 
 @login_required
 def request_history(request):
+    p = request.GET.get('p')  # 專案id
+    project = Project.objects.get(pk=p)
     if request.method == 'POST':
         _status = request.POST['status']
         _start_date = str(request.POST['start_date']).replace('/', '-')
         _due_date = str(request.POST['due_date']).replace('/', '-')
-        requires = Request.objects.all()
+        requires = Request.objects.filter(project=project)
         if _status:
             requires = requires.filter(status=_status)
 
@@ -392,3 +395,14 @@ def replies(pk):
     problem_replies = Problem_reply.objects.filter(
         problem_no=pk).order_by('-update_at')
     return problem_replies
+
+
+@login_required
+def request_page(request, pk):
+    try:
+        page_num = get_user_setting_pagenum(request)
+        form_type = FormType.objects.filter(type='PROJECT').first()
+        project_form = Project.objects.get(pk=pk)  # 專案詳細資料
+    except Project.DoesNotExist:
+        raise Http404
+    return render(request, 'requests/request_page.html', locals())

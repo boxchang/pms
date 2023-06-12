@@ -9,8 +9,8 @@
 {% endblock %}
 {% block breadcrumb %}
     {{ block.super }}
+    <li class="breadcrumb-item"><a href="{% url 'bug_page' pk=bug.project.pk %}">{{ bug.project.name }}</a></li>
     {% if form.instance.id %}
-    <li class="breadcrumb-item"><a href="{% url 'project_manage' pk=bug.project.pk %}">{{ bug.project.name }}</a></li>
     <li class="breadcrumb-item"><a href="{% url 'bug_detail' pk=bug.pk %}">{{ bug.title }}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{% trans "bug_edit" %}</li>
     {% else %}

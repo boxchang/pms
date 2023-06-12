@@ -101,16 +101,11 @@ def project_list(request):
 def project_manage(request, pk):  # 回傳projects/manage的頁面主體資料
     try:
         page_num = 5
-
         form_type = FormType.objects.filter(type='PROJECT').first()
-
         # 取得使用者專案設定
         if request.user.setting_user:
             project_setting = request.user.setting_user.first()
-            projects = project_setting.project.all()
             page_num = project_setting.page_number
-        else:
-            projects = Project.objects.all()  # 沒有設定就列出所有專案
 
         project_form = Project.objects.get(pk=pk)  # 專案詳細資料
     except Project.DoesNotExist:
@@ -150,7 +145,7 @@ def project_setting(request):
             form.save_m2m()
 
             default_pk = obj.default.pk
-            return redirect(reverse('project_manage', kwargs={'pk': default_pk}))
+            return redirect(reverse('request_page', kwargs={'pk': default_pk}))
         else:
             print(form.errors)
     else:

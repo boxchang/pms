@@ -32,3 +32,12 @@ def change_status(request):
     result = {'message': 'good'}
 
     return JsonResponse(result, safe=False)
+
+
+def get_user_setting_pagenum(request):
+    page_num = 5
+    # 取得使用者專案設定
+    if request.user.setting_user:
+        project_setting = request.user.setting_user.first()
+        page_num = project_setting.page_number
+    return page_num

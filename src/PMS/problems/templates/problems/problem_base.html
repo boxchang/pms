@@ -13,7 +13,7 @@
                 <a href="/projects/manage/{{ problem.project.id }}" class="btn btn-warning"><i class="fas fa-arrow-left fa-1x"></i></a>
             {% endif %}
             <div class="ml-md-auto">
-                <a class="btn btn-warning btn-sm" href="{% url 'problem_edit' pk %}" role="button"><i class="far fa-edit"></i>{% trans "problem_edit" %}</a>
+                <a class="btn btn-warning btn-sm" href="{% url 'problem_edit' pk %}?p={{ problem.project.pk }}" role="button"><i class="far fa-edit"></i>{% trans "problem_edit" %}</a>
                 <a class="btn btn-warning btn-sm" href="{% url 'problem_delete' pk %}" role="button" onclick="return confirm('Are you sure?')"><i class="fas fa-times"></i>{% trans "problem_delete" %}</a>
             </div>
         </div>
@@ -27,6 +27,8 @@
                         <td class="text-center align-middle">{{ problem.project }}</td>
                         <td class="text-center align-middle table-dark">問題類型：</td>
                         <td class="text-center align-middle">{{ problem.problem_type }}</td>
+                        <td class="text-center align-middle table-dark">問題狀態：</td>
+                        <td class="text-center align-middle">{{ problem.problem_status }}</td>
                     </tr>
                     <tr>
                         <td class="text-center align-middle table-dark" style="width:15%;">{% trans "owner" %}：</td>

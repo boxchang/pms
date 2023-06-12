@@ -20,6 +20,8 @@ class Problem(models.Model):
     problem_no = models.CharField('Problem No.', max_length=20, unique=True)
     problem_type = models.ForeignKey(
         'problems.ProblemType', related_name='problem_type', on_delete=models.DO_NOTHING)
+    problem_status = models.ForeignKey(
+        'bases.Status', related_name='problem_status', on_delete=models.DO_NOTHING)  # 狀態
     title = models.CharField(max_length=100)
     project = models.ForeignKey(
         'projects.Project', related_name='problem_super', on_delete=models.CASCADE)

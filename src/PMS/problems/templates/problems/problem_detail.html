@@ -10,7 +10,7 @@
 
 {% block breadcrumb %}
     {{ block.super }}
-    <li class="breadcrumb-item"><a href="{% url 'project_manage' pk=problem.project.pk %}">{{ problem.project.name }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'problem_page' pk=problem.project.pk %}">{{ problem.project.name }}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{ problem.title }}</li>
 {% endblock %}
 

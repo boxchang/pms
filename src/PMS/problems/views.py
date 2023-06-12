@@ -5,12 +5,14 @@ from django.db import transaction
 from django.shortcuts import render, redirect
 
 from bases.utils import *
+from bases.views import get_user_setting_pagenum
 from problems.forms import ProblemForm, ProblemReplyForm
 from problems.models import *
 
 @login_required
 def problem_create(request):
     p = request.GET.get('p')  #單號id
+    project = Project.objects.get(pk=p)
     if request.method == 'POST':
         form = ProblemForm(request.POST)
         if form.is_valid():
@@ -18,7 +20,7 @@ def problem_create(request):
                 form_type = get_form_type('PROBLEM')
                 tmp_form = form.save(commit=False)
                 tmp_form.problem_no = get_serial_num(p, form_type)  # 問題單編碼
-                tmp_form.project = Project.objects.get(pk=p)
+                tmp_form.project = project
                 tmp_form.create_by = request.user
                 tmp_form.update_by = request.user
                 tmp_form.save()
@@ -39,11 +41,13 @@ def problem_create(request):
     else:
         form = ProblemForm()
 
-    return render(request, 'problems/problem_edit.html', {'form': form})
+    return render(request, 'problems/problem_edit.html', locals())
 
 
 @login_required
 def problem_edit(request, pk):
+    p = request.GET.get('p')  # 單號id
+    project = Project.objects.get(pk=p)
     if pk:
         problem = Problem.objects.get(pk=pk)
 
@@ -70,14 +74,14 @@ def problem_edit(request, pk):
             return redirect(tmp_form.get_absolute_url())
     else:
         form = ProblemForm(instance=problem)
-    return render(request, 'problems/problem_edit.html', {'form': form, 'problem': problem})
+    return render(request, 'problems/problem_edit.html', locals())
 
 
 @login_required
 def problem_list(request):
     problems = Problem.objects.all()
 
-    return render(request, 'problems/problem_list.html', {'problems': problems})
+    return render(request, 'problems/problem_list.html', locals())
 
 
 @login_required
@@ -124,3 +128,14 @@ def problem_reply_create(request, pk):
             data.save()
 
     return redirect(problem.get_absolute_url())
+
+
+@login_required
+def problem_page(request, pk):
+    try:
+        page_num = get_user_setting_pagenum(request)
+        form_type = FormType.objects.filter(type='PROJECT').first()
+        project_form = Project.objects.get(pk=pk)  # 專案詳細資料
+    except Project.DoesNotExist:
+        raise Http404
+    return render(request, 'problems/problem_page.html', locals())

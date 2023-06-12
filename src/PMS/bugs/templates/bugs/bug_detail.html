@@ -11,7 +11,7 @@
 
 {% block breadcrumb %}
     {{ block.super }}
-    <li class="breadcrumb-item"><a href="{% url 'project_manage' pk=bug.project.pk %}">{{ bug.project.name }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'bug_page' pk=bug.project.pk %}">{{ bug.project.name }}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{ bug.title }}</li>
 {% endblock %}
 
@@ -47,9 +47,6 @@
                             <div class="row">
                                 <span class="col-sm-9 align-middle">
                                     {{ bug.owner }}
-                                </span>
-                                <span class="col-sm-3 align-middle">
-                                    <img src="{% static 'pictures\IMG_6067.jpg' %}" alt="{{ bug.owner }}" class="rounded-circle" style="height:25px;width:25px;transform: rotate(90deg);">
                                 </span>
                             </div>
                         </td>
