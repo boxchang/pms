@@ -1,15 +1,15 @@
 from django.db import models
 from django.conf import settings
 from assets.models import Asset
-
+from datetime import datetime
 
 class Borrow(models.Model):
     form_no = models.AutoField(primary_key=True)
     app_dept = models.CharField(max_length=50, blank=False, null=False)
     app_user = models.CharField(max_length=50, blank=False, null=False)
     comment = models.CharField(max_length=500, blank=False, null=False)
-    apply_date = models.CharField(max_length=10, blank=False, null=False)
-    expect_date = models.CharField(max_length=10, blank=False, null=False)
+    apply_date = models.CharField(max_length=10, blank=False, null=False, default=datetime.strftime(datetime.now(), "%Y-%m-%d"))
+    expect_date = models.CharField(max_length=10, blank=False, null=False, default=datetime.strftime(datetime.now(), "%Y-%m-%d"))
     lend_date = models.CharField(max_length=10, blank=True, null=True)
     lend_owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='lend_owner', null=True)
     return_date = models.CharField(max_length=10, blank=True, null=True)
