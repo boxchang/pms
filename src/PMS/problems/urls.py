@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^delete/(?P<pk>\d+)/$', problem_delete, name="problem_delete"),
     url(r'^reply/(?P<pk>\d+)/$', problem_reply_create, name="problem_reply_create"),
     url(r'^pfd/(?P<pk>\d+)/$', problem_file_delete, name="problem_file_delete"),
+    url(r'^history', problem_history, name="problem_history"),
 ]

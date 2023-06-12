@@ -1,4 +1,4 @@
-from bootstrap_datepicker_plus.widgets import DateTimePickerInput, DatePickerInput
+from bootstrap_datepicker_plus.widgets import DatePickerInput
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
@@ -7,7 +7,6 @@ from django.utils.translation import gettext_lazy as _
 from bases.models import Status
 from requests.models import Request, Level, Request_reply
 from datetime import datetime, timedelta
-
 from users.models import CustomUser
 
 class RequestHistoryForm(forms.ModelForm):

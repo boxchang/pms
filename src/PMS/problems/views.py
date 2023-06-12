@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 
 from bases.utils import *
 from bases.views import get_user_setting_pagenum
-from problems.forms import ProblemForm, ProblemReplyForm
+from problems.forms import ProblemForm, ProblemReplyForm, ProblemHistoryForm
 from problems.models import *
 
 @login_required
@@ -139,3 +139,24 @@ def problem_page(request, pk):
     except Project.DoesNotExist:
         raise Http404
     return render(request, 'problems/problem_page.html', locals())
+
+
+@login_required
+def problem_history(request):
+    p = request.GET.get('p')  # 專案id
+    project = Project.objects.get(pk=p)
+    if request.method == 'POST':
+        _status = request.POST['status']
+        _start_date = str(request.POST['start_date']).replace('/', '-')
+        _due_date = str(request.POST['due_date']).replace('/', '-')
+        problems = Problem.objects.filter(project=project)
+        if _status:
+            problems = problems.filter(problem_status=_status)
+
+        if _start_date and _due_date:
+            problems = problems.filter(create_at__gte=_start_date, create_at__lte=_due_date)
+
+        form = ProblemHistoryForm(request.POST)
+    else:
+        form = ProblemHistoryForm()
+    return render(request, 'problems/problem_history.html', locals())
