@@ -109,8 +109,9 @@ def bug_detail(request, pk):
 @login_required
 def bug_delete(request, pk):
     bug = Bug.objects.get(pk=pk)
+    project_pk = bug.project.pk
     bug.delete()
-    return redirect(get_home_url(request))
+    return redirect(reverse('request_page', kwargs={'pk': project_pk}))
 
 
 @login_required

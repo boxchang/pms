@@ -241,11 +241,12 @@ def request_delete(request, pk):
     try:
         with transaction.atomic():
             require = Request.objects.select_for_update().get(pk=pk)
+            project_pk = require.project.pk
             request_delete_all(require)
     except Exception as e:
         Exception('Unexpected error: {}'.format(e))
 
-    return redirect(get_home_url(request))
+    return redirect(reverse('request_page', kwargs={'pk': project_pk}))
 
 @login_required
 def reply_delete(request, pk):

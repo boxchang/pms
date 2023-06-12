@@ -98,10 +98,11 @@ def problem_detail(request, pk):
 def problem_delete(request, pk):
 
     problem = Problem.objects.get(pk=pk)
+    project_pk = problem.project.pk
     replys = Problem_reply.objects.filter(problem_no=problem)
     problem.delete()
     replys.delete()
-    return redirect(get_home_url(request))
+    return redirect(reverse('problem_page', kwargs={'pk': project_pk}))
 
 
 @login_required
