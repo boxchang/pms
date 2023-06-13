@@ -93,6 +93,7 @@ def request_create(request):
 def request_edit(request, pk):
     if pk:
         require = Request.objects.get(pk=pk)
+        project = require.project
 
     if request.method == 'POST':
         form = RequestForm(request.POST, instance=require)

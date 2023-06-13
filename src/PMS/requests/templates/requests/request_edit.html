@@ -6,7 +6,7 @@
 {% load i18n %}
 {% block breadcrumb %}
     {{ block.super }}
-    <li class="breadcrumb-item"><a href="{% url 'request_page' pk=require.project.pk %}">{{ require.project.name }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'request_page' pk=project.pk %}">{{ project.name }}</a></li>
     {% if form.instance.id %}
     <li class="breadcrumb-item"><a href="{% url 'request_detail' pk=require.pk %}">{{ require.title }}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{% trans "request_edit" %}</li>
