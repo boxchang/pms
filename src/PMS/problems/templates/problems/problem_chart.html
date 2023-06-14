@@ -1,0 +1,77 @@
+{% extends 'bases/menu_base.html' %}
+
+{% load static %}
+{% load i18n %}
+{% block title %} {% trans "project_manage" %} {% endblock %}
+{% block breadcrumb %}
+{{ block.super }}
+    <li class="breadcrumb-item" aria-current="page">{{ project_form.name }}</li>
+    <li class="breadcrumb-item active" aria-current="page">問題分析</li>
+{% endblock %}
+
+{% block content %}
+<div>
+  <canvas id="myChart"></canvas>
+</div>
+{% endblock content %}
+
+{% block js %}
+<script src="{% static 'bootstrap-table-develop\src\bootstrap-table.js' %}"></script>
+<link rel="stylesheet"  type="text/css" href="{% static 'bootstrap-table-develop\src\bootstrap-table.css' %}">
+<script src="{% static 'bootstrap-table-develop\src\extensions\filter-control\bootstrap-table-filter-control.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'bootstrap-table-develop\src\extensions\filter-control\bootstrap-table-filter-control.css' %}">
+<script src="{% static 'bootstrap_table/table.js' %}"></script>
+<script>
+$(function(){
+    //$.get( "{% url 'chart_api' %}", function( results ) {
+        const ctx = document.getElementById('myChart');
+
+        const DATA_COUNT = 7;
+        const NUMBER_CFG = {count: DATA_COUNT, min: -100, max: 100};
+
+        const labels = Utils.months({count: 7});
+        const data = {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Dataset 1',
+              data: Utils.numbers(NUMBER_CFG),
+              borderColor: Utils.CHART_COLORS.red,
+              backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red, 0.5),
+              order: 1
+            },
+            {
+              label: 'Dataset 2',
+              data: Utils.numbers(NUMBER_CFG),
+              borderColor: Utils.CHART_COLORS.blue,
+              backgroundColor: Utils.transparentize(Utils.CHART_COLORS.blue, 0.5),
+              type: 'line',
+              order: 0
+            }
+          ]
+        };
+
+        const config = {
+          type: 'bar',
+          data: data,
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: 'Chart.js Combined Line/Bar Chart'
+              }
+            }
+          },
+        };
+
+        const comboBar = new Chart(ctx, config);
+    //});
+});
+
+
+</script>
+{% endblock %}

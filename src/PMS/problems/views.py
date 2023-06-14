@@ -161,3 +161,8 @@ def problem_history(request):
     else:
         form = ProblemHistoryForm()
     return render(request, 'problems/problem_history.html', locals())
+
+
+@login_required
+def problem_chart(request):
+    return render(request, 'problems/problem_chart.html', locals())

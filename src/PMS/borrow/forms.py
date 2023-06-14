@@ -14,8 +14,8 @@ class BorrowForm(forms.ModelForm):
             'apply_date', 'expect_date', 'comment')
 
     comment = forms.CharField(required=True, label="借用原因")
-    apply_date = forms.CharField(required=True, label="借用日期", initial=datetime.strftime(datetime.now(), "%Y-%m-%d"))
-    expect_date = forms.CharField(required=True, label="預計歸還日期", initial=datetime.strftime(datetime.now(), "%Y-%m-%d"))
+    apply_date = forms.CharField(required=True, label="借用日期")
+    expect_date = forms.CharField(required=True, label="預計歸還日期")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -35,6 +35,7 @@ class BorrowForm(forms.ModelForm):
         )
 
         self.fields['apply_date'].widget = DatePickerInput(
+            attrs={'value': datetime.now().strftime('%Y-%m-%d')},
             options={
                 "format": "YYYY-MM-DD",
                 "showClose": False,
@@ -44,6 +45,7 @@ class BorrowForm(forms.ModelForm):
         )
 
         self.fields['expect_date'].widget = DatePickerInput(
+            attrs={'value': datetime.now().strftime('%Y-%m-%d')},
             options={
                 "format": "YYYY-MM-DD",
                 "showClose": False,

@@ -16,8 +16,8 @@ class RequestHistoryForm(forms.ModelForm):
 
     status = forms.ModelChoiceField(required=False, label=_(
         'status'), queryset=Status.objects.all(), initial=1)
-    start_date = forms.DateField(label="建立日期(起)", initial=datetime.now()- timedelta(days = 45))
-    due_date = forms.DateField(label="建立日期(迄)", initial=datetime.now())
+    start_date = forms.DateField(label="建立日期(起)")
+    due_date = forms.DateField(label="建立日期(迄)")
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -35,15 +35,17 @@ class RequestHistoryForm(forms.ModelForm):
         )
 
         self.fields['start_date'].widget = DatePickerInput(
-                options={
-                    "format": "YYYY-MM-DD",
-                    "showClose": False,
-                    "showClear": False,
-                    "showTodayButton": False,
-                }
-            )
+            attrs={'value': (datetime.now()-timedelta(days=45)).strftime('%Y-%m-%d')},
+            options={
+                "format": "YYYY-MM-DD",
+                "showClose": False,
+                "showClear": False,
+                "showTodayButton": False,
+            }
+        )
 
         self.fields['due_date'].widget = DatePickerInput(
+            attrs={'value': datetime.now().strftime('%Y-%m-%d')},
             options={
                 "format": "YYYY-MM-DD",
                 "showClose": False,
@@ -60,10 +62,8 @@ class RequestReceiveForm(forms.ModelForm):
         )
         estimate_time = forms.IntegerField(required=False, label=_('estimate_time'), widget=forms.NumberInput(),
                                            initial=0, )
-        start_date = forms.DateField(
-            label=_('starttime'), initial=datetime.now())
-        due_date = forms.DateField(
-            label=_('finishtime'), initial=datetime.now())
+        start_date = forms.DateField(label=_('starttime'))
+        due_date = forms.DateField(label=_('finishtime'))
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -80,6 +80,7 @@ class RequestReceiveForm(forms.ModelForm):
         )
 
         self.fields['start_date'].widget = DatePickerInput(
+            attrs={'value': datetime.now().strftime('%Y-%m-%d')},
             options={
                 "format": "YYYY-MM-DD",
                 "showClose": False,
@@ -89,6 +90,7 @@ class RequestReceiveForm(forms.ModelForm):
         ).start_of('request days')
 
         self.fields['due_date'].widget = DatePickerInput(
+            attrs={'value': datetime.now().strftime('%Y-%m-%d')},
             options={
                 "format": "YYYY-MM-DD",
                 "showClose": False,
@@ -131,23 +133,15 @@ class RequestForm(forms.ModelForm):
             'title', 'start_date', 'due_date', 'process_rate', 'estimate_time', 'level', 'owner', 'desc',
             'status', 'actual_date',)
 
-    level = forms.ModelChoiceField(required=True, label=_(
-        'level'), queryset=Level.objects.all(), initial=2)
+    level = forms.ModelChoiceField(required=True, label=_('level'), queryset=Level.objects.all(), initial=2)
     title = forms.CharField(required=True, label=_('title'))
-    desc = forms.CharField(required=False, label=_(
-        'desc'), widget=CKEditorUploadingWidget())
-    status = forms.ModelChoiceField(required=True, label=_(
-        'status'), queryset=Status.objects.all(), initial=1)
-    owner = forms.ModelChoiceField(required=False, label=_(
-        'owner'), queryset=CustomUser.objects.all())
-    estimate_time = forms.IntegerField(required=False, label=_(
-        'estimate_time'), widget=forms.NumberInput(), initial=0, )
-    start_date = forms.DateField(
-        label=_('starttime'), initial=datetime.now())
-    due_date = forms.DateField(
-        label=_('finishtime'), initial=datetime.now())
-    actual_date = forms.DateField(required=False, label=_(
-        'actualtime'))
+    desc = forms.CharField(required=False, label=_('desc'), widget=CKEditorUploadingWidget())
+    status = forms.ModelChoiceField(required=True, label=_('status'), queryset=Status.objects.all(), initial=1)
+    owner = forms.ModelChoiceField(required=False, label=_('owner'), queryset=CustomUser.objects.all())
+    estimate_time = forms.IntegerField(required=False, label=_('estimate_time'), widget=forms.NumberInput(), initial=0, )
+    start_date = forms.DateField(label=_('starttime'))
+    due_date = forms.DateField(label=_('finishtime'))
+    actual_date = forms.DateField(required=False, label=_('actualtime'))
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -173,6 +167,7 @@ class RequestForm(forms.ModelForm):
         )
 
         self.fields['start_date'].widget = DatePickerInput(
+            attrs={'value': datetime.now().strftime('%Y-%m-%d')},
             options={
                 "format": "YYYY-MM-DD",
                 "showClose": False,
@@ -182,6 +177,7 @@ class RequestForm(forms.ModelForm):
         )
 
         self.fields['due_date'].widget = DatePickerInput(
+            attrs={'value': datetime.now().strftime('%Y-%m-%d')},
             options={
                 "format": "YYYY-MM-DD",
                 "showClose": False,

@@ -56,8 +56,8 @@ class ProblemHistoryForm(forms.ModelForm):
 
     status = forms.ModelChoiceField(required=False, label=_(
         'status'), queryset=Status.objects.all(), initial=1)
-    start_date = forms.DateField(label="建立日期(起)", initial=datetime.now()- timedelta(days = 45))
-    due_date = forms.DateField(label="建立日期(迄)", initial=datetime.now())
+    start_date = forms.DateField(label="建立日期(起)")
+    due_date = forms.DateField(label="建立日期(迄)")
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -75,6 +75,7 @@ class ProblemHistoryForm(forms.ModelForm):
         )
 
         self.fields['start_date'].widget = DatePickerInput(
+                attrs={'value': (datetime.now() - timedelta(days=45)).strftime('%Y-%m-%d')},
                 options={
                     "format": "YYYY-MM-DD",
                     "showClose": False,
@@ -84,6 +85,7 @@ class ProblemHistoryForm(forms.ModelForm):
             )
 
         self.fields['due_date'].widget = DatePickerInput(
+            attrs={'value': datetime.now().strftime('%Y-%m-%d')},
             options={
                 "format": "YYYY-MM-DD",
                 "showClose": False,

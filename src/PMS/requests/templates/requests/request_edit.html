@@ -4,6 +4,7 @@
 
 {% load static %}
 {% load i18n %}
+{% block title %}建立需求{% endblock %}
 {% block breadcrumb %}
     {{ block.super }}
     <li class="breadcrumb-item"><a href="{% url 'request_page' pk=project.pk %}">{{ project.name }}</a></li>
