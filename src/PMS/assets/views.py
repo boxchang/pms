@@ -25,7 +25,8 @@ from django.db.models import Q
 def print_cmd(EXCEL_FILE, BTW_FILE):
     CMD = """{EXE_FILE} /AF=\"{BTW_FILE}\" /D=\"{EXCEL_FILE}\" /PRN=\"{PRINTER}\" /P/X""".format(EXE_FILE=EXE_FILE, BTW_FILE=BTW_FILE, EXCEL_FILE=EXCEL_FILE, PRINTER=PRINTER)
     print(CMD)
-    os.system(CMD)
+    result = os.system(CMD)
+    print("Label result:" + str(result))
 
 @login_required
 def index(request):
