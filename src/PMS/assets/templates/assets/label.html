@@ -6,7 +6,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script>
-
+        if("{{ print_result }}"=="0") {
+            alert("標籤列印成功，請至資訊室領取標籤");
+        }else if("{{ print_result }}"=="1") {
+            alert("標籤列印失敗，請連絡管理人員");
+        }
 
         $(document).ready(function() {
             $("#label_form3").submit(function(e) {

@@ -71,7 +71,11 @@ AMS - {{ asset.asset_no }} Asset Detail
 
         $("#print_label").click(function(){
             $.get('/assets/print_label/{{ asset.pk }}/', function (data){
-
+                if(data.print_result==0){
+                    alert("標籤列印成功，請至資訊室領取標籤");
+                }else{
+                    alert("標籤列印失敗，請連絡管理人員");
+                }
             })
         })
     })

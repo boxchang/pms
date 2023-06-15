@@ -27,6 +27,7 @@ def print_cmd(EXCEL_FILE, BTW_FILE):
     print(CMD)
     result = os.system(CMD)
     print("Label result:" + str(result))
+    return result
 
 @login_required
 def index(request):
@@ -498,19 +499,20 @@ def TEXT2CSV(asset_number):
 
 #印標籤專頁
 def label(request):
+    print_result = ""
     if request.method == 'POST':
         label_type = request.POST.get('label_type', False)
 
         if label_type == 'single_asset_label':
             asset_label = request.POST.get('asset_number', False)
             csv = TEXT2CSV(asset_label)
-            print_cmd(csv, ASSET_BTW_FILE)
+            print_result = print_cmd(csv, ASSET_BTW_FILE)
             delete_csv(csv)
 
         elif label_type == 'single_nonasset_label':
             asset_label = request.POST.get('non_asset', False)
             csv = TEXT2CSV(asset_label)
-            print_cmd(csv, NON_ASSET_BTW_FILE)
+            print_result = print_cmd(csv, NON_ASSET_BTW_FILE)
             delete_csv(csv)
         elif label_type == 'multi_asset_label':
             excel_file = request.FILES.get('files1')
@@ -518,7 +520,7 @@ def label(request):
                 wb = openpyxl.load_workbook(excel_file)
                 sheet = wb.worksheets[0]
                 csv = Excel2CSV(sheet)
-                print_cmd(csv, ASSET_BTW_FILE)
+                print_result = print_cmd(csv, ASSET_BTW_FILE)
                 delete_csv(csv)
 
     return render(request, 'assets/label.html', locals())
@@ -734,10 +736,11 @@ def print_label(request, pk):
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerow({'NUMBER': asset.asset_no})
-    print_cmd(file_name, ASSET_BTW_FILE)
+    print_result = print_cmd(file_name, ASSET_BTW_FILE)
     delete_csv(file_name)
-
-    return JsonResponse("success", safe = False)
+    result = {}
+    result["print_result"] = print_result
+    return JsonResponse(result, safe=False)
 
 #刪除圖片
 def asset_pic_delete(request, pk):
