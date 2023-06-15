@@ -14,8 +14,8 @@ AMS - Main Data
 {% endblock %}
 {% block container %}
 <div class="card-header">
-    {% if user.is_authenticated %}
     <div class="row">
+        {% if user.is_superuser %}
         <div class="col">
             <a href="{% url 'assets_create' %}" class="btn btn-info">新增資產</a>
             <a href="/admin/assets/assetcategory/" class="btn btn-info" target="_blank">編輯類別</a>
@@ -28,12 +28,14 @@ AMS - Main Data
             <a href="{% url 'assets_import' %}" class="btn btn-info">匯入資產</a>
             <a href="{% url 'assets_label' %}" class="btn btn-info">標籤列印</a>
         </div>
+        {% endif %}
+        {% if user.is_authenticated %}
         <div class="ml-md-auto">
             <a class="btn btn-info" href="/admin/password_change/" role="button">變更密碼</a>
             <a class="btn btn-info" href="{% url 'logout' %}" role="button"><i class="fas fa-sign-out-alt"></i>{% trans "logout" %} ({{ user.username }})</a>
         </div>
+        {% endif %}
     </div>
-    {% endif %}
 </div>
 <div class="p-3">
     <form action="{% url 'assets_search' %}" method="POST">
