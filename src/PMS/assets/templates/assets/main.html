@@ -15,9 +15,10 @@ AMS - Main Data
 {% block container %}
 <div class="card-header">
     <div class="row">
-        {% if user.is_superuser %}
+
         <div class="col">
             <a href="{% url 'assets_create' %}" class="btn btn-info">新增資產</a>
+            {% if user.is_superuser %}
             <a href="/admin/assets/assetcategory/" class="btn btn-info" target="_blank">編輯類別</a>
             <a href="/admin/assets/assettype/" class="btn btn-info" target="_blank">編輯種類</a>
             <a href="/admin/assets/brand/" class="btn btn-info" target="_blank">編輯品牌</a>
@@ -26,9 +27,10 @@ AMS - Main Data
             <a href="/admin/assets/location/" class="btn btn-info" target="_blank">編輯位置</a>
             <a href="/admin/assets/series/" class="btn btn-info" target="_blank">編輯序號</a>
             <a href="{% url 'assets_import' %}" class="btn btn-info">匯入資產</a>
+            {% endif %}
             <a href="{% url 'assets_label' %}" class="btn btn-info">標籤列印</a>
         </div>
-        {% endif %}
+
         {% if user.is_authenticated %}
         <div class="ml-md-auto">
             <a class="btn btn-info" href="/admin/password_change/" role="button">變更密碼</a>
