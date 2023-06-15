@@ -34,69 +34,74 @@
 <script src="{% static 'bootstrap_table/table.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+
+
+
 $(function(){
+    const ctx = document.getElementById('paretoChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {},
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Values'
+                    }
+                },
+                y1: {
+                    beginAtZero: true,
+                    max: 100,
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: 'Cumulative Percentage'
+                    },
+                    grid: {
+                        drawOnChartArea: false
+                    }
+                }
+            }
+        }
+    });
+
     $("#button-id-search").on('click', function() {
         var _start_date = $("#id_start_date").val();
         var _status = $("#id_status").val()
         $.post( "{% url 'problem_chart_api' %}", {'start_date': _start_date, 'status': _status, 'csrfmiddlewaretoken': '{{csrf_token}}'},function( results ) {
-            const ctx = document.getElementById('paretoChart').getContext('2d');
-            const data = {
+            var data = {
               labels: results.labels,
               values: results.values
             };
-            const total = data.values.reduce((sum, value) => sum + value, 0);
+            var total = data.values.reduce((sum, value) => sum + value, 0);
             let cumulativePercentage = 0;
             data.percentages = data.values.map(value => {
                 cumulativePercentage += (value / total) * 100;
                 return cumulativePercentage.toFixed(2);
             });
-
-            const chart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: data.labels,
-                    datasets: [
-                        {
-                            label: 'Values',
-                            data: data.values,
-                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Cumulative Percentage',
-                            type: 'line',
-                            data: data.percentages,
-                            fill: false,
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Values'
-                            }
-                        },
-                        y1: {
-                            beginAtZero: true,
-                            max: 100,
-                            position: 'right',
-                            title: {
-                                display: true,
-                                text: 'Cumulative Percentage'
-                            },
-                            grid: {
-                                drawOnChartArea: false
-                            }
-                        }
+            chart.data = {
+                labels: data.labels,
+                datasets: [
+                    {
+                        label: 'Values',
+                        data: data.values,
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Cumulative Percentage',
+                        type: 'line',
+                        data: data.percentages,
+                        fill: false,
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
                     }
-                }
-            });
+                ]
+            }
+            chart.update();
         });
     });
 
