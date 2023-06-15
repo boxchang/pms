@@ -2,7 +2,7 @@ import datetime
 import calendar
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from django.db.models import Sum
+from django.db.models import Sum, Count
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
@@ -189,7 +189,7 @@ def problem_chart_api(request):
         if status:
             summary = summary.filter(status=status)
 
-        summary = summary.values('problem_type').annotate(total=Sum('problem_type')).order_by('-total')
+        summary = summary.values('problem_type').annotate(total=Count('problem_type')).order_by('-total')
         labels = []
         values = []
         for data in summary:
