@@ -13,7 +13,7 @@
         <div class="col">
             <a class="btn btn-success m-1" href="{% url "problem_create" %}?p={{ project_form.id }}" role="button"><i class="fas fa-plus"></i>{% trans "problem_create" %}</a>
             <a class="btn btn-success m-1" href="{% url "problem_history" %}?p={{ project_form.id }}" role="button"><i class="fas fa-book"></i>問題紀錄</a>
-            <a class="btn btn-success m-1" href="{% url "problem_chart" %}" role="button"><i class="fas fa-chart-bar"></i>問題分析</a>
+            <a class="btn btn-success m-1" href="{% url "problem_chart" %}?p={{ project_form.id }}" role="button"><i class="fas fa-chart-bar"></i>問題分析</a>
         </div>
         <div class="col" style="text-align: right">
             <a class="btn btn-success m-1" href="{% url "request_page" pk %}" role="button">REQUEST</a>

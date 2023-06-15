@@ -1,12 +1,14 @@
 import datetime
-
+import calendar
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from django.db.models import Sum
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
 from bases.utils import *
 from bases.views import get_user_setting_pagenum
-from problems.forms import ProblemForm, ProblemReplyForm, ProblemHistoryForm
+from problems.forms import ProblemForm, ProblemReplyForm, ProblemHistoryForm, ProblemChartForm
 from problems.models import *
 
 @login_required
@@ -165,4 +167,34 @@ def problem_history(request):
 
 @login_required
 def problem_chart(request):
+    p = request.GET.get('p')  # 單號id
+    project = Project.objects.get(pk=p)
+    form = ProblemChartForm()
     return render(request, 'problems/problem_chart.html', locals())
+
+@login_required
+def problem_chart_api(request):
+    if request.method == 'POST':
+        status = request.POST['status']
+        start_date = request.POST['start_date']
+        results= {}
+        summary = Problem.objects.all()
+
+        if start_date:
+            start_date = datetime.datetime.strptime(start_date, "%Y-%m")
+            _start_date = datetime.datetime(start_date.year, start_date.month, 1)
+            _last_date = datetime.datetime(start_date.year, start_date.month, calendar.monthrange(start_date.year, start_date.month)[1])
+            summary = summary.filter(create_at__gte=_start_date, create_at__lte=_last_date)
+
+        if status:
+            summary = summary.filter(status=status)
+
+        summary = summary.values('problem_type').annotate(total=Sum('problem_type')).order_by('-total')
+        labels = []
+        values = []
+        for data in summary:
+            labels.append(ProblemType.objects.get(pk=data['problem_type']).type_name)
+            values.append(data['total'])
+        results['labels'] = labels
+        results['values'] = values
+        return JsonResponse(results, safe=False)

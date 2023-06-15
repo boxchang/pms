@@ -1,6 +1,6 @@
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Submit
+from crispy_forms.layout import Layout, Div, Submit, Button
 from django import forms
 from datetime import datetime, timedelta
 from bases.models import Status
@@ -93,3 +93,36 @@ class ProblemHistoryForm(forms.ModelForm):
                 "showTodayButton": False,
             }
         )
+
+class ProblemChartForm(forms.ModelForm):
+    class Meta:
+        model = Problem
+        fields = ('status', 'start_date',)
+
+    status = forms.ModelChoiceField(required=False, label=_(
+        'status'), queryset=Status.objects.all(), initial=1)
+    start_date = forms.DateField(label="建立日期(起)")
+
+    def __init__(self, *args, submit_title='Submit', **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.form_show_errors = True
+
+        self.helper.layout = Layout(
+            Div(Div('start_date', css_class='col-md-3'),
+                Div('status', css_class='col-md-3'),
+                Div(Button('search', '查詢', css_class='btn btn-info'), css_class='col-md-3 d-flex align-items-center search_btn_fix'),
+                css_class='row'),
+        )
+
+        self.fields['start_date'].widget = DatePickerInput(
+                attrs={'value': (datetime.now() - timedelta(days=45)).strftime('%Y-%m-%d')},
+                options={
+                    "format": "YYYY-MM",
+                    "showClose": False,
+                    "showClear": False,
+                    "showTodayButton": False,
+                }
+            )
