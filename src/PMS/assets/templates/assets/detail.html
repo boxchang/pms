@@ -174,7 +174,7 @@ AMS - {{ asset.asset_no }} Asset Detail
                         <div class="col-2 p-2" style="text-align:right;">採購金額：</div>
                         <div class="col-2 p-2 content">{{ asset.pur_price }}</div>
                         <div class="col-2 p-2">SAP資產編號：</div>
-                        <div class="col-2 p-2 content">{{ asset.sap_asset_no|safe }}</div>
+                        <div class="col-2 p-2 content">{{ asset.sap_asset_no|default:"" }}</div>
                     </div>
                 </li>
                 <li class="list-group-item">
