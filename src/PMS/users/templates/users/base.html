@@ -12,8 +12,10 @@
 <div class="card-header">
     <div class="row">
         <div class="col">
+            {% if user.is_superuser %}
             <button type="button" class="btn btn-success" onclick="location.href='{% url 'user_create' %}'">新增使用者</button>
             <button type="button" class="btn btn-success" onclick="location.href='{% url 'user_list' %}'">使用者列表</button>
+            {% endif %}
         </div>
     </div>
 </div>

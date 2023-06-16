@@ -120,7 +120,7 @@ def create(request):
         form.fields['password2'].required = True
         if form.is_valid():
             user = form.save(commit=False)
-            user.username = form.cleaned_data["emp_no"]
+            user.username = form.cleaned_data["username"]
             user.create_by = request.user
             user.update_by = request.user
             user.set_password(form.cleaned_data["password1"])
