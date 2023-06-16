@@ -63,7 +63,8 @@ class AssetModelForm(forms.ModelForm):
     class Meta:
         model = Asset
         fields = ('asset_no', 'auto_encode', 'category', 'type', 'brand', 'model', 'desc', 'owner_unit', 'keeper_unit',
-            'keeper_name', 'location', 'location_desc', 'pur_date', 'pur_price', 'area', 'status', 'comment', 'scrap_date', 'scrap_reason')
+            'keeper_name', 'location', 'location_desc', 'pur_date', 'pur_price', 'area', 'status', 'comment',
+                  'scrap_date', 'scrap_reason', 'sap_asset_no')
 
     asset_no = forms.CharField(required=False, label="資產編號")
     auto_encode = forms.BooleanField(required=False, initial=True, label="自動編碼")
@@ -81,6 +82,7 @@ class AssetModelForm(forms.ModelForm):
     location = forms.ModelChoiceField(required=True, label="放置地點", queryset=Location.objects.all())
     location_desc = forms.CharField(required=False, label="放置地點描述")
     status = forms.ModelChoiceField(required=True, label="狀態", queryset=AssetStatus.objects.all())
+    sap_asset_no = forms.CharField(required=False, initial="", label="SAP資產編號")
     scrap_date = forms.CharField(required=False, initial="", label="報廢日期")
     scrap_reason = forms.CharField(required=False, initial="", label="報廢原因")
     comment = forms.CharField(required=False, label="備註", widget=CKEditorUploadingWidget())
@@ -128,6 +130,7 @@ class AssetModelForm(forms.ModelForm):
                 Div(
                     Div('pur_date', css_class='col-md-4'),
                     Div('pur_price', css_class='col-md-4'),
+                    Div('sap_asset_no', css_class='col-md-4'),
                     css_class='row'),
                 Div(
                     Div('scrap_date', css_class='col-md-4'),

@@ -135,6 +135,7 @@ class Asset(models.Model):
     status = models.ForeignKey(
         AssetStatus, related_name='asset_status', on_delete=models.DO_NOTHING)
     enabled = models.BooleanField(default=True)
+    sap_asset_no = models.CharField(max_length=50, blank=True, null=True)
     scrap_date = models.CharField(max_length=50, blank=True, null=True)
     scrap_reason = models.CharField(max_length=1000, blank=True, null=True)
     create_at = models.DateTimeField(auto_now_add=True, editable=True)  # 建立日期
