@@ -69,5 +69,5 @@ class EncodeGeneral:
         _key_name = "AMS"
         _series = get_series_number(_key, _key_name)
         series_format = str(_series).zfill(7)
-        series_code = self.prefix + series_format
+        series_code = _key + series_format
         return series_code

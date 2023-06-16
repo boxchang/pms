@@ -103,7 +103,7 @@ AMS - {{ asset.asset_no }} Asset Detail
 <div class="row">
     <div class="col-9">
         <fieldset>
-            <legend>Main Data</legend>
+            <legend><span class="p-3">Main Data</span></legend>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                     <div class="row">
@@ -140,7 +140,7 @@ AMS - {{ asset.asset_no }} Asset Detail
             </ul>
         </fieldset>
         <fieldset>
-            <legend>Owner & Location</legend>
+            <legend><span class="p-3">Owner & Location</span></legend>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                     <div class="row">
@@ -165,7 +165,7 @@ AMS - {{ asset.asset_no }} Asset Detail
             </ul>
         </fieldset>
         <fieldset>
-            <legend>Procurement</legend>
+            <legend><span class="p-3">Finance</span></legend>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                     <div class="row">
@@ -173,8 +173,8 @@ AMS - {{ asset.asset_no }} Asset Detail
                         <div class="col-2 p-2 content">{{ asset.pur_date }}</div>
                         <div class="col-2 p-2" style="text-align:right;">採購金額：</div>
                         <div class="col-2 p-2 content">{{ asset.pur_price }}</div>
-                        <div class="col-2 p-2"></div>
-                        <div class="col-2 p-2"></div>
+                        <div class="col-2 p-2">SAP資產編號：</div>
+                        <div class="col-2 p-2 content">{{ asset.sap_asset_no }}</div>
                     </div>
                 </li>
                 <li class="list-group-item">

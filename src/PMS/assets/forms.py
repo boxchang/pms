@@ -13,7 +13,7 @@ class AssetSearchForm(forms.ModelForm):
         fields = (
             'asset_no', 'status', 'category', 'type', 'brand', 'area', 'location')
 
-    asset_no = forms.CharField(required=False, label="資產編號")
+    asset_no = forms.CharField(required=False, label="資產編號(包含SAP資產編號)")
     category = forms.ModelChoiceField(required=False, label="資產類別", queryset=AssetCategory.objects.all())
     type = forms.ModelChoiceField(required=False, label="資產種類", queryset=AssetType.objects.all())
     brand = forms.ModelChoiceField(required=False, label="品牌", queryset=Brand.objects.all())

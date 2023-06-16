@@ -259,7 +259,7 @@ def search(request):
 
     if _asset_no:
         request.session['asset_no'] = _asset_no
-        assets = assets.filter(asset_no__icontains=_asset_no)
+        assets = assets.filter(Q(asset_no__icontains=_asset_no) | Q(sap_asset_no__icontains=_asset_no))
 
     if _status:
         request.session['status'] = _status
