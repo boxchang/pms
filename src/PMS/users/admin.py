@@ -3,8 +3,13 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
 
-from .models import CustomUser
+from .models import CustomUser, Unit
 from .forms import CustomUserChangeForm, CustomUserCreationForm
+
+
+@admin.register(Unit)
+class CarStatusAdmin(admin.ModelAdmin):
+    list_display = ('orgId', 'unitId', 'unitName', 'cost_center', 'isValid',)
 
 
 class CustomUserAdmin(UserAdmin):

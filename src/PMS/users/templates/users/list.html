@@ -16,11 +16,21 @@
 {% endblock js %}
 
 {% block sub_container %}
+<form method="POST" action="{% url 'user_sync' %}">
+    <div class="input-group" style="margin-bottom: 20px;margin-top: 20px;">
+        {% csrf_token %}
+        <div class="input-group-append">
+            <button class="btn btn-success" type="submit" id="search">
+                <i class="fas fa-sync">同步BPM組織</i>
+            </button>
+        </div>
+    </div>
+</form>
 <form method="POST" action="{% url 'user_list' %}">
     <div class="input-group" style="margin-bottom: 20px;margin-top: 20px;">
 
         {% csrf_token %}
-        <input type="text" class="form-control" name="user_keyword" id="user_keyword" placeholder="使用者搜尋" value="{{ user_keyword }}">
+        <input type="text" class="form-control" name="user_keyword" id="user_keyword" placeholder="使用者搜尋" value="{{ user_keyword|default:'' }}">
         <div class="input-group-append">
             <button class="btn btn-success" type="submit" id="search">
                 <i class="fas fa-search"></i>
@@ -34,11 +44,13 @@
         <thead>
             <tr class="text-center table-active">
                 <th scope="col" class="text-center text-nowrap">序列</th>
-                <th scope="col" class="text-center text-nowrap" style="" data-column="users.phone_number" data-order="desc">工號</th>
-                <th scope="col" class="text-center text-nowrap" style="width: 25%;" data-column="member_accounts.NAME" data-order="desc">名稱</th>
+                <th scope="col" class="text-center text-nowrap" style="" data-column="users.emp_no" data-order="desc">工號</th>
+                <th scope="col" class="text-center text-nowrap" style="width: 15%;" data-column="users.username" data-order="desc">名稱</th>
+                <th scope="col" class="text-center text-nowrap" style="width: 15%;" data-column="users.unit" data-order="desc">部門</th>
+                <th scope="col" class="text-center text-nowrap" style="width: 15%;" data-column="users.manager" data-order="desc">直屬主管</th>
                 <th scope="col" class="text-center text-nowrap" style="width: 15%;" data-column="users.status" data-order="desc">狀態</th>
-                <th scope="col" class="text-center text-nowrap" style="" data-column="" data-order="">分類</th>
-                <th scope="col" class="text-center text-nowrap" style="width: 17%;" data-column="users_login_record.last_login" data-order="desc">最後登入</th>
+                <th scope="col" class="text-center text-nowrap" style="" data-column="users.type" data-order="">分類</th>
+                <th scope="col" class="text-center text-nowrap" style="width: 17%;" data-column="users.last_login" data-order="desc">最後登入</th>
             </tr>
         </thead>
         <tbody>
@@ -57,7 +69,9 @@
             <tr class="data-row" onclick="member.info('{{ member.pk }}');">
                 <th scope="row" class="text-center" style="vertical-align: middle;">{{ forloop.counter }}</th>
                 <td class="text-center text-nowrap">{{ member.emp_no }}</td>
-                <td class="text-center text-nowrap">{{ member.get_full_name }}</td>
+                <td class="text-center text-nowrap">{{ member.username }}</td>
+                <td class="text-center text-nowrap">{{ member.unit }}</td>
+                <td class="text-center text-nowrap">{{ member.manager|default:'' }}</td>
                 <td class="text-center text-nowrap"><span class="badge {{ member.is_active_color }}">{{ member.is_active_text }}</span></td>
                 <td class="text-center text-nowrap">{{ member.user_type|default:'超級管理者' }}</td>
                 <td class="text-center text-nowrap"><span class="badge {{ member.last_login_color }}">{{ member.last_login|default:"無紀錄" }}</span></td>

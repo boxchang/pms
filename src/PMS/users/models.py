@@ -1,8 +1,4 @@
 import os
-
-from django.db import models
-
-# Create your models here.
 from django.db import models
 from django.dispatch import receiver
 from django.utils import timezone
@@ -14,12 +10,30 @@ from django.contrib.auth.models import BaseUserManager
 from django.conf import settings
 
 
+class Unit(models.Model):
+    unitId = models.CharField("部門編號", max_length=30, unique=True)
+    orgId = models.CharField("組織編號", max_length=30, blank=False, null=False)
+    unitName = models.CharField("部門名稱", max_length=30, blank=False, null=False)
+    isValid = models.CharField("失效", max_length=1, blank=False, null=False, default=0)
+    cost_center = models.CharField("成本中心", max_length=30, blank=True, null=True)
+    manager = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='unit_manager',
+                                null=True, blank=True)
+    create_at = models.DateTimeField(auto_now_add=True, editable=True)  # 建立日期
+    create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='unit_create_by')  # 建立者
+    update_at = models.DateTimeField(auto_now=True, null=True)
+    update_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='unit_update_by')
+
+    def __str__(self):
+        return self.unitName
+
 class UserType(models.Model):
     type_id = models.IntegerField(primary_key=True)
     type_name = models.CharField(_('類別'), max_length=50)
     create_at = models.DateTimeField(default=timezone.now)
     create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
                                   related_name='user_type_create_at')
+    update_at = models.DateTimeField(auto_now=True, null=True)
+    update_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='user_type_update_by')
 
     def __str__(self):
         return self.type_name
@@ -62,24 +76,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     Email and password are required. Other fields are optional.
     """
-    emp_no = models.CharField("工號", max_length=30, blank=False, null=False)
-    username = models.CharField(_('username'), max_length=30, unique=True,
-                                help_text=_('Required. 30 characters or fewer. Letters, digits and '
-                                            '@/./+/-/_ only.'),
-                                validators=[
-                                    validators.RegexValidator(r'^[\w.@+-]+$',
-                                                              _('Enter a valid username. '
-                                                                'This value may contain only letters, numbers '
-                                                                'and @/./+/-/_ characters.'), 'invalid'),
-    ],
-        error_messages={
-                                    'unique': _("A user with that username already exists."),
-    })
-
+    emp_no = models.CharField("工號", max_length=30, blank=False, null=False, unique=True)
+    username = models.CharField(_('username'), max_length=30)
     email = models.EmailField(_('email address'), max_length=254, null=True, blank=True)
     user_type = models.ForeignKey(UserType, related_name='user_type', null=True, on_delete=models.DO_NOTHING)
-    first_name = models.CharField(_('first name'), max_length=30, blank=False)
-    last_name = models.CharField(_('last name'), max_length=30, blank=False)
+    first_name = models.CharField(_('first name'), max_length=30, blank=True)
+    last_name = models.CharField(_('last name'), max_length=30, blank=True)
     shot = models.FileField(upload_to='uploads/profile', null=True, blank=True)
     mobile_number = models.CharField(_('mobile number'), max_length=30, blank=False,
                                      help_text=_(
@@ -95,6 +97,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
                                     help_text=_('Designates whether this user should be treated as '
                                                 'active. Unselect this instead of deleting accounts.'))
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    unit = models.ForeignKey(Unit, related_name='users_unit', on_delete=models.DO_NOTHING, null=True, blank=True)
+    manager = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='user_manager', null=True, blank=True)
+
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'username'

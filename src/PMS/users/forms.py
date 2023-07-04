@@ -47,11 +47,11 @@ class CurrentCustomUserForm(forms.ModelForm):
     password1 = forms.CharField(label="密碼", required=False, widget=forms.PasswordInput(attrs={'placeholder': '請輸入登入密碼'}))
     password2 = forms.CharField(label="確認密碼", required=False, widget=forms.PasswordInput(attrs={'placeholder': '請再次輸入登入密碼'}))
     emp_no = forms.CharField(label="工號", widget=forms.TextInput(attrs={'placeholder': '工號'}))
-    username = forms.CharField(label="AD帳號", widget=forms.TextInput(attrs={'placeholder': 'AD帳號'}))
+    username = forms.CharField(label="姓名")
 
     class Meta:
         model = CustomUser
-        fields = ('emp_no', 'last_name', 'first_name', 'user_type', 'email',
+        fields = ('emp_no', 'username', 'last_name', 'first_name', 'user_type', 'email',
                   'is_active', 'password1', 'password2', 'username')
 
     def __init__(self, *args, submit_title="儲存編輯", **kwargs):
@@ -69,12 +69,13 @@ class CurrentCustomUserForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('last_name', css_class="col-sm-4"),
+                Div('username', css_class="col-sm-3"),
+                Div('last_name', css_class="col-sm-3"),
                 Div('first_name', css_class="col-sm-3"),
                 Div(
                     HTML('<div class="form-switch">'),
                     Field('is_active'),
-                    HTML('</div>'), css_class='col-md-2 text-center'),
+                    HTML('</div>'), css_class='col-md-3 text-center'),
                 css_class='row'
             ),
             Div(

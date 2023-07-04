@@ -126,6 +126,9 @@
             <a class="box-nav-btn" href="{% url 'apply' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="資訊設備借出單">
                 <i class="fas fa-check-square"></i>
             </a>
+            <a class="box-nav-btn" href="{% url 'inv_main' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="文具領用單">
+                <i class="fas fa-pen"></i>
+            </a>
             {% if perms.users.perm_workhour %}
             <a class="box-nav-btn" href="#" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="產線報工">
                 <i class="fas fa-users"></i>

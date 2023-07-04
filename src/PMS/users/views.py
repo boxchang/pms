@@ -9,11 +9,11 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.urls import reverse
-from django.utils import translation
 from django.db.models import Q
-from projects.models import Project
+
+from PMS.database import database
 from bases.views import index
-from users.forms import CurrentCustomUserForm, CustomUser, UserInfoForm
+from users.forms import CurrentCustomUserForm, CustomUser, UserInfoForm, Unit
 
 
 def add_permission(user, codename):
@@ -220,6 +220,7 @@ def user_list(request):
         query.add(Q(emp_no__icontains=user_keyword), Q.AND)
         query.add(Q(first_name__icontains=user_keyword), Q.OR)
         query.add(Q(last_name__icontains=user_keyword), Q.OR)
+        query.add(Q(username__icontains=user_keyword), Q.OR)
         query.add(Q(email__icontains=user_keyword), Q.OR)
         members = CustomUser.objects.filter(query)
 
@@ -268,3 +269,101 @@ def user_auth_api(request):
 
         msg = "權限更新完成"
         return JsonResponse(msg, safe=False)
+
+
+@login_required
+def unit_list(request):
+    template = 'users/unit_list.html'
+    units = Unit.objects.all()
+    return render(request, template, locals())
+
+
+@login_required
+def unit_sync(request):
+    template = 'users/unit_list.html'
+
+    if request.method == 'POST':
+        sql = """SELECT OrganizationUnit.id AS unitId
+                    ,Organization.id AS orgId
+                    ,OrganizationUnit.organizationUnitName AS unitName
+                    ,OrganizationUnit.organizationUnitType AS organizationUnitType
+                    ,OrganizationUnitLevel.organizationUnitLevelName AS levelName
+                    ,OrganizationUnit.validType AS isValid
+                    ,Manager.id managerId
+                    ,Manager.userName manager
+                FROM OrganizationUnit
+                INNER JOIN Organization ON OrganizationUnit.organizationOID = Organization.OID
+                LEFT JOIN OrganizationUnitLevel ON OrganizationUnit.levelOID = OrganizationUnitLevel.OID
+                LEFT JOIN Users Manager ON OrganizationUnit.managerOID = Manager.OID
+                where OrganizationUnit.validType = 1
+                ORDER BY unitId"""
+        db = database()
+        rows = db.select_sql(sql)
+
+        for row in rows:
+            try:
+                unit = Unit.objects.get(unitId=row.unitId)
+                unit.unitName = row.unitName
+                #unit.manager = CustomUser.objects.get(emp_no=row.managerId)
+                unit.manager = CustomUser.objects.get(emp_no='111045')
+                unit.isValid = row.isValid
+                unit.update_by = request.user
+                unit.save()
+            except:
+                unit = Unit(orgId=row.orgId, unitId=row.unitId, unitName=row.unitName, isValid=row.isValid)
+                #unit.manager = CustomUser.objects.get(emp_no=row.managerId)
+                unit.manager = CustomUser.objects.get(emp_no='111045')
+                unit.create_by = request.user
+                unit.update_by = request.user
+                unit.save()
+        return redirect('unit_list')
+
+
+@login_required
+def user_sync(request):
+    template = 'users/user_list.html'
+    if request.method == 'POST':
+        sql = """SELECT Occupant.id AS userId
+                    ,Occupant.userName AS userName
+                    ,Occupant.leaveDate AS leaveDate
+                    ,Occupant.mailAddress
+                    ,OrganizationUnit.id AS unitId
+                    ,Organization.id AS orgId
+                    ,FunctionDefinition.functionDefinitionName AS functionName
+                    ,Functions.isMain AS isMain
+                    ,Manager.id AS managerId
+                    ,FunctionLevel.functionLevelName AS levelName
+                FROM Functions
+                INNER JOIN Users Occupant ON Functions.occupantOID = Occupant.OID
+                INNER JOIN OrganizationUnit
+                INNER JOIN Organization ON OrganizationUnit.organizationOID = Organization.OID ON Functions.organizationUnitOID = OrganizationUnit.OID INNER JOIN FunctionDefinition ON Functions.definitionOID = FunctionDefinition.OID LEFT JOIN FunctionLevel ON Functions.approvalLevelOID = FunctionLevel.OID LEFT JOIN Users Manager ON Functions.specifiedManagerOID = Manager.OID
+                where isMain = 1 and OrganizationUnit.validType=1
+                ORDER BY userId"""
+        db = database()
+        rows = db.select_sql(sql)
+
+        for row in rows:
+            try:
+                user = CustomUser.objects.get(emp_no=row.userId)
+                if row.leaveDate:
+                    user.delete()
+                else:
+                    user.unit = Unit.objects.get(unitId=row.unitId)
+                    if CustomUser.objects.filter(emp_no=row.managerId).exists():
+                        user.manager = CustomUser.objects.get(emp_no=row.managerId)
+                    user.update_by = request.user
+                    user.save()
+            except:
+                if not row.leaveDate:
+                    user = CustomUser(is_staff=1, is_active=1, user_type_id=2)
+                    user.username = row.userName
+                    user.email = row.mailAddress
+                    user.emp_no = row.userId
+                    user.unit = Unit.objects.get(unitId=row.unitId)
+                    if CustomUser.objects.filter(emp_no=row.managerId).exists():
+                        user.manager = CustomUser.objects.get(emp_no=row.managerId)
+                    user.set_password(row.userId)
+                    user.create_by = request.user
+                    user.update_by = request.user
+                    user.save()
+    return redirect('user_list')

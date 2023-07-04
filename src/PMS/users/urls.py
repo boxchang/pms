@@ -12,4 +12,7 @@ urlpatterns = [
     url(r'^user_edit/$', user_edit, name='user_edit'),
     url(r'^user_info/$', user_info, name='user_info'),
     url(r'^user_auth_api/$', user_auth_api, name='user_auth_api'),
+    url(r'^unit_list/$', unit_list, name='unit_list'),
+    url(r'^unit_sync/$', unit_sync, name='unit_sync'),
+    url(r'^user_sync/$', user_sync, name='user_sync'),
 ]
