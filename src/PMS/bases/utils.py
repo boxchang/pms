@@ -4,7 +4,7 @@ from django.utils.translation import gettext as _
 from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse
-
+from django.db import connection
 from bases.models import DataIndex, FormType, Status
 
 # class FORM_TYPE(Enum):
@@ -12,6 +12,7 @@ from bases.models import DataIndex, FormType, Status
 #     REQUEST = 2
 #     PROBLEM = 3
 #     BUG = 4
+from inventory.models import FormStatus
 from projects.models import Project
 from requests.models import Request_attachment
 from users.models import CustomUser
@@ -111,3 +112,38 @@ def get_status_dropdown(o_request):
 
     status_html = status_html.format(title=_("Update Status"), tmp=tmp, request_id=o_request.id)
     return status_html
+
+
+def get_invform_status_dropdown(o_form):
+    tmp = ""
+    status_html = """<div class="btn-group dropdown">
+                      <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {title}
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {tmp}
+                      </div>
+                    </div>
+                    <input type="hidden" name="form_id" id="form_id" value={form_id} \>
+                    <input type="hidden" name="status_id" id="status_id" \>
+                    """
+
+    status = FormStatus.objects.all()
+    for s in status:
+        active = ""
+        if s == o_form.status:
+            active = "active"
+        tmp += "<a class=\"dropdown-item {active}\" href=\"#\" onclick=\"change_status('{status_value}');\">{status_name}</a>"
+        tmp = tmp.format(active=active, status_value=s.id, status_name=s.status_name)
+
+    status_html = status_html.format(title=_("Update Status"), tmp=tmp, form_id=o_form.form_no)
+    return status_html
+
+
+def django_go_sql(sql):
+    with connection.cursor() as cursor:
+        cursor.execute(sql)
+        columns = [col[0] for col in cursor.description]
+        result = [dict(zip(columns, row)) for row in cursor.fetchall()]
+    return result
+

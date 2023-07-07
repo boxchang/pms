@@ -435,7 +435,7 @@ def detail(request, pk):
         pics = Pic_attachment.objects.filter(asset=asset)
         docs = Doc_attachment.objects.filter(asset=asset)
     except Asset.DoesNotExist:
-        raise Http404('Book does not exist')
+        raise Http404('Asset does not exist')
 
 
     return render(request, 'assets/detail.html', locals())

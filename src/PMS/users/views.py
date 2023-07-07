@@ -12,6 +12,7 @@ from django.urls import reverse
 from django.db.models import Q
 
 from PMS.database import database
+from bases.utils import get_invform_status_dropdown
 from bases.views import index
 from users.forms import CurrentCustomUserForm, CustomUser, UserInfoForm, Unit
 
@@ -141,6 +142,7 @@ def detail(request):
         perm_ams = member.has_perm('users.perm_ams')
         perm_workhour = member.has_perm('users.perm_workhour')
         perm_user_manage = member.has_perm('users.perm_user_manage')
+        perm_misc_apply = member.has_perm('users.perm_misc_apply')
 
         form = CurrentCustomUserForm(instance=member)
         form.fields['emp_no'].widget.attrs['readonly'] = True
@@ -267,6 +269,11 @@ def user_auth_api(request):
         else:
             remove_permission(user, 'perm_user_manage')
 
+        if request.POST.get('perm_misc_apply'):
+            add_permission(user, 'perm_misc_apply')
+        else:
+            remove_permission(user, 'perm_misc_apply')
+
         msg = "權限更新完成"
         return JsonResponse(msg, safe=False)
 
@@ -367,3 +374,14 @@ def user_sync(request):
                     user.update_by = request.user
                     user.save()
     return redirect('user_list')
+
+
+def get_deptuser_api(request):
+    if request.method == 'POST':
+        unit = request.POST.get('unit')
+        employees = CustomUser.objects.filter(unit=unit)
+        html = "<option value="" selected>---------</option>"
+
+        for employee in employees:
+            html += """<option value="{value}">{name}</option>""".format(value=employee.emp_no, name=employee.username)
+    return JsonResponse(html, safe=False)

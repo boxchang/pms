@@ -1,10 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-
-# Create your views here.
 from django.urls import reverse
-
 from bases.models import Status
 from bugs.models import Bug
 from problems.models import Problem
@@ -41,3 +38,4 @@ def get_user_setting_pagenum(request):
         project_setting = request.user.setting_user.first()
         page_num = project_setting.page_number
     return page_num
+

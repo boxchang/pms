@@ -1,5 +1,5 @@
 from django.contrib import admin
-from inventory.models import ItemCategory, ItemType, Item
+from inventory.models import ItemCategory, ItemType, Item, FormStatus
 
 
 @admin.register(ItemCategory)
@@ -14,4 +14,9 @@ class ItemTypeAdmin(admin.ModelAdmin):
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ('item_code', 'sap_code', 'vendor_code', 'item_type', 'spec', 'price', 'enabled')
+    list_display = ('item_code', 'sap_code', 'vendor_code', 'item_type', 'spec', 'price', 'unit', 'enabled')
+
+
+@admin.register(FormStatus)
+class FormStatusAdmin(admin.ModelAdmin):
+    list_display = ('status_name',)

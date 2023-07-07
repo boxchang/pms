@@ -122,7 +122,7 @@
         $.ajax({
             url: '{% url 'get_deptuser_api' %}', type: 'post',
             dataType: 'json',
-            data: {"csrfmiddlewaretoken": "{{ csrf_token }}", "unitName": $("#id_apply_dept :selected").val()},
+            data: {"csrfmiddlewaretoken": "{{ csrf_token }}", "unit": $("#id_apply_dept :selected").val()},
             success: function(data) {
                 $("#id_apply_user").html(data);
             }

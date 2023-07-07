@@ -40,22 +40,6 @@ def get_asset_api(request):
     return JsonResponse(html, safe=False)
 
 
-def get_deptuser_api(request):
-    if request.method == 'POST':
-        unitName = request.POST.get('unitName')
-        sql = """SELECT u.id, u.userName
-                  FROM Users u, Functions f, OrganizationUnit ou 
-                  where leaveDate is null and f.occupantOID = u.OID and f.isMain = 1
-                  and f.organizationUnitOID = ou.OID and ou.organizationUnitName = '{unitName}' and ou.validType=1""".format(unitName=unitName)
-        db = database()
-        rows = db.select_sql(sql)
-        html = "<option value="" selected>---------</option>"
-
-        for row in rows:
-            html += """<option value="{value}">{name}</option>""".format(value=row[1], name=row[1])
-    return JsonResponse(html, safe=False)
-
-
 def createDeptOption():
     sql = """select id,organizationUnitName 
              from OrganizationUnit where validType = 1 and managerOID is not null order by id"""

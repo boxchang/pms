@@ -15,4 +15,5 @@ urlpatterns = [
     url(r'^unit_list/$', unit_list, name='unit_list'),
     url(r'^unit_sync/$', unit_sync, name='unit_sync'),
     url(r'^user_sync/$', user_sync, name='user_sync'),
+    url(r'^get_deptuser_api/', get_deptuser_api, name='get_deptuser_api'),
 ]

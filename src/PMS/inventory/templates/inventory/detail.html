@@ -1,0 +1,96 @@
+{% extends 'inventory/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<div class="row p-3">
+    <div class="col-1"></div>
+    <div class="col-10">
+        <fieldset>
+            <legend><span class="p-3">請領資料</span></legend>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-2 p-2" style="text-align:right;">申請日期：</div>
+                        <div class="col-2 p-2 content">{{ form.apply_date }}</div>
+                        <div class="col-2 p-2" style="text-align:right;">狀態：</div>
+                        <div class="col-2 p-2 content">{{ form.status }}</div>
+                        <div class="col-2 p-2" style="text-align:right;">簽核者：</div>
+                        <div class="col-2 p-2 content">{{ form.requester.manager }}</div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-2 p-2" style="text-align:right;">申請部門：</div>
+                        <div class="col-2 p-2 content">{{ form.unit }}</div>
+                        <div class="col-2 p-2" style="text-align:right;">申請者：</div>
+                        <div class="col-2 p-2 content">{{ form.requester }}</div>
+                        <div class="col-2 p-2" style="text-align:right;">分機：</div>
+                        <div class="col-2 p-2 content">{{ form.ext_number }}</div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-2 p-2" style="text-align:right;">申請原因：</div>
+                        <div class="col-10 p-2 content">{{ form.reason }}</div>
+                    </div>
+                </li>
+            </ul>
+        </fieldset>
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>品名</th>
+                    <th>參考價格</th>
+                    <th>數量</th>
+                    <th>單位</th>
+                    <th>參考總價</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in form.applied_form_item.all %}
+                    <tr>
+                        <td>{{ item.spec }}</td>
+                        <td>{{ item.price }}</td>
+                        <td>{{ item.qty }}</td>
+                        <td>{{ item.unit }}</td>
+                        <td style="text-align: right">{{ item.amount }}</td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="5" style="text-align: right">總金額：{{ total_price }}</td>
+                </tr>
+            </tbody>
+        </table>
+        {% if isCreater %}
+        <div style="text-align:center">
+            <a href="{% url 'inv_delete' pk %}" class="btn btn-danger" onclick="return confirm('Are you sure?')">刪除</a>
+        </div>
+        {% endif %}
+        {% if perms.users.perm_misc_apply %}
+            <fieldset>
+                <legend><span class="p-3">管理者</span></legend>
+                <form method="post" action="{% url 'inv_change_status' %}" id="status_form">
+                    {% csrf_token %}
+                    {{ status_html | safe }}
+                </form>
+            </fieldset>
+        {% endif %}
+    </div>
+    <div class="col-1"></div>
+</div>
+{% if isApprover %}
+<div style="text-align:center">
+    <a href="{% url 'inv_agree' pk %}" class="btn btn-info">同意</a>
+    <a href="{% url 'inv_reject' pk %}" class="btn btn-danger" onclick="return confirm('確定是否要退單?')">退單</a>
+</div>
+{% endif %}
+
+{% endblock %}
+{% block js %}
+<script>
+function change_status(status) {
+    $("#status_id").val(status);
+    $("#status_form").submit();
+}
+</script>
+{% endblock js %}
