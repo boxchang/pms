@@ -103,7 +103,6 @@
     //新增品項
     cart_add = function(item_code, spec, price, unit) {
         var item = {"item_code": item_code, "spec": spec, "price": price, "qty": 1, "total": price*1, "unit": unit};
-        alert(spec);
         var valid = true;
         list.forEach(function(list_item) {
             if(list_item.item_code == item_code){
@@ -225,6 +224,13 @@
                 }
             });
 
+        })
+
+        $("#id_keyword").on('keypress', function(e) {
+            if(e.which==13) {
+                $("#button-id-search").click();
+            }
+            return false;
         })
     })
 </script>

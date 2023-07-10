@@ -146,7 +146,7 @@
     <div class="d-flex justify-content-center h-100">
         <div class="col-md-8 d-flex justify-content-center h-100">
             <div style="text-align: center;width:100%;height:370px;margin-top: auto;margin-bottom: auto;">
-                <img src="{% static '/pictures/eagleburgmann-logo-trans-blue.png' %}" />
+
                 <div id="show_time" style="font-size: 8em;color:white;"></div>
                 <div id="show_date" style="font-size: 3em;color:white;"></div>
             </div>
@@ -154,7 +154,9 @@
         <div class="col-md-4 d-flex justify-content-center h-100">
             <div class="card">
                 <div class="card-header">
-                    <h3>Sign In</h3>
+                    <div class="p-2" style="text-align: center">
+                        <img src="{% static '/pictures/eagleburgmann-logo-trans-blue.png' %}" style="width:200px;" />
+                    </div>
                 </div>
                 <div class="card-body">
                     <form method="post" id="login_form" action="{% url 'login' %}">
@@ -172,12 +174,12 @@
                         </div>
                         <input type="password" name="password" class="form-control" placeholder="password" value="{{ cookies_password }}">
                     </div>
-                    <div class="input-group form-group">
+                    <div class="input-group form-group" style="text-align: left">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-robot"></i></span>
                         </div>
                         <input type="checkbox" name="remember" class="form-control" value="on" checked>
-                        <span style="color:#FFF;font-size:1.3em;">Remember Password</span>
+                        <span style="font-size:1.1em;">Remember Password</span>
                     </div>
                         <input type="hidden" name="next" value="{{ next }}" />
                     </form>

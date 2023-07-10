@@ -16,7 +16,8 @@
             </form>
         </div>
     </div>
-    <table class="table table-bordered table-striped">
+    <div id="data" class="table-responsive" style="height:550px; overflow:auto;">
+        <table class="table table-bordered table-striped">
         <thead class="thead-dark">
             <tr>
                 <th width="5%" style="text-align: center">單號</th>
@@ -42,6 +43,7 @@
             {% endfor %}
         </tbody>
     </table>
+    </div>
 </div>
 {% endblock %}
 {% block js %}
