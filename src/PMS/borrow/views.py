@@ -1,8 +1,5 @@
-from django.shortcuts import render
 from django.urls import reverse
-import json
-from PMS.database import database
-from assets.models import AssetType, AssetCategory, Asset, AssetStatus
+from assets.models import AssetType, Asset, AssetStatus
 from borrow.forms import BorrowForm, BorrowAdminForm
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -10,6 +7,9 @@ from borrow.models import Borrow, BorrowItem
 
 
 # bootstrap sub table
+from users.models import Unit
+
+
 def get_borrow_item_api(request, pk):
     _json = []
     items = BorrowItem.objects.filter(borrow=pk)
@@ -41,14 +41,11 @@ def get_asset_api(request):
 
 
 def createDeptOption():
-    sql = """select id,organizationUnitName 
-             from OrganizationUnit where validType = 1 and managerOID is not null order by id"""
-    db = database()
-    rows = db.select_sql(sql)
+    rows = Unit.objects.all()
     html = "<option value="" selected>---------</option>"
 
     for row in rows:
-        html += """<option value="{value}">{name}</option>""".format(value=row[1], name=row[1])
+        html += """<option value="{value}">{name}</option>""".format(value=row.id, name=row.unitName)
     return html
 
 
@@ -90,8 +87,12 @@ def apply(request):
                 if asset:
                     item = BorrowItem()
                     item.borrow = borrow
-                    item.asset = Asset.objects.get(asset_no=asset)
+                    asset = Asset.objects.get(asset_no=asset)
+                    item.asset = asset
                     item.save()
+
+                    asset.status = AssetStatus.objects.get(status_name='出借中')
+                    asset.save()
         except Exception as e:
             print(e)
 
@@ -145,9 +146,9 @@ def form_delete(request, form_no):
     return render(request, 'borrow/record.html', locals())
 
 
-def item_delete(request, form_no, asset_no):
+def item_delete(request, form_no, asset_id):
     borrow = Borrow.objects.get(form_no=form_no)
-    asset = Asset.objects.get(asset_no=asset_no)
+    asset = Asset.objects.get(id=asset_id)
     item = BorrowItem.objects.get(asset=asset)
     item.delete()
     return render(request, 'borrow/record.html', locals())

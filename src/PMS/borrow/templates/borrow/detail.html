@@ -72,7 +72,7 @@
                             <td>{{ item.asset.brand }}</td>
                             <td>{{ item.asset.model }}</td>
                             <td>{{ item.asset.comment }}</td>
-                            <td style="text-align: center"><a href="{% url 'item_delete' borrow.form_no item.asset.asset_no %}" class="btn btn-danger" onclick="return confirm('Are you sure?')">刪除</a></td>
+                            <td style="text-align: center"><a href="/borrow/item_delete/{{ borrow.form_no }}/{{ item.asset.pk }}/" class="btn btn-danger" onclick="return confirm('Are you sure?')">刪除</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>
