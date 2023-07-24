@@ -1,0 +1,46 @@
+{% extends 'production/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load i18n %}
+{% block ready %}
+
+{% endblock ready %}
+{% block js %}
+<script>
+
+</script>
+{% endblock js %}
+{% block content %}
+<div class="row pt-3">
+    <div class="col-1"></div>
+    <div class="col-10">
+        <form action="{% url 'prod_record_manage' %}" method="POST">
+            {% csrf_token %}
+            {% crispy form %}
+        </form>
+        <table border="1" class="table table-bordered table-striped">
+            <tr>
+                <th width="50px" style="text-align: center;">員編</th>
+                <th width="50px" style="text-align: center;">姓名</th>
+                <th width="50px" style="text-align: center;">人時</th>
+                <th width="50px" style="text-align: center;">機時</th>
+                {% for worktype in worktypes %}
+                <th width="50px" style="text-align: center">{{ worktype.type_name }}</th>
+                {% endfor %}
+                <th width="50px" style="text-align: center;">總人時</th>
+            </tr>
+            {% for record in records %}
+            <tr style="text-align: center">
+                <td>{{ record.emp_no }}</td>
+                <td>{{ record.username }}</td>
+                <td>{{ record.labor_time }}</td>
+                <td>{{ record.mach_time }}</td>
+                {{ record.html|safe }}
+                <td style="{{ record.css_overtime }}">{{ record.count }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="col-1"></div>
+</div>
+{% endblock %}

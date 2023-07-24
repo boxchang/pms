@@ -47,12 +47,13 @@ class CurrentCustomUserForm(forms.ModelForm):
     password1 = forms.CharField(label="密碼", required=False, widget=forms.PasswordInput(attrs={'placeholder': '請輸入登入密碼'}))
     password2 = forms.CharField(label="確認密碼", required=False, widget=forms.PasswordInput(attrs={'placeholder': '請再次輸入登入密碼'}))
     emp_no = forms.CharField(label="工號", widget=forms.TextInput(attrs={'placeholder': '工號'}))
+    sap_emp_no = forms.CharField(label="SAP工號", widget=forms.TextInput(attrs={'placeholder': 'SAP工號'}))
     username = forms.CharField(label="姓名")
 
     class Meta:
         model = CustomUser
         fields = ('emp_no', 'username', 'last_name', 'first_name', 'user_type', 'email',
-                  'is_active', 'password1', 'password2', 'username')
+                  'is_active', 'password1', 'password2', 'username', 'sap_emp_no')
 
     def __init__(self, *args, submit_title="儲存編輯", **kwargs):
         super().__init__(*args, **kwargs)
@@ -79,7 +80,8 @@ class CurrentCustomUserForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('email', css_class="col-sm-12"),
+                Div('email', css_class="col-sm-6"),
+                Div('sap_emp_no', css_class="col-sm-3"),
                 css_class='row'
             ),
             Div(

@@ -1,0 +1,110 @@
+{% extends 'production/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load i18n %}
+{% block ready %}
+$("#id_emp_no").focus();
+
+$("#id_cfm_code").on("change", function() {
+  cfm_code_change();
+});
+
+$("#id_emp_no").on("change", function() {
+  emp_no_change();
+});
+
+//Move to Confirm Code after Emp No Enter
+$(':input').keydown(function (e){
+    if(e.keyCode == 13){
+        if($("#id_emp_no").val().length>0 && $("#id_cfm_code").val().length==0){
+          $("#id_cfm_code").focus();
+        }else{
+            // focus next input elements
+            $(':input:visible:enabled:eq(' + ($(':input:visible:enabled').index(this) + 1) + ')').focus();
+        }
+        e.preventDefault();
+    }
+})
+{% endblock ready %}
+{% block js %}
+<script>
+    function emp_no_change() {
+        $.ajax({
+            url: '{% url 'get_user_info_api' %}', type: 'post',
+            dataType: 'json',
+            data: {"csrfmiddlewaretoken": "{{ csrf_token }}", "emp_no": $("#id_emp_no").val()},
+            success: function(data) {
+                if(typeof(data.username)==="undefined"){
+                    alert("無此員工編號");
+                }else{
+                    $("#id_username").val(data.username);
+                    $("#id_sap_emp_no").val(data.sap_emp_no);
+                }
+            }
+        });
+    }
+
+
+    function cfm_code_change() {
+        $.ajax({
+            url: '{% url 'get_step_info_api' %}', type: 'post',
+            dataType: 'json',
+            data: {"csrfmiddlewaretoken": "{{ csrf_token }}", "cfm_code": $("#id_cfm_code").val(), "wo_no": $("#id_wo_no").val()},
+            success: function(data) {
+                if(data.plant=="302B" && data.YY01=="N") {
+                    alert("YY01站點尚未報工!!");
+                    $("#id_cfm_code").val('');
+                    return false;
+                }
+
+                $("#id_plant").val(data.plant);
+                $("#id_wo_no").val(data.wo_no);
+                $("#id_spec").val(data.spec);
+                $("#id_step_code").val(data.step_code);
+                $("#id_step_name").val(data.step_name);
+                $("#id_ctr_code").val(data.ctr_code);
+                $("#id_labor_time").val(data.labor_time);
+                $("#id_mach_time").val(data.mach_time);
+                $("#id_good_qty").val(data.good_qty);
+                $("#hid_std_labor_time").val(data.labor_time);
+                $("#hid_worked_labor_time").val(data.worked_labor_time);
+                $("#hid_wo_qty").val(data.wo_qty);
+            }
+        });
+    }
+
+    function validation() {
+        var labor_time = $("#id_labor_time").val();
+        var std_labor_time = $("#hid_std_labor_time").val();
+        var good_qty = $("#good_qty").val();
+        var wo_qty = $("#hid_wo_qty").val();
+
+        if(labor_time>std_labor_time*1.1){
+            msg = "提醒總報工時數 "+labor_time+" 已超過標準人時10%("+Math.round(std_labor_time*1.1*10)/10+")";
+            return confirm(msg);
+        }
+
+        if(good_qty>wo_qty) {
+            msg = "數量不能超過預計作業數量";
+            alert(msg);
+            return false;
+        }
+    }
+</script>
+{% endblock js %}
+{% block content %}
+    <div class="row pt-3">
+        <div class="col-1"></div>
+        <div class="col-10">
+            <form action="" method="POST" onSubmit="return validation()">
+            {% csrf_token %}
+            {% crispy form %}
+                <input type="hidden" name="hid_std_labor_time" id="hid_std_labor_time">
+                <input type="hidden" name="hid_worked_labor_time" id="hid_worked_labor_time">
+                <input type="hidden" name="hid_wo_qty" id="hid_wo_qty">
+            </form>
+        </div>
+        <div class="col-1"></div>
+    </div>
+
+{% endblock %}
