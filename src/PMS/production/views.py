@@ -71,13 +71,13 @@ def record(request):
         step_name = request.POST.get('step_name')
         plant = request.POST.get('plant')
         request.session['record_dt'] = record_dt
-        user = CustomUser.objects.get(emp_no=emp_no)
+        key_user = CustomUser.objects.get(sap_emp_no=sap_emp_no)
         # record = Record.objects.update_or_create(record_dt=record_dt, emp_no=emp_no, wo_no=wo_no, cfm_code=cfm_code,
         #                                 defaults={'labor_time': labor_time, 'mach_time': mach_time, 'ctr_code': ctr_code,
         #                                           'good_qty': good_qty, 'ng_qty': ng_qty, 'spec':spec, 'username': username,
         #                                           'step_code': step_code, 'step_name': step_name, 'sap_emp_no': sap_emp_no,
         #                                           'update_by': user})
-        record = Record.objects.filter(record_dt=record_dt, emp_no=emp_no, wo_no=wo_no, cfm_code=cfm_code)
+        record = Record.objects.filter(record_dt=record_dt, sap_emp_no=sap_emp_no, wo_no=wo_no, cfm_code=cfm_code)
         if record:
             error_msg = "該筆資料已存在，無法新增"
         else:
@@ -85,7 +85,7 @@ def record(request):
                                             labor_time=labor_time, mach_time=mach_time, ctr_code=ctr_code,
                                             good_qty=good_qty, ng_qty=ng_qty, spec=spec, username=username,
                                             step_code=step_code, step_name=step_name, sap_emp_no=sap_emp_no,
-                                            update_by=user, plant=plant)
+                                            update_by=key_user, plant=plant)
 
             return redirect(record.get_absolute_url())
 
@@ -96,19 +96,19 @@ def record(request):
 @csrf_exempt
 def record2(request):
     if request.method == 'POST':
-        emp_no = request.POST.get('hid_emp_no')
+        sap_emp_no = request.POST.get('hid_sap_emp_no')
         record_dt = request.POST.get('hid_record_dt2')
         work_type = request.POST.get('work_type')
-        user = CustomUser.objects.get(emp_no=emp_no)
+        key_user = CustomUser.objects.get(sap_emp_no=sap_emp_no)
         if work_type:
             work_type = WorkType.objects.get(type_code=work_type)
 
         comment = request.POST.get('comment')
         labor_time = request.POST.get('labor_time')
-        record2 = Record2.objects.update_or_create(record_dt=record_dt, emp_no=emp_no, work_type=work_type,
+        record2 = Record2.objects.update_or_create(record_dt=record_dt, sap_emp_no=sap_emp_no, work_type=work_type,
                                                  defaults={'labor_time': labor_time,
                                                            'comment': comment,
-                                                           'create_by': user})
+                                                           'create_by': key_user})
         return redirect(record2[0].get_absolute_url())
     return render(request, 'production/record.html', locals())
 
@@ -147,7 +147,7 @@ def wo_detail(request):
 def record_del(request, pk):
     record = Record.objects.get(pk=pk)
     record.delete()
-    return redirect(reverse('prod_record_detail_empno', kwargs={'emp_no': request.user.emp_no}))
+    return redirect(reverse('prod_record_detail_sap_empno', kwargs={'sap_emp_no': record.sap_emp_no}))
 
 
 # 其他報工刪除
@@ -155,13 +155,14 @@ def record_del(request, pk):
 def record2_del(request, pk):
     record = Record2.objects.get(pk=pk)
     record.delete()
-    return redirect(reverse('prod_record_detail_empno', kwargs={'emp_no': request.user.emp_no}))
+    return redirect(reverse('prod_record_detail_sap_empno', kwargs={'sap_emp_no': record.sap_emp_no}))
 
 
 # 報工資料編輯
 def record_edit(request, pk):
     record = Record.objects.filter(pk=pk)
     record_dt = record[0].record_dt
+    sap_emp_no = record[0].sap_emp_no
     if request.method == 'POST':
         labor_time = request.POST.get('labor_time')
         mach_time = request.POST.get('mach_time')
@@ -169,28 +170,39 @@ def record_edit(request, pk):
         ng_qty = request.POST.get('ng_qty')
         emp_no = request.POST.get('emp_no')
         record.update(labor_time=labor_time, mach_time=mach_time, good_qty=good_qty, ng_qty=ng_qty)
+
         form = RecordSearchForm(initial={'record_dt': record_dt})
+
         return redirect(reverse('prod_record_detail_empno', kwargs={'emp_no': emp_no}))
-    form = RecordForm(instance=record[0])
+
+    # 已累計報工
+    worked_labor_time = 0
+    records = Record.objects.filter(record_dt=record_dt, sap_emp_no=sap_emp_no).aggregate(Sum('labor_time'),
+                                                                                  Sum('mach_time'))
+    if records['labor_time__sum']:
+        worked_labor_time = records['labor_time__sum']
+
+
+    form = RecordForm(instance=record[0], initial={'worked_labor_time': worked_labor_time})
 
     return render(request, 'production/record.html', locals())
 
 
 # 報工資料查詢
 def record_detail(request):
-    emp_no = ""
+    sap_emp_no = ""
     if request.method == 'POST':
-        emp_no = request.POST['emp_no']
+        sap_emp_no = request.POST['sap_emp_no']
 
-    return record_detail_empno(request, emp_no)
+    return record_detail_sap_empno(request, sap_emp_no)
 
 
 # 報工資料查詢
-def record_detail_empno(request, emp_no):
+def record_detail_sap_empno(request, sap_emp_no):
     html = ""
     worktypes = WorkType.objects.all()
     if request.method == 'POST':
-        emp_no = request.POST['emp_no']
+        sap_emp_no = request.POST['sap_emp_no']
         record_dt = request.POST['record_dt']
         request.session['record_dt'] = record_dt
     else:
@@ -200,11 +212,11 @@ def record_detail_empno(request, emp_no):
             now = datetime.now()
             record_dt = datetime.strftime(now, '%Y-%m-%d')
 
-    if emp_no:
+    if sap_emp_no:
         total_labor_time = 0
         rest_time = 0
-        records = Record.objects.filter(record_dt=record_dt, emp_no=emp_no)
-        record2s = Record2.objects.filter(record_dt=record_dt, emp_no=emp_no)
+        records = Record.objects.filter(record_dt=record_dt, sap_emp_no=sap_emp_no)
+        record2s = Record2.objects.filter(record_dt=record_dt, sap_emp_no=sap_emp_no)
         table = "<table border='1' class='table table-bordered table-striped'>{header}{body}</table>"
         header = """<tr><th style='width:150px'>工單</th><th style='width:150px'>站點代碼</th><th>站點名稱</th>
                         <th style='text-align:center;width:100px'>人時</th>
@@ -235,8 +247,8 @@ def record_detail_empno(request, emp_no):
             total_labor_time += record2.labor_time
             body_tmp = """<tr><td></td><td>{type_code}</td><td>{type_name}</td>
                                         <td style='text-align:right'>{labor_time}</td>
-                                        <td style='text-align:center' colspan='2'>{comment}</td>
-                                        <td style='text-align:right'></td><td>{del_btn}</td></tr>"""
+                                        <td style='text-align:center' colspan='3'>{comment}</td>
+                                        <td>{del_btn}</td></tr>"""
             if not request.user.is_anonymous:
                 del_btn = """<a class="btn btn-danger m-1" href="/production/record2_delete/{record_pk}" role="button" onclick="return confirm('Are you sure?')">刪除</a>""".format(
                     record_pk=record2.pk)
@@ -262,14 +274,14 @@ def record_detail_empno(request, emp_no):
         body += """<td><input type="text" name="labor_time" class="textinput textInput form-control" id="id_labor_time" required></td>"""
         body += """<td><input type="hidden" id="hid_record_dt2" name="hid_record_dt2" value='{record_dt2}'></td>""".format(
             record_dt2=record_dt)
-        body += """<td><input type="hidden" id="hid_emp_no" name="hid_emp_no" value=""></td><td></td>"""
+        body += """<td><input type="hidden" id="hid_sap_emp_no" name="hid_sap_emp_no" value=""></td><td></td>"""
         body += """<td><button type="button" class="btn btn-success m-1" onclick="record2_submit()">新增</a></td></tr></form>"""
         body += """<tr><td colspan='3'>總人時</td><td style='text-align:right'>{total_labor_time}</td>
                         <td colspan='3' style='text-align:right'>待報工時</td><td style='text-align:right'>{rest_time}</td></tr>""".format(
             total_labor_time=total_labor_time, rest_time=rest_time)
         html = table.format(header=header, body=body)
         html += """<div style="text-align: right">報工日期：{record_dt}</div>""".format(record_dt=record_dt)
-    form = RecordSearchForm(initial={'emp_no': emp_no, 'record_dt': record_dt})
+    form = RecordSearchForm(initial={'sap_emp_no': sap_emp_no, 'record_dt': record_dt})
     return render(request, 'production/record_detail.html', locals())
 
 
@@ -309,15 +321,15 @@ def get_user_info(request):
     value = {}
     if request.method == 'POST':
         try:
-            emp_no = request.POST.get('emp_no')
+            sap_emp_no = request.POST.get('sap_emp_no')
             record_dt = request.POST.get('record_dt')
-            user = CustomUser.objects.get(emp_no=emp_no)
-            if user:
-                username = user.username
-                sap_emp_no = user.sap_emp_no
-                value['emp_no'] = emp_no
-                value['username'] = username
+            key_user = CustomUser.objects.get(sap_emp_no=sap_emp_no)
+            if key_user:
+                username = key_user.username
+                emp_no = key_user.emp_no
                 value['sap_emp_no'] = sap_emp_no
+                value['username'] = username
+                value['emp_no'] = emp_no
 
             records = Record.objects.filter(record_dt=record_dt, emp_no=emp_no).aggregate(Sum('labor_time'), Sum('mach_time'))
             if records['labor_time__sum']:
@@ -462,36 +474,40 @@ def record_manage(request):
         now = datetime.now()
         record_dt = datetime.strftime(now, '%Y-%m-%d')
 
+    # 取得同部門人員清單
+    dept_users = CustomUser.objects.filter(unit=request.user.unit)
+    dept_users = [dept_user.sap_emp_no for dept_user in dept_users]
+
     # 當日報工人員列表
     list = []
-    rows = Record.objects.filter(record_dt=record_dt).values('emp_no').distinct()
+    rows = Record.objects.filter(record_dt=record_dt, sap_emp_no__in=dept_users).values('sap_emp_no').distinct()
     for row in rows:
-        list.append(row['emp_no'])
-    rows = Record2.objects.filter(record_dt=record_dt).values('emp_no').distinct()
+        list.append(row['sap_emp_no'])
+    rows = Record2.objects.filter(record_dt=record_dt, sap_emp_no__in=dept_users).values('sap_emp_no').distinct()
     for row in rows:
-        if not row['emp_no'] in list:
-            list.append(row['emp_no'])
+        if not row['sap_emp_no'] in list:
+            list.append(row['sap_emp_no'])
 
     # 人員報工統計
     records = []
-    for emp_no in list:
+    for sap_emp_no in list:
         record = {}
         css_color = ""
         html = ""
         count = 0
-        result = Record.objects.filter(record_dt=record_dt, emp_no=emp_no).aggregate(Sum('labor_time'), Sum('mach_time'))
+        result = Record.objects.filter(record_dt=record_dt, sap_emp_no=sap_emp_no).aggregate(Sum('labor_time'), Sum('mach_time'))
         record['labor_time'] = round(result['labor_time__sum'], 1)
         record['mach_time'] = round(result['mach_time__sum'], 1)
 
         # 人時加總
         count += record['labor_time']
 
-        user = CustomUser.objects.get(emp_no=emp_no)
-        record['emp_no'] = emp_no
-        record['username'] = user.username
+        key_user = CustomUser.objects.get(sap_emp_no=sap_emp_no)
+        record['sap_emp_no'] = sap_emp_no
+        record['username'] = key_user.username
         worktypes = WorkType.objects.all()
         for worktype in worktypes:
-            result = Record2.objects.filter(record_dt=record_dt, emp_no=emp_no, work_type=worktype).aggregate(Sum('labor_time'))
+            result = Record2.objects.filter(record_dt=record_dt, sap_emp_no=sap_emp_no, work_type=worktype).aggregate(Sum('labor_time'))
             if not result['labor_time__sum']:
                 tmp = 0
             else:

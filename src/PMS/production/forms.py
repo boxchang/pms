@@ -31,9 +31,9 @@ class WoSearchForm(forms.ModelForm):
 class RecordSearchForm(forms.ModelForm):
     class Meta:
         model = Record
-        fields = ('emp_no', 'record_dt',)
+        fields = ('sap_emp_no', 'record_dt',)
 
-    emp_no = forms.CharField(required=True, label="員工編號")
+    sap_emp_no = forms.CharField(required=True, label="SAP員工編號")
     record_dt = forms.DateField(label="報工日期")
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
@@ -44,7 +44,7 @@ class RecordSearchForm(forms.ModelForm):
 
         self.helper.layout = Layout(
             Div(
-                Div('emp_no', css_class='col-md-3'),
+                Div('sap_emp_no', css_class='col-md-3'),
                 Div('record_dt', css_class='col-md-3'),
                 Div(Submit('submit', '查詢', css_class='btn btn-info'), css_class='col-md-3 d-flex align-items-center mt-3'),
                 css_class='row'),
@@ -73,9 +73,9 @@ class RecordForm(forms.ModelForm):
     plant = forms.CharField(required=True, label="工廠")
     wo_no = forms.CharField(required=True, label="工單")
     spec = forms.CharField(required=True, label="物料說明")
-    emp_no = forms.CharField(required=True, label="員工編號")
+    emp_no = forms.CharField(required=False, label="員工編號")
     username = forms.CharField(required=False, label="姓名")
-    sap_emp_no = forms.CharField(required=False, label="SAP員工編號")
+    sap_emp_no = forms.CharField(required=True, label="SAP員工編號")
     cfm_code = forms.CharField(required=True, label="確認碼")
     ctr_code = forms.CharField(required=True, label="控制碼")
     step_code = forms.CharField(required=False, label="站點代碼")
@@ -91,7 +91,7 @@ class RecordForm(forms.ModelForm):
         self.fields['wo_no'].widget.attrs['readonly'] = True
         self.fields['spec'].widget.attrs['readonly'] = True
         self.fields['username'].widget.attrs['readonly'] = True
-        self.fields['sap_emp_no'].widget.attrs['readonly'] = True
+        self.fields['emp_no'].widget.attrs['readonly'] = True
         self.fields['step_code'].widget.attrs['readonly'] = True
         self.fields['step_name'].widget.attrs['readonly'] = True
         self.fields['ctr_code'].widget.attrs['readonly'] = True
@@ -102,9 +102,9 @@ class RecordForm(forms.ModelForm):
 
         self.helper.layout = Layout(
             Div(
-                Div('emp_no', css_class='col-md-3'),
-                Div('username', css_class='col-md-3'),
                 Div('sap_emp_no', css_class='col-md-3'),
+                Div('username', css_class='col-md-3'),
+                Div('emp_no', css_class='col-md-3'),
                 css_class='row'),
             Div(
                 Div('record_dt', css_class='col-md-3'),

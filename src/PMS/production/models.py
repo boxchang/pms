@@ -73,7 +73,7 @@ class Record(models.Model):
     update_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='record_update_by')
 
     def get_absolute_url(self):
-        return reverse('prod_record_detail_empno', kwargs={'emp_no': self.emp_no})
+        return reverse('prod_record_detail_sap_empno', kwargs={'sap_emp_no': self.sap_emp_no})
 
 
 class WorkType(models.Model):
@@ -86,6 +86,7 @@ class WorkType(models.Model):
 
 class Record2(models.Model):
     emp_no = models.CharField(max_length=30, blank=False, null=False)
+    sap_emp_no = models.CharField(max_length=30, blank=False, null=False)
     record_dt = models.CharField(max_length=10, blank=False, null=False)
     work_type = models.ForeignKey(WorkType, related_name='record_work_type', on_delete=models.DO_NOTHING)
     comment = models.CharField(max_length=255, blank=True, null=True)
@@ -94,4 +95,4 @@ class Record2(models.Model):
     create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='record2_create_by')
 
     def get_absolute_url(self):
-        return reverse('prod_record_detail_empno', kwargs={'emp_no': self.emp_no})
+        return reverse('prod_record_detail_sap_empno', kwargs={'sap_emp_no': self.sap_emp_no})

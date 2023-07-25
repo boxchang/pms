@@ -3,20 +3,20 @@
 {% load static %}
 {% load i18n %}
 {% block ready %}
-$("#id_emp_no").focus();
+$("#id_sap_emp_no").focus();
 
 $("#id_cfm_code").on("change", function() {
   cfm_code_change();
 });
 
-$("#id_emp_no").on("change", function() {
-  emp_no_change();
+$("#id_sap_emp_no").on("change", function() {
+  sap_emp_no_change();
 });
 
 //Move to Confirm Code after Emp No Enter
 $(':input').keydown(function (e){
     if(e.keyCode == 13){
-        if($("#id_emp_no").val().length>0 && $("#id_cfm_code").val().length==0){
+        if($("#id_sap_emp_no").val().length>0 && $("#id_cfm_code").val().length==0){
           $("#id_cfm_code").focus();
         }else{
             // focus next input elements
@@ -28,17 +28,17 @@ $(':input').keydown(function (e){
 {% endblock ready %}
 {% block js %}
 <script>
-    function emp_no_change() {
+    function sap_emp_no_change() {
         $.ajax({
             url: '{% url 'get_user_info_api' %}', type: 'post',
             dataType: 'json',
-            data: {"csrfmiddlewaretoken": "{{ csrf_token }}", "emp_no": $("#id_emp_no").val()},
+            data: {"csrfmiddlewaretoken": "{{ csrf_token }}", "record_dt": $("#id_record_dt").val(), "sap_emp_no": $("#id_sap_emp_no").val()},
             success: function(data) {
                 if(typeof(data.username)==="undefined"){
-                    alert("無此員工編號");
+                    alert("無此SAP員工編號");
                 }else{
                     $("#id_username").val(data.username);
-                    $("#id_sap_emp_no").val(data.sap_emp_no);
+                    $("#id_emp_no").val(data.emp_no);
                     $("#id_worked_labor_time").val(data.worked_labor_time);
                 }
             }
