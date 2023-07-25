@@ -49,11 +49,13 @@ class CurrentCustomUserForm(forms.ModelForm):
     emp_no = forms.CharField(label="工號", widget=forms.TextInput(attrs={'placeholder': '工號'}))
     sap_emp_no = forms.CharField(label="SAP工號", widget=forms.TextInput(attrs={'placeholder': 'SAP工號'}))
     username = forms.CharField(label="姓名")
+    unit = forms.ModelChoiceField(label="部門", queryset=Unit.objects.all(), widget=forms.Select(
+        attrs={'class': "form-select"}))
 
     class Meta:
         model = CustomUser
         fields = ('emp_no', 'username', 'last_name', 'first_name', 'user_type', 'email',
-                  'is_active', 'password1', 'password2', 'username', 'sap_emp_no')
+                  'is_active', 'password1', 'password2', 'username', 'sap_emp_no', 'unit')
 
     def __init__(self, *args, submit_title="儲存編輯", **kwargs):
         super().__init__(*args, **kwargs)
@@ -66,16 +68,17 @@ class CurrentCustomUserForm(forms.ModelForm):
             Div(
                 Div('user_type', css_class="col-sm-4"),
                 Div('emp_no', css_class="col-sm-4"),
-                css_class='row'
-            ),
-            Div(
-                Div('username', css_class="col-sm-3"),
-                Div('last_name', css_class="col-sm-3"),
-                Div('first_name', css_class="col-sm-3"),
                 Div(
                     HTML('<div class="form-switch">'),
                     Field('is_active'),
                     HTML('</div>'), css_class='col-md-3 text-center'),
+                css_class='row'
+            ),
+            Div(
+                Div('unit', css_class="col-sm-3"),
+                Div('username', css_class="col-sm-3"),
+                Div('last_name', css_class="col-sm-3"),
+                Div('first_name', css_class="col-sm-3"),
                 css_class='row'
             ),
             Div(
