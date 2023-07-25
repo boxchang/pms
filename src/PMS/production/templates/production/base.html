@@ -26,15 +26,22 @@ Production
                 {% endif %}
             {% endif %}
         </div>
+        {% if user.is_authenticated %}
         <div class="ml-md-auto">
             <a class="btn btn-info" href="{% url 'logout' %}" role="button"><i class="fas fa-sign-out-alt"></i>{% trans "logout" %} ({{ user.username }})</a>
         </div>
+        {% endif %}
     </div>
 </div>
 
 {% block content %}
 {% endblock content %}
 {% endblock %}
-{% block js %}
-
-{% endblock js %}
+{% block base_js %}
+<script>
+var error_msg = "{{ error_msg }}";
+if(error_msg.length>0) {
+    alert(error_msg);
+}
+</script>
+{% endblock base_js %}

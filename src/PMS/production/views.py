@@ -46,9 +46,6 @@ def COOIS2Table(items):
         sCol = "<tr>" + sCol + "</tr>"
         sRow += sCol
 
-        if index == 100:  # 預覽只顯示100筆
-            break
-
         index += 1
     html = html.format(Rows=sRow)
     return html
@@ -56,6 +53,7 @@ def COOIS2Table(items):
 
 # 新增報工
 def record(request):
+    error_msg = ""
     if request.method == 'POST':
         record_dt = request.POST.get('record_dt')
         emp_no = request.POST.get('emp_no')
@@ -71,15 +69,25 @@ def record(request):
         ng_qty = request.POST.get('ng_qty')
         step_code = request.POST.get('step_code')
         step_name = request.POST.get('step_name')
+        plant = request.POST.get('plant')
         request.session['record_dt'] = record_dt
         user = CustomUser.objects.get(emp_no=emp_no)
-        record = Record.objects.update_or_create(record_dt=record_dt, emp_no=emp_no, wo_no=wo_no, cfm_code=cfm_code,
-                                        defaults={'labor_time': labor_time, 'mach_time': mach_time, 'ctr_code': ctr_code,
-                                                  'good_qty': good_qty, 'ng_qty': ng_qty, 'spec':spec, 'username': username,
-                                                  'step_code': step_code, 'step_name': step_name, 'sap_emp_no': sap_emp_no,
-                                                  'update_by': user})
+        # record = Record.objects.update_or_create(record_dt=record_dt, emp_no=emp_no, wo_no=wo_no, cfm_code=cfm_code,
+        #                                 defaults={'labor_time': labor_time, 'mach_time': mach_time, 'ctr_code': ctr_code,
+        #                                           'good_qty': good_qty, 'ng_qty': ng_qty, 'spec':spec, 'username': username,
+        #                                           'step_code': step_code, 'step_name': step_name, 'sap_emp_no': sap_emp_no,
+        #                                           'update_by': user})
+        record = Record.objects.filter(record_dt=record_dt, emp_no=emp_no, wo_no=wo_no, cfm_code=cfm_code)
+        if record:
+            error_msg = "該筆資料已存在，無法新增"
+        else:
+            record = Record.objects.create(record_dt=record_dt, emp_no=emp_no, wo_no=wo_no, cfm_code=cfm_code,
+                                            labor_time=labor_time, mach_time=mach_time, ctr_code=ctr_code,
+                                            good_qty=good_qty, ng_qty=ng_qty, spec=spec, username=username,
+                                            step_code=step_code, step_name=step_name, sap_emp_no=sap_emp_no,
+                                            update_by=user, plant=plant)
 
-        return redirect(record[0].get_absolute_url())
+            return redirect(record.get_absolute_url())
 
     form = RecordForm()
     return render(request, 'production/record.html', locals())
@@ -302,13 +310,21 @@ def get_user_info(request):
     if request.method == 'POST':
         try:
             emp_no = request.POST.get('emp_no')
+            record_dt = request.POST.get('record_dt')
             user = CustomUser.objects.get(emp_no=emp_no)
             if user:
                 username = user.username
-            sap_emp_no = user.sap_emp_no
-            value['emp_no'] = emp_no
-            value['username'] = username
-            value['sap_emp_no'] = sap_emp_no
+                sap_emp_no = user.sap_emp_no
+                value['emp_no'] = emp_no
+                value['username'] = username
+                value['sap_emp_no'] = sap_emp_no
+
+            records = Record.objects.filter(record_dt=record_dt, emp_no=emp_no).aggregate(Sum('labor_time'), Sum('mach_time'))
+            if records['labor_time__sum']:
+                value['worked_labor_time'] = records['labor_time__sum']
+            else:
+                value['worked_labor_time'] = 0
+
         except Exception as e:
             print(e)
 
@@ -430,6 +446,10 @@ def excel_import_preview(request):
                 wo['wo_mach_time'] = sheet.cell(row=iRow, column=13).value
                 wo['std_qty'] = sheet.cell(row=iRow, column=14).value
                 wos.append(wo)
+
+                if iRow > 50:  # 預覽只顯示100筆
+                    break
+
             html = COOIS2Table(wos)
     return JsonResponse(html, safe=False)
 

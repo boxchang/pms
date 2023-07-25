@@ -65,10 +65,11 @@ class RecordSearchForm(forms.ModelForm):
 class RecordForm(forms.ModelForm):
     class Meta:
         model = Record
-        fields = ('record_dt', 'plant', 'wo_no', 'spec', 'emp_no', 'username', 'sap_emp_no', 'step_code', 'step_name', 'cfm_code',
+        fields = ('worked_labor_time', 'record_dt', 'plant', 'wo_no', 'spec', 'emp_no', 'username', 'sap_emp_no', 'step_code', 'step_name', 'cfm_code',
                   'labor_time', 'mach_time', 'good_qty', 'ng_qty', 'ctr_code')
 
     record_dt = forms.DateField(label="報工日期")
+    worked_labor_time = forms.DateField(required=False, label="已累計報工")
     plant = forms.CharField(required=True, label="工廠")
     wo_no = forms.CharField(required=True, label="工單")
     spec = forms.CharField(required=True, label="物料說明")
@@ -76,7 +77,7 @@ class RecordForm(forms.ModelForm):
     username = forms.CharField(required=False, label="姓名")
     sap_emp_no = forms.CharField(required=False, label="SAP員工編號")
     cfm_code = forms.CharField(required=True, label="確認碼")
-    ctr_code = forms.CharField(required=True, label="確認碼")
+    ctr_code = forms.CharField(required=True, label="控制碼")
     step_code = forms.CharField(required=False, label="站點代碼")
     step_name = forms.CharField(required=False, label="站點名稱")
     labor_time = forms.CharField(required=True, label="人時")
@@ -94,6 +95,7 @@ class RecordForm(forms.ModelForm):
         self.fields['step_code'].widget.attrs['readonly'] = True
         self.fields['step_name'].widget.attrs['readonly'] = True
         self.fields['ctr_code'].widget.attrs['readonly'] = True
+        self.fields['worked_labor_time'].widget.attrs['readonly'] = True
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.form_show_errors = True
@@ -106,6 +108,7 @@ class RecordForm(forms.ModelForm):
                 css_class='row'),
             Div(
                 Div('record_dt', css_class='col-md-3'),
+                Div('worked_labor_time', css_class='col-md-3'),
                 css_class='row'),
             Div(
                 Div('plant', css_class='col-md-3'),

@@ -66,7 +66,6 @@ class CurrentCustomUserForm(forms.ModelForm):
             Div(
                 Div('user_type', css_class="col-sm-4"),
                 Div('emp_no', css_class="col-sm-4"),
-                Div('username', css_class="col-sm-4"),
                 css_class='row'
             ),
             Div(
