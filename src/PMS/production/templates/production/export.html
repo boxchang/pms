@@ -1,0 +1,32 @@
+{% extends 'production/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load i18n %}
+{% block ready %}
+
+{% endblock ready %}
+{% block css %}
+
+{% endblock css %}
+{% block js %}
+<script>
+    $(document).ready(function() {
+        $("#export").submit(function(e) {
+            $("body").loading();
+        });
+    });
+
+</script>
+{% endblock js %}
+{% block content %}
+<div class="row pt-3">
+    <div class="col-1"></div>
+    <div class="col-10">
+        <form action="{% url 'prod_sap_file' %}" method="POST" id="export">
+            {% csrf_token %}
+            {% crispy form %}
+        </form>
+    </div>
+    <div class="col-1"></div>
+</div>
+{% endblock %}

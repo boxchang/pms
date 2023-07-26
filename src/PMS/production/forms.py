@@ -7,6 +7,38 @@ from bootstrap_datepicker_plus.widgets import DatePickerInput
 from production.models import Record
 
 
+class ExportForm(forms.ModelForm):
+    class Meta:
+        model = Record
+        fields = ('record_dt',)
+
+    record_dt = forms.DateField(label="報工日期")
+
+    def __init__(self, *args, submit_title='Submit', **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.form_show_errors = True
+
+        self.helper.layout = Layout(
+            Div(
+                Div('record_dt', css_class='col-md-3'),
+                Div(Submit('submit', 'Export', css_class='btn btn-info'),
+                    css_class='col-md-3 d-flex align-items-center mt-3'),
+                css_class='row'),
+        )
+
+        self.fields['record_dt'].widget = DatePickerInput(
+            attrs={'value': datetime.now().strftime('%Y-%m-%d')},
+            options={
+                "format": "YYYY-MM-DD",
+                "showClose": False,
+                "showClear": False,
+                "showTodayButton": False,
+            }
+        )
+
+
 class WoSearchForm(forms.ModelForm):
     class Meta:
         model = Record

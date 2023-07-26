@@ -6,11 +6,11 @@ from django.shortcuts import render, redirect
 import openpyxl
 import uuid
 from datetime import datetime
-
+import xlwt
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-
-from production.forms import RecordForm, RecordSearchForm, WoSearchForm, RecordManageForm
+from django.http import HttpResponse
+from production.forms import RecordForm, RecordSearchForm, WoSearchForm, RecordManageForm, ExportForm
 from production.models import WOMain, ExcelTemp, WODetail, Record, Record2, WorkType
 from users.models import CustomUser
 
@@ -470,6 +470,7 @@ def record_manage(request):
     form = RecordManageForm()
     if request.method == 'POST':
         record_dt = request.POST.get('record_dt')
+        form = RecordManageForm(initial={'record_dt': record_dt})
     else:
         now = datetime.now()
         record_dt = datetime.strftime(now, '%Y-%m-%d')
@@ -496,8 +497,12 @@ def record_manage(request):
         html = ""
         count = 0
         result = Record.objects.filter(record_dt=record_dt, sap_emp_no=sap_emp_no).aggregate(Sum('labor_time'), Sum('mach_time'))
-        record['labor_time'] = round(result['labor_time__sum'], 1)
-        record['mach_time'] = round(result['mach_time__sum'], 1)
+        record['labor_time'] = 0
+        if result['labor_time__sum']:
+            record['labor_time'] = round(result['labor_time__sum'], 1)
+        record['mach_time'] = 0
+        if result['mach_time__sum']:
+            record['mach_time'] = round(result['mach_time__sum'], 1)
 
         # 人時加總
         count += record['labor_time']
@@ -525,3 +530,58 @@ def record_manage(request):
         if count > 480:
             record['css_overtime'] = "color: red;"
     return render(request, 'production/record_manage.html', locals())
+
+
+def prod_sap_export(request):
+    form = ExportForm()
+    return render(request, 'production/export.html', locals())
+
+def prod_sap_file(request):
+    if request.method == 'POST':
+        record_dt = request.POST.get('record_dt')
+        file_name = "ZANZ_CONFIRM_{record_dt}.xls".format(record_dt=record_dt)
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = "attachment; filename='{file_name}'".format(file_name=file_name)
+
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('Confirmation')
+        ws.col(0).width = 256 * 20
+        ws.col(1).width = 256 * 20
+        ws.col(2).width = 256 * 20
+        ws.col(3).width = 256 * 20
+        ws.col(4).width = 256 * 20
+        ws.col(5).width = 256 * 20
+        ws.col(6).width = 256 * 20
+        ws.col(7).width = 256 * 20
+        ws.col(8).width = 256 * 20
+
+        # Sheet header, first row
+        row_num = 0
+
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+
+        columns = ['afrud_pernr', 'afrud_budat', 'afvgd_arbpl', 'afrud_aufnr', 'afrud_rueck', 'caufvd_matnr',
+                   'afrud_ism01', 'afrud_ism02', 'afrud_ism03']
+
+        for col_num in range(len(columns)):
+            ws.write(row_num, col_num, columns[col_num], font_style)
+
+        # Sheet body, remaining rows
+        font_style = xlwt.XFStyle()
+
+        records = Record.objects.filter(record_dt=record_dt)
+
+        for record in records:
+            ws.write(row_num, 0, record.sap_emp_no, font_style)  # SAP員編
+            ws.write(row_num, 1, record.record_dt, font_style)  # 工作執行日
+            ws.write(row_num, 2, record.work_center, font_style)  # 工作中心
+            ws.write(row_num, 3, record.wo_no, font_style)  # 生產工單
+            ws.write(row_num, 4, record.cfm_code, font_style)  # 確認單
+            ws.write(row_num, 5, "", font_style)  # 料號
+            ws.write(row_num, 6, "0", font_style)  # setting time
+            ws.write(row_num, 7, record.mach_time, font_style)  # machine time
+            ws.write(row_num, 8, record.labor_time, font_style)  # labor time
+        wb.save(response)
+        return response
+    return render(request, 'production/export.html', locals())
