@@ -541,7 +541,7 @@ def prod_sap_file(request):
         record_dt = request.POST.get('record_dt')
         file_name = "ZANZ_CONFIRM_{record_dt}.xls".format(record_dt=record_dt)
         response = HttpResponse(content_type='application/ms-excel')
-        response['Content-Disposition'] = "attachment; filename='{file_name}'".format(file_name=file_name)
+        response['Content-Disposition'] = "attachment; filename={file_name}".format(file_name=file_name)
 
         wb = xlwt.Workbook(encoding='utf-8')
         ws = wb.add_sheet('Confirmation')
