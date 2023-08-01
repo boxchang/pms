@@ -22,7 +22,7 @@ def COOIS2Table(items):
     sRow = ""
     sCol = ""
     sCol += """<th>序號</th><th>工廠</th><th>訂單</th><th>確認</th><th>作業</th><th>Text key</th><th>作業短文</th><th>控制碼</th><th>系統狀態</th>
-               <th>工作中心</th><th>物料說明</th><th>作業數量</th><th>人時</th><th>機時</th><th>基礎數量</th>"""
+               <th>工作中心</th><th>料號</th><th>物料說明</th><th>作業數量</th><th>人時</th><th>機時</th><th>基礎數量</th>"""
     sCol = "<tr>" + sCol + "</tr>"
     sRow += sCol
     index = 1
@@ -38,6 +38,7 @@ def COOIS2Table(items):
         sCol += "<td>{value}</td>".format(value=item['ctr_code'])
         sCol += "<td>{value}</td>".format(value=item['status'])
         sCol += "<td>{value}</td>".format(value=item['work_center'])
+        sCol += "<td>{value}</td>".format(value=item['item_no'])
         sCol += "<td>{value}</td>".format(value=item['spec'])
         sCol += "<td>{value}</td>".format(value=item['wo_qty'])
         sCol += "<td>{value}</td>".format(value=item['wo_labor_time'])
@@ -60,6 +61,7 @@ def record(request):
         username = request.POST.get('username')
         sap_emp_no = request.POST.get('sap_emp_no')
         wo_no = request.POST.get('wo_no')
+        item_no = request.POST.get('item_no')
         spec = request.POST.get('spec')
         cfm_code = request.POST.get('cfm_code')
         ctr_code = request.POST.get('ctr_code')
@@ -84,7 +86,7 @@ def record(request):
         else:
             record = Record.objects.create(record_dt=record_dt, emp_no=emp_no, wo_no=wo_no, cfm_code=cfm_code,
                                             labor_time=labor_time, mach_time=mach_time, ctr_code=ctr_code,
-                                            good_qty=good_qty, ng_qty=ng_qty, spec=spec, username=username,
+                                            good_qty=good_qty, ng_qty=ng_qty, item_no=item_no, spec=spec, username=username,
                                             step_no=step_no, step_code=step_code, step_name=step_name, sap_emp_no=sap_emp_no,
                                             update_by=key_user, plant=plant)
 
@@ -298,6 +300,7 @@ def get_step_info(request):
             if step:
                 value['plant'] = step.wo_main.plant
                 value['wo_no'] = step.wo_main.wo_no
+                value['item_no'] = step.wo_main.item_no
                 value['spec'] = step.wo_main.spec
                 value['step_no'] = step.step_no
                 value['step_code'] = step.step_code
@@ -365,16 +368,18 @@ def build_exceltemp_data(request, excel_file):
         wo['ctr_code'] = sheet.cell(row=iRow, column=7).value
         wo['status'] = sheet.cell(row=iRow, column=8).value
         wo['work_center'] = sheet.cell(row=iRow, column=9).value
-        wo['spec'] = sheet.cell(row=iRow, column=10).value
-        wo['wo_qty'] = sheet.cell(row=iRow, column=11).value
-        wo['wo_labor_time'] = sheet.cell(row=iRow, column=12).value
-        wo['wo_mach_time'] = sheet.cell(row=iRow, column=13).value
-        wo['std_qty'] = sheet.cell(row=iRow, column=14).value
+        wo['item_no'] = sheet.cell(row=iRow, column=10).value
+        wo['spec'] = sheet.cell(row=iRow, column=11).value
+        wo['wo_qty'] = sheet.cell(row=iRow, column=12).value
+        wo['wo_labor_time'] = sheet.cell(row=iRow, column=13).value
+        wo['wo_mach_time'] = sheet.cell(row=iRow, column=14).value
+        wo['std_qty'] = sheet.cell(row=iRow, column=15).value
 
         temp = ExcelTemp()
         temp.batch_no = uuid.uuid4().hex[:10]
         temp.plant = wo['plant']
         temp.wo_no = wo['wo_no']
+        temp.item_no = wo['item_no']
         temp.spec = wo['spec']
         temp.cfm_code = wo['cfm_code']
         temp.step_no = wo['step_no']
@@ -397,7 +402,7 @@ def excel_import(request):
         if excel_file:
             build_exceltemp_data(request, excel_file)
 
-            rows = ExcelTemp.objects.values('plant', 'wo_no', 'spec').distinct()
+            rows = ExcelTemp.objects.values('plant', 'wo_no', 'item_no').distinct()
             for row in rows:
                 tmp = WOMain.objects.filter(wo_no=row['wo_no']).aggregate(version=Max('version'))
                 if not tmp['version']:  # 新增資料
@@ -408,6 +413,7 @@ def excel_import(request):
 
                 wo_main = WOMain()
                 wo_main.batch_no = uuid.uuid4().hex[:10]
+                wo_main.item_no = row['item_no']
                 wo_main.spec = row['spec']
                 wo_main.plant = row['plant']
                 wo_main.wo_no = row['wo_no']
@@ -454,11 +460,12 @@ def excel_import_preview(request):
                 wo['ctr_code'] = sheet.cell(row=iRow, column=7).value
                 wo['status'] = sheet.cell(row=iRow, column=8).value
                 wo['work_center'] = sheet.cell(row=iRow, column=9).value
-                wo['spec'] = sheet.cell(row=iRow, column=10).value
-                wo['wo_qty'] = sheet.cell(row=iRow, column=11).value
-                wo['wo_labor_time'] = sheet.cell(row=iRow, column=12).value
-                wo['wo_mach_time'] = sheet.cell(row=iRow, column=13).value
-                wo['std_qty'] = sheet.cell(row=iRow, column=14).value
+                wo['item_no'] = sheet.cell(row=iRow, column=10).value
+                wo['spec'] = sheet.cell(row=iRow, column=11).value
+                wo['wo_qty'] = sheet.cell(row=iRow, column=12).value
+                wo['wo_labor_time'] = sheet.cell(row=iRow, column=13).value
+                wo['wo_mach_time'] = sheet.cell(row=iRow, column=14).value
+                wo['std_qty'] = sheet.cell(row=iRow, column=15).value
                 wos.append(wo)
 
                 if iRow > 50:  # 預覽只顯示100筆
@@ -580,7 +587,7 @@ def prod_sap_file(request):
             ws.write(row_num, 2, record.work_center, font_style)  # 工作中心
             ws.write(row_num, 3, record.wo_no, font_style)  # 生產工單
             ws.write(row_num, 4, record.cfm_code, font_style)  # 確認單
-            ws.write(row_num, 5, "", font_style)  # 料號
+            ws.write(row_num, 5, record.item_no, font_style)  # 料號
             ws.write(row_num, 6, "0", font_style)  # setting time
             ws.write(row_num, 7, record.mach_time, font_style)  # machine time
             ws.write(row_num, 8, record.labor_time, font_style)  # labor time

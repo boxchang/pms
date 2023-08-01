@@ -97,13 +97,14 @@ class RecordSearchForm(forms.ModelForm):
 class RecordForm(forms.ModelForm):
     class Meta:
         model = Record
-        fields = ('worked_labor_time', 'record_dt', 'plant', 'wo_no', 'spec', 'emp_no', 'username', 'sap_emp_no', 'step_code', 'step_name', 'cfm_code',
+        fields = ('worked_labor_time', 'record_dt', 'plant', 'wo_no', 'item_no', 'spec', 'emp_no', 'username', 'sap_emp_no', 'step_code', 'step_name', 'cfm_code',
                   'labor_time', 'mach_time', 'good_qty', 'ng_qty', 'ctr_code')
 
     record_dt = forms.DateField(label=_('record_date'))
     worked_labor_time = forms.DateField(required=False, label=_('worked_labor_time'))
     plant = forms.CharField(required=True, label=_('plant'))
     wo_no = forms.CharField(required=True, label=_('prod_order'))
+    item_no = forms.CharField(required=True, label=_('item_no'))
     spec = forms.CharField(required=True, label=_('spec'))
     emp_no = forms.CharField(required=False, label=_('emp_no'))
     username = forms.CharField(required=False, label=_('name'))
@@ -121,6 +122,7 @@ class RecordForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['plant'].widget.attrs['readonly'] = True
         self.fields['wo_no'].widget.attrs['readonly'] = True
+        self.fields['item_no'].widget.attrs['readonly'] = True
         self.fields['spec'].widget.attrs['readonly'] = True
         self.fields['username'].widget.attrs['readonly'] = True
         self.fields['emp_no'].widget.attrs['readonly'] = True
@@ -145,6 +147,7 @@ class RecordForm(forms.ModelForm):
             Div(
                 Div('plant', css_class='col-md-3'),
                 Div('wo_no', css_class='col-md-3'),
+                Div('item_no', css_class='col-md-3'),
                 Div('spec', css_class='col-md-3'),
                 css_class='row'),
             Div(
