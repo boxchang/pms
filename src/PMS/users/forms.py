@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth import authenticate
 from .models import *
+from django.utils.translation import gettext_lazy as _
  # extend Django's built-in UserCreationForm and UserChangeForm to
  # remove the username field (and optionally add any others that are
  # required)
@@ -41,15 +42,15 @@ from crispy_forms.layout import Submit, Layout, Div, Fieldset, HTML, Field
 from .models import CustomUser
 
 class CurrentCustomUserForm(forms.ModelForm):
-    user_type = forms.ModelChoiceField(label="類別", queryset=UserType.objects.all(), widget=forms.Select(
+    user_type = forms.ModelChoiceField(label=_('user_type'), queryset=UserType.objects.all(), widget=forms.Select(
         attrs={'class': "form-select"}))
-    is_active = forms.BooleanField(label="是否啟用", initial=True, required=False, widget=forms.CheckboxInput(attrs={'class': "form-check-input"}))
-    password1 = forms.CharField(label="密碼", required=False, widget=forms.PasswordInput(attrs={'placeholder': '請輸入登入密碼'}))
-    password2 = forms.CharField(label="確認密碼", required=False, widget=forms.PasswordInput(attrs={'placeholder': '請再次輸入登入密碼'}))
-    emp_no = forms.CharField(label="工號", widget=forms.TextInput(attrs={'placeholder': '工號'}))
-    sap_emp_no = forms.CharField(label="SAP工號", widget=forms.TextInput(attrs={'placeholder': 'SAP工號'}))
-    username = forms.CharField(label="姓名")
-    unit = forms.ModelChoiceField(label="部門", queryset=Unit.objects.all(), widget=forms.Select(
+    is_active = forms.BooleanField(label=_('active'), initial=True, required=False, widget=forms.CheckboxInput(attrs={'class': "form-check-input"}))
+    password1 = forms.CharField(label=_('password'), required=False, widget=forms.PasswordInput(attrs={'placeholder': _('Please type the password')}))
+    password2 = forms.CharField(label=_('confirm_password'), required=False, widget=forms.PasswordInput(attrs={'placeholder': _('Please type the login password again')}))
+    emp_no = forms.CharField(label=_('emp_no'), widget=forms.TextInput(attrs={'placeholder': _('emp_no')}))
+    sap_emp_no = forms.CharField(label=_('sap_emp_no'), widget=forms.TextInput(attrs={'placeholder': _('sap_emp_no')}))
+    username = forms.CharField(label=_('name'))
+    unit = forms.ModelChoiceField(label=_('dept'), queryset=Unit.objects.all(), widget=forms.Select(
         attrs={'class': "form-select"}))
 
     class Meta:
@@ -57,7 +58,7 @@ class CurrentCustomUserForm(forms.ModelForm):
         fields = ('emp_no', 'username', 'last_name', 'first_name', 'user_type', 'email',
                   'is_active', 'password1', 'password2', 'username', 'sap_emp_no', 'unit')
 
-    def __init__(self, *args, submit_title="儲存編輯", **kwargs):
+    def __init__(self, *args, submit_title=_('save'), **kwargs):
         super().__init__(*args, **kwargs)
 
         self.helper = FormHelper()
@@ -101,18 +102,18 @@ class CurrentCustomUserForm(forms.ModelForm):
 
         if password != confirm_password:
             raise forms.ValidationError(
-                "密碼與確認密碼不一致"
+                _('The password is not same with the confirm password')
             )
 
 
 class UserInfoForm(forms.ModelForm):
-    emp_no = forms.CharField(label="登入帳號", widget=forms.HiddenInput())
-    password0 = forms.CharField(label="舊密碼", required=False,
-                                widget=forms.PasswordInput(attrs={'placeholder': '請輸入登入密碼'}))
-    password1 = forms.CharField(label="新密碼", required=False,
-                                widget=forms.PasswordInput(attrs={'placeholder': '請輸入登入密碼'}))
-    password2 = forms.CharField(label="確認密碼", required=False,
-                                widget=forms.PasswordInput(attrs={'placeholder': '請再次輸入登入密碼'}))
+    emp_no = forms.CharField(label=_('login_account'), widget=forms.HiddenInput())
+    password0 = forms.CharField(label=_('old_password'), required=False,
+                                widget=forms.PasswordInput(attrs={'placeholder': _('Please type the login password')}))
+    password1 = forms.CharField(label=_('new_password'), required=False,
+                                widget=forms.PasswordInput(attrs={'placeholder': _('Please type the new password')}))
+    password2 = forms.CharField(label=_('confirm_password'), required=False,
+                                widget=forms.PasswordInput(attrs={'placeholder': _('Please type the confirm password')}))
 
     class Meta:
         model = CustomUser
@@ -126,7 +127,7 @@ class UserInfoForm(forms.ModelForm):
         self.helper.form_show_errors = True
 
         self.helper.layout = Layout(
-            Fieldset('基本資料',
+            Fieldset(_('base_information'),
                  Div(
                      Div('emp_no', css_class="col-sm-4"),
                      css_class='row'
@@ -137,7 +138,7 @@ class UserInfoForm(forms.ModelForm):
                  ),
             ),
             HTML('<hr>'),
-            Fieldset('密碼變更',
+            Fieldset(_('Change Password'),
                 Div(
                     Div('password0', css_class="col-sm-4"),
                     css_class='row p-3'
@@ -160,10 +161,10 @@ class UserInfoForm(forms.ModelForm):
 
         if password != confirm_password:
             raise forms.ValidationError(
-                "密碼與確認密碼不一致"
+                _('The password is not same with the confirm password')
             )
 
         if current_password and not authenticate(username=emp_no, password=current_password):
             raise forms.ValidationError(
-                "舊密碼不正確"
+                _('The password is not correct')
             )

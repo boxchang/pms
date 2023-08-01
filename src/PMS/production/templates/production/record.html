@@ -35,7 +35,7 @@ $(':input').keydown(function (e){
             data: {"csrfmiddlewaretoken": "{{ csrf_token }}", "record_dt": $("#id_record_dt").val(), "sap_emp_no": $("#id_sap_emp_no").val()},
             success: function(data) {
                 if(typeof(data.username)==="undefined"){
-                    alert("無此SAP員工編號");
+                    alert("{% trans 'SAP employee number is not correct or no data' %}");
                 }else{
                     $("#id_username").val(data.username);
                     $("#id_emp_no").val(data.emp_no);
@@ -52,8 +52,8 @@ $(':input').keydown(function (e){
             dataType: 'json',
             data: {"csrfmiddlewaretoken": "{{ csrf_token }}", "cfm_code": $("#id_cfm_code").val(), "wo_no": $("#id_wo_no").val()},
             success: function(data) {
-                if(data.plant=="302B" && data.YY01=="N") {
-                    alert("YY01站點尚未報工!!");
+                if(data.first_step_done=="N") {
+                    alert("{% trans 'The first step has been not finished yet' %}");
                     $("#id_cfm_code").val('');
                     return false;
                 }
@@ -70,6 +70,7 @@ $(':input').keydown(function (e){
                 $("#hid_std_labor_time").val(data.labor_time);
                 $("#hid_worked_labor_time").val(data.worked_labor_time);
                 $("#hid_wo_qty").val(data.wo_qty);
+                $("#hid_step_no").val(data.step_no);
             }
         });
     }
@@ -81,12 +82,14 @@ $(':input').keydown(function (e){
         var wo_qty = $("#hid_wo_qty").val();
 
         if(labor_time>std_labor_time*1.1){
-            msg = "提醒總報工時數 "+labor_time+" 已超過標準人時10%("+Math.round(std_labor_time*1.1*10)/10+")";
+            msg = "{% trans 'Remind that total recorded time {labor_time} already over 10% of the standard time({standard_time}).' %}";
+            msg = msg.replace("{labor_time}", labor_time);
+            msg = msg.replace("{standard_time}", Math.round(std_labor_time*1.1*10)/10);
             return confirm(msg);
         }
 
         if(good_qty>wo_qty) {
-            msg = "數量不能超過預計作業數量";
+            msg = "{% trans 'The operation quantity cannot over the production order quantity.' %}";
             alert(msg);
             return false;
         }
@@ -103,6 +106,7 @@ $(':input').keydown(function (e){
                 <input type="hidden" name="hid_std_labor_time" id="hid_std_labor_time">
                 <input type="hidden" name="hid_worked_labor_time" id="hid_worked_labor_time">
                 <input type="hidden" name="hid_wo_qty" id="hid_wo_qty">
+                <input type="hidden" name="hid_step_no" id="hid_step_no">
             </form>
         </div>
         <div class="col-1"></div>

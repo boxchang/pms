@@ -61,6 +61,7 @@ class Record(models.Model):
     sap_emp_no = models.CharField(max_length=30, blank=False, null=False)
     cfm_code = models.CharField(max_length=20, blank=False, null=False)
     ctr_code = models.CharField(max_length=20, blank=True, null=True)
+    step_no = models.CharField(max_length=20, blank=True, null=True)
     step_code = models.CharField(max_length=20, blank=True, null=True)
     step_name = models.CharField(max_length=20, blank=True, null=True)
     record_dt = models.CharField(max_length=10, blank=False, null=False)

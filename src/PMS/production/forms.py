@@ -3,7 +3,7 @@ from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
 from bootstrap_datepicker_plus.widgets import DatePickerInput
-
+from django.utils.translation import gettext_lazy as _
 from production.models import Record
 
 
@@ -12,7 +12,7 @@ class ExportForm(forms.ModelForm):
         model = Record
         fields = ('record_dt',)
 
-    record_dt = forms.DateField(label="報工日期")
+    record_dt = forms.DateField(label=_('record_date'))
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -23,7 +23,7 @@ class ExportForm(forms.ModelForm):
         self.helper.layout = Layout(
             Div(
                 Div('record_dt', css_class='col-md-3'),
-                Div(Submit('submit', 'Export', css_class='btn btn-info'),
+                Div(Submit('submit', _('export'), css_class='btn btn-info'),
                     css_class='col-md-3 d-flex align-items-center mt-3'),
                 css_class='row'),
         )
@@ -44,7 +44,7 @@ class WoSearchForm(forms.ModelForm):
         model = Record
         fields = ('wo_no',)
 
-    wo_no = forms.CharField(label="工單")
+    wo_no = forms.CharField(label=_('prod_order'))
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -55,7 +55,7 @@ class WoSearchForm(forms.ModelForm):
         self.helper.layout = Layout(
             Div(
                 Div('wo_no', css_class='col-md-3'),
-                Div(Submit('submit', '查詢', css_class='btn btn-info'), css_class='col-md-3 d-flex align-items-center mt-3'),
+                Div(Submit('submit', _('search'), css_class='btn btn-info'), css_class='col-md-3 d-flex align-items-center mt-3'),
                 css_class='row'),
         )
 
@@ -65,8 +65,8 @@ class RecordSearchForm(forms.ModelForm):
         model = Record
         fields = ('sap_emp_no', 'record_dt',)
 
-    sap_emp_no = forms.CharField(required=True, label="SAP員工編號")
-    record_dt = forms.DateField(label="報工日期")
+    sap_emp_no = forms.CharField(required=True, label=_('sap_emp_no'))
+    record_dt = forms.DateField(label=_('record_date'))
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -78,7 +78,7 @@ class RecordSearchForm(forms.ModelForm):
             Div(
                 Div('sap_emp_no', css_class='col-md-3'),
                 Div('record_dt', css_class='col-md-3'),
-                Div(Submit('submit', '查詢', css_class='btn btn-info'), css_class='col-md-3 d-flex align-items-center mt-3'),
+                Div(Submit('submit', _('search'), css_class='btn btn-info'), css_class='col-md-3 d-flex align-items-center mt-3'),
                 css_class='row'),
         )
 
@@ -100,22 +100,22 @@ class RecordForm(forms.ModelForm):
         fields = ('worked_labor_time', 'record_dt', 'plant', 'wo_no', 'spec', 'emp_no', 'username', 'sap_emp_no', 'step_code', 'step_name', 'cfm_code',
                   'labor_time', 'mach_time', 'good_qty', 'ng_qty', 'ctr_code')
 
-    record_dt = forms.DateField(label="報工日期")
-    worked_labor_time = forms.DateField(required=False, label="已累計報工")
-    plant = forms.CharField(required=True, label="工廠")
-    wo_no = forms.CharField(required=True, label="工單")
-    spec = forms.CharField(required=True, label="物料說明")
-    emp_no = forms.CharField(required=False, label="員工編號")
-    username = forms.CharField(required=False, label="姓名")
-    sap_emp_no = forms.CharField(required=True, label="SAP員工編號")
-    cfm_code = forms.CharField(required=True, label="確認碼")
-    ctr_code = forms.CharField(required=True, label="控制碼")
-    step_code = forms.CharField(required=False, label="站點代碼")
-    step_name = forms.CharField(required=False, label="站點名稱")
-    labor_time = forms.CharField(required=True, label="人時")
-    mach_time = forms.CharField(required=False, label="機時")
-    good_qty = forms.IntegerField(required=True, label="良品")
-    ng_qty = forms.IntegerField(required=True, label="NG", initial=0)
+    record_dt = forms.DateField(label=_('record_date'))
+    worked_labor_time = forms.DateField(required=False, label=_('worked_labor_time'))
+    plant = forms.CharField(required=True, label=_('plant'))
+    wo_no = forms.CharField(required=True, label=_('prod_order'))
+    spec = forms.CharField(required=True, label=_('spec'))
+    emp_no = forms.CharField(required=False, label=_('emp_no'))
+    username = forms.CharField(required=False, label=_('name'))
+    sap_emp_no = forms.CharField(required=True, label=_('sap_emp_no'))
+    cfm_code = forms.CharField(required=True, label=_('confirm_code'))
+    ctr_code = forms.CharField(required=True, label=_('control_code'))
+    step_code = forms.CharField(required=False, label=_('step_code'))
+    step_name = forms.CharField(required=False, label=_('step_name'))
+    labor_time = forms.CharField(required=True, label=_('labor_time'))
+    mach_time = forms.CharField(required=False, label=_('mach_time'))
+    good_qty = forms.IntegerField(required=True, label=_('good_qty'))
+    ng_qty = forms.IntegerField(required=True, label=_('ng_qty'), initial=0)
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -161,7 +161,7 @@ class RecordForm(forms.ModelForm):
                 Div('mach_time', css_class='col-md-3'),
                 Div('labor_time', css_class='col-md-3'),
                 css_class='row'),
-            Div(Submit('submit', '儲存', css_class='btn btn-info m-3'),
+            Div(Submit('submit', _('save'), css_class='btn btn-info m-3'),
                 css_class='row'),
         )
 
@@ -182,7 +182,7 @@ class RecordManageForm(forms.ModelForm):
         model = Record
         fields = ('record_dt',)
 
-    record_dt = forms.DateField(label="報工日期")
+    record_dt = forms.DateField(label=_('record_date'))
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -193,7 +193,7 @@ class RecordManageForm(forms.ModelForm):
         self.helper.layout = Layout(
             Div(
                 Div('record_dt', css_class='col-md-3'),
-                Div(Submit('submit', '查詢', css_class='btn btn-info'), css_class='col-md-3 d-flex align-items-center mt-3'),
+                Div(Submit('submit', _('search'), css_class='btn btn-info'), css_class='col-md-3 d-flex align-items-center mt-3'),
                 css_class='row'),
         )
 

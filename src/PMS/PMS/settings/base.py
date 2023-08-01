@@ -245,6 +245,7 @@ MESSAGE_TAGS = {
 LANGUAGES = [
     ('en', 'English'),
     ('zh-hant', '繁體中文'),
+    ('vi', 'Tiếng Việt'),
 
 ]
 

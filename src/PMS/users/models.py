@@ -76,8 +76,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     Email and password are required. Other fields are optional.
     """
-    emp_no = models.CharField("工號", max_length=30, blank=False, null=False, unique=True)
-    sap_emp_no = models.CharField("SAP工號", max_length=30, blank=True, null=True)
+    emp_no = models.CharField(_('emp_no'), max_length=30, blank=False, null=False, unique=True)
+    sap_emp_no = models.CharField(_('sap_emp_no'), max_length=30, blank=True, null=True)
     username = models.CharField(_('username'), max_length=30)
     email = models.EmailField(_('email address'), max_length=254, null=True, blank=True)
     user_type = models.ForeignKey(UserType, related_name='user_type', null=True, on_delete=models.DO_NOTHING)

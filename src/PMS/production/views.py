@@ -67,6 +67,7 @@ def record(request):
         mach_time = request.POST.get('mach_time')
         good_qty = request.POST.get('good_qty')
         ng_qty = request.POST.get('ng_qty')
+        step_no = request.POST.get('hid_step_no')
         step_code = request.POST.get('step_code')
         step_name = request.POST.get('step_name')
         plant = request.POST.get('plant')
@@ -84,7 +85,7 @@ def record(request):
             record = Record.objects.create(record_dt=record_dt, emp_no=emp_no, wo_no=wo_no, cfm_code=cfm_code,
                                             labor_time=labor_time, mach_time=mach_time, ctr_code=ctr_code,
                                             good_qty=good_qty, ng_qty=ng_qty, spec=spec, username=username,
-                                            step_code=step_code, step_name=step_name, sap_emp_no=sap_emp_no,
+                                            step_no=step_no, step_code=step_code, step_name=step_name, sap_emp_no=sap_emp_no,
                                             update_by=key_user, plant=plant)
 
             return redirect(record.get_absolute_url())
@@ -298,6 +299,7 @@ def get_step_info(request):
                 value['plant'] = step.wo_main.plant
                 value['wo_no'] = step.wo_main.wo_no
                 value['spec'] = step.wo_main.spec
+                value['step_no'] = step.step_no
                 value['step_code'] = step.step_code
                 value['step_name'] = step.step_name
                 value['labor_time'] = labor_time
@@ -306,12 +308,12 @@ def get_step_info(request):
                 value['wo_qty'] = step.wo_qty
                 value['ctr_code'] = step.ctr_code
 
-            if value['plant'] == "302A":
-                records = Record.objects.filter(wo_no=value['wo_no'], ctr_code='YY01')
+            if step.step_no != "0010":
+                records = Record.objects.filter(wo_no=value['wo_no'], step_no='0010')
                 if records:
-                    value['YY01'] = "Y"
+                    value['first_step_done'] = "Y"
                 else:
-                    value['YY01'] = "N"
+                    value['first_step_done'] = "N"
         except Exception as e:
             print(e)
     return JsonResponse(value, safe=False)

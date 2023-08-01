@@ -117,31 +117,31 @@
         {% if user.is_authenticated %}
         <div class="box-nav">
             {% if perms.users.perm_pms %}
-            <a class="box-nav-btn" href="{% url 'pms_home' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="專案管理系統">
+            <a class="box-nav-btn" href="{% url 'pms_home' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'Project Management System' %}">
                 <i class="fa fa-tasks"></i>
             </a>
             {% endif %}
             {% if perms.users.perm_ams %}
-            <a class="box-nav-btn" href="{% url 'assets_main' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="資產管理系統">
+            <a class="box-nav-btn" href="{% url 'assets_main' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'Asset Management System' %}">
                 <i class="fa fa-book"></i>
             </a>
             {% endif %}
-            <a class="box-nav-btn" href="{% url 'apply' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="資訊設備借出單">
+            <a class="box-nav-btn" href="{% url 'apply' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'IT Equipment Borrow Application' %}">
                 <i class="fas fa-check-square"></i>
             </a>
-            <a class="box-nav-btn" href="{% url 'inv_approve' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="總務用品請領單">
+            <a class="box-nav-btn" href="{% url 'inv_approve' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'General Supply Application' %}">
                 <i class="fas fa-pen"></i>
             </a>
             {% if perms.users.perm_workhour %}
-            <a class="box-nav-btn" href="{% url 'prod_record' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="產線報工">
+            <a class="box-nav-btn" href="{% url 'prod_record' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'Production Record' %}">
                 <i class="fas fa-users"></i>
             </a>
             {% endif %}
-            <a class="box-nav-btn" href="{% url 'user_info' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="個人設定">
+            <a class="box-nav-btn" href="{% url 'user_info' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'Personal Setting' %}">
                 <i class="fas fa-cog"></i>
             </a>
             {% if perms.users.perm_user_manage %}
-            <a class="box-nav-btn" href="{% url 'user_list' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="權限管理">
+            <a class="box-nav-btn" href="{% url 'user_list' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'Authority Management' %}">
                 <i class="fas fa-cogs"></i>
             </a>
             {% endif %}
