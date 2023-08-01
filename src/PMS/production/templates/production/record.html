@@ -45,8 +45,26 @@ $(':input').keydown(function (e){
         });
     }
 
+    function form_init() {
+        $("#id_plant").val('');
+        $("#id_wo_no").val('');
+        $("#id_item_no").val('');
+        $("#id_spec").val('');
+        $("#id_step_code").val('');
+        $("#id_step_name").val('');
+        $("#id_ctr_code").val('');
+        $("#id_labor_time").val('');
+        $("#id_mach_time").val('');
+        $("#id_good_qty").val('');
+        $("#hid_std_labor_time").val('');
+        $("#hid_worked_labor_time").val('');
+        $("#hid_wo_qty").val('');
+        $("#hid_step_no").val('');
+        $("#hid_work_center").val('');
+    }
 
     function cfm_code_change() {
+        form_init();
         $.ajax({
             url: '{% url 'get_step_info_api' %}', type: 'post',
             dataType: 'json',
@@ -73,6 +91,7 @@ $(':input').keydown(function (e){
                 $("#hid_wo_qty").val(data.wo_qty);
                 $("#hid_step_no").val(data.step_no);
                 $("#hid_work_center").val(data.work_center);
+
             }
         });
     }
