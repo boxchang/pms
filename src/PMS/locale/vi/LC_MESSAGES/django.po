@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-01 11:01+0800\n"
-"PO-Revision-Date: 2023-08-01 11:06+0800\n"
+"POT-Creation-Date: 2023-08-01 15:05+0800\n"
+"PO-Revision-Date: 2023-08-01 15:06+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: vi_VN\n"
@@ -74,7 +74,7 @@ msgid "file"
 msgstr ""
 
 #: .\bases\templates\bases\attach_form.html:33
-#: .\bases\templates\bases\form.html:10 .\production\forms.py:164
+#: .\bases\templates\bases\form.html:10 .\production\forms.py:167
 #: .\requests\templates\requests\request_receive.html:25 .\users\forms.py:61
 msgid "save"
 msgstr "lưu trữ"
@@ -304,7 +304,7 @@ msgid "reply_num"
 msgstr ""
 
 #: .\production\forms.py:15 .\production\forms.py:69 .\production\forms.py:103
-#: .\production\forms.py:185
+#: .\production\forms.py:188
 msgid "record_date"
 msgstr "ngày làm việc"
 
@@ -316,11 +316,11 @@ msgstr "xuất khẩu"
 msgid "prod_order"
 msgstr "trình tự công việc"
 
-#: .\production\forms.py:58 .\production\forms.py:81 .\production\forms.py:196
+#: .\production\forms.py:58 .\production\forms.py:81 .\production\forms.py:199
 msgid "search"
 msgstr "Hỏi thăm"
 
-#: .\production\forms.py:68 .\production\forms.py:110 .\users\forms.py:51
+#: .\production\forms.py:68 .\production\forms.py:111 .\users\forms.py:51
 #: .\users\models.py:80
 msgid "sap_emp_no"
 msgstr "SAP Mã hiệu công nhân"
@@ -334,47 +334,51 @@ msgid "plant"
 msgstr "địa điểm"
 
 #: .\production\forms.py:107
+msgid "item_no"
+msgstr "Phần Không"
+
+#: .\production\forms.py:108
 msgid "spec"
 msgstr "mô tả vật liệu"
 
-#: .\production\forms.py:108 .\users\forms.py:50 .\users\models.py:79
+#: .\production\forms.py:109 .\users\forms.py:50 .\users\models.py:79
 #: .\users\templates\users\login.html:168
 msgid "emp_no"
 msgstr "Mã hiệu công nhân"
 
-#: .\production\forms.py:109 .\projects\forms.py:19 .\users\forms.py:52
+#: .\production\forms.py:110 .\projects\forms.py:19 .\users\forms.py:52
 msgid "name"
 msgstr "Tên"
 
-#: .\production\forms.py:111
+#: .\production\forms.py:112
 msgid "confirm_code"
 msgstr "mã xác nhận"
 
-#: .\production\forms.py:112
+#: .\production\forms.py:113
 msgid "control_code"
 msgstr "mã kiểm soát"
 
-#: .\production\forms.py:113
+#: .\production\forms.py:114
 msgid "step_code"
 msgstr "mã trang web"
 
-#: .\production\forms.py:114
+#: .\production\forms.py:115
 msgid "step_name"
 msgstr "Tên trang web"
 
-#: .\production\forms.py:115
+#: .\production\forms.py:116
 msgid "labor_time"
 msgstr "giờ làm việc"
 
-#: .\production\forms.py:116
+#: .\production\forms.py:117
 msgid "mach_time"
 msgstr "giờ máy"
 
-#: .\production\forms.py:117
+#: .\production\forms.py:118
 msgid "good_qty"
 msgstr "Sản phẩm tốt"
 
-#: .\production\forms.py:118
+#: .\production\forms.py:119
 msgid "ng_qty"
 msgstr "sản phẩm xấu"
 
@@ -394,7 +398,7 @@ msgstr "Mã số nhân viên SAP không chính xác hoặc không có dữ liệ
 msgid "The first step has been not finished yet"
 msgstr "Bước đầu tiên vẫn chưa kết thúc"
 
-#: .\production\templates\production\record.html:84
+#: .\production\templates\production\record.html:87
 #, python-format, python-brace-format
 msgid ""
 "Remind that total recorded time {labor_time} already over 10%% of the "
@@ -403,7 +407,7 @@ msgstr ""
 "Nhắc rằng tổng thời gian ghi lại {labor_time} đã vượt quá 10%% so với thời "
 "gian tiêu chuẩn({standard_time})."
 
-#: .\production\templates\production\record.html:91
+#: .\production\templates\production\record.html:94
 msgid "The operation quantity cannot over the production order quantity."
 msgstr "Số lượng hoạt động không thể vượt quá số lượng đặt hàng sản xuất."
 

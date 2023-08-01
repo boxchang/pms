@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-01 11:02+0800\n"
-"PO-Revision-Date: 2023-08-01 11:07+0800\n"
+"POT-Creation-Date: 2023-08-01 15:05+0800\n"
+"PO-Revision-Date: 2023-08-01 15:06+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: zh_TW\n"
@@ -74,7 +74,7 @@ msgid "file"
 msgstr "文件"
 
 #: .\bases\templates\bases\attach_form.html:33
-#: .\bases\templates\bases\form.html:10 .\production\forms.py:164
+#: .\bases\templates\bases\form.html:10 .\production\forms.py:167
 #: .\requests\templates\requests\request_receive.html:25 .\users\forms.py:61
 msgid "save"
 msgstr "儲存"
@@ -304,7 +304,7 @@ msgid "reply_num"
 msgstr "回覆數"
 
 #: .\production\forms.py:15 .\production\forms.py:69 .\production\forms.py:103
-#: .\production\forms.py:185
+#: .\production\forms.py:188
 msgid "record_date"
 msgstr "作業日期"
 
@@ -316,11 +316,11 @@ msgstr "匯出"
 msgid "prod_order"
 msgstr "工單"
 
-#: .\production\forms.py:58 .\production\forms.py:81 .\production\forms.py:196
+#: .\production\forms.py:58 .\production\forms.py:81 .\production\forms.py:199
 msgid "search"
 msgstr "查詢"
 
-#: .\production\forms.py:68 .\production\forms.py:110 .\users\forms.py:51
+#: .\production\forms.py:68 .\production\forms.py:111 .\users\forms.py:51
 #: .\users\models.py:80
 msgid "sap_emp_no"
 msgstr "SAP員工編號"
@@ -334,47 +334,51 @@ msgid "plant"
 msgstr "工廠"
 
 #: .\production\forms.py:107
+msgid "item_no"
+msgstr "料號"
+
+#: .\production\forms.py:108
 msgid "spec"
 msgstr "物料說明"
 
-#: .\production\forms.py:108 .\users\forms.py:50 .\users\models.py:79
+#: .\production\forms.py:109 .\users\forms.py:50 .\users\models.py:79
 #: .\users\templates\users\login.html:168
 msgid "emp_no"
 msgstr "員工編號"
 
-#: .\production\forms.py:109 .\projects\forms.py:19 .\users\forms.py:52
+#: .\production\forms.py:110 .\projects\forms.py:19 .\users\forms.py:52
 msgid "name"
 msgstr "名稱"
 
-#: .\production\forms.py:111
+#: .\production\forms.py:112
 msgid "confirm_code"
 msgstr "確認碼"
 
-#: .\production\forms.py:112
+#: .\production\forms.py:113
 msgid "control_code"
 msgstr "控制碼"
 
-#: .\production\forms.py:113
+#: .\production\forms.py:114
 msgid "step_code"
 msgstr "站點代碼"
 
-#: .\production\forms.py:114
+#: .\production\forms.py:115
 msgid "step_name"
 msgstr "站點名稱"
 
-#: .\production\forms.py:115
+#: .\production\forms.py:116
 msgid "labor_time"
 msgstr "人時"
 
-#: .\production\forms.py:116
+#: .\production\forms.py:117
 msgid "mach_time"
 msgstr "機時"
 
-#: .\production\forms.py:117
+#: .\production\forms.py:118
 msgid "good_qty"
 msgstr "良品"
 
-#: .\production\forms.py:118
+#: .\production\forms.py:119
 msgid "ng_qty"
 msgstr "NG"
 
@@ -394,14 +398,14 @@ msgstr "SAP員工編號不正確或尚未建立資料"
 msgid "The first step has been not finished yet"
 msgstr "第一個站點尚未報工"
 
-#: .\production\templates\production\record.html:84
+#: .\production\templates\production\record.html:87
 #, python-format, python-brace-format
 msgid ""
 "Remind that total recorded time {labor_time} already over 10%% of the "
 "standard time({standard_time})."
 msgstr "提醒總工時 {labor_time} 已經超過標準工時10%%({standard_time})"
 
-#: .\production\templates\production\record.html:91
+#: .\production\templates\production\record.html:94
 msgid "The operation quantity cannot over the production order quantity."
 msgstr "作業數量不能超過工單數量"
 

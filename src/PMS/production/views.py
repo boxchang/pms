@@ -61,6 +61,7 @@ def record(request):
         username = request.POST.get('username')
         sap_emp_no = request.POST.get('sap_emp_no')
         wo_no = request.POST.get('wo_no')
+        work_center = request.POST.get('hid_work_center')
         item_no = request.POST.get('item_no')
         spec = request.POST.get('spec')
         cfm_code = request.POST.get('cfm_code')
@@ -88,7 +89,7 @@ def record(request):
                                             labor_time=labor_time, mach_time=mach_time, ctr_code=ctr_code,
                                             good_qty=good_qty, ng_qty=ng_qty, item_no=item_no, spec=spec, username=username,
                                             step_no=step_no, step_code=step_code, step_name=step_name, sap_emp_no=sap_emp_no,
-                                            update_by=key_user, plant=plant)
+                                            update_by=key_user, plant=plant, work_center=work_center)
 
             return redirect(record.get_absolute_url())
 
@@ -310,6 +311,7 @@ def get_step_info(request):
                 value['good_qty'] = step.wo_qty
                 value['wo_qty'] = step.wo_qty
                 value['ctr_code'] = step.ctr_code
+                value['work_center'] = step.work_center
 
             if step.step_no != "0010":
                 records = Record.objects.filter(wo_no=value['wo_no'], step_no='0010')
@@ -379,6 +381,7 @@ def build_exceltemp_data(request, excel_file):
         temp.batch_no = uuid.uuid4().hex[:10]
         temp.plant = wo['plant']
         temp.wo_no = wo['wo_no']
+        temp.work_center = wo['work_center']
         temp.item_no = wo['item_no']
         temp.spec = wo['spec']
         temp.cfm_code = wo['cfm_code']
@@ -402,7 +405,7 @@ def excel_import(request):
         if excel_file:
             build_exceltemp_data(request, excel_file)
 
-            rows = ExcelTemp.objects.values('plant', 'wo_no', 'item_no').distinct()
+            rows = ExcelTemp.objects.values('plant', 'wo_no', 'item_no', 'spec').distinct()
             for row in rows:
                 tmp = WOMain.objects.filter(wo_no=row['wo_no']).aggregate(version=Max('version'))
                 if not tmp['version']:  # 新增資料
@@ -582,6 +585,9 @@ def prod_sap_file(request):
         records = Record.objects.filter(record_dt=record_dt)
 
         for record in records:
+            row_num += 1
+            tmp_record_dt = record.record_dt.split('-')
+            record.record_dt = tmp_record_dt[2]+tmp_record_dt[1]+tmp_record_dt[0]
             ws.write(row_num, 0, record.sap_emp_no, font_style)  # SAP員編
             ws.write(row_num, 1, record.record_dt, font_style)  # 工作執行日
             ws.write(row_num, 2, record.work_center, font_style)  # 工作中心
