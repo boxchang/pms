@@ -228,7 +228,7 @@ def record_detail_sap_empno(request, sap_emp_no):
                         <th style='text-align:center;width:100px'>{labor_time}</th>
                         <th style='text-align:center'>{mach_time}</th>
                         <th style='text-align:center'>{good_qty}</th>
-                        <th style='text-align:center'>NG</th><th></th>""".format(
+                        <th style='text-align:center'>NG</th><th></th></tr>""".format(
             prod_order=_('prod_order'), step_code=_('step_code'), step_name=_('step_name'),
             labor_time=_('labor_time'), mach_time=_('mach_time'), good_qty=_('good_qty'))
         body = ""
@@ -281,7 +281,7 @@ def record_detail_sap_empno(request, sap_emp_no):
 
             option_tmp += """<option value="{value}">{name}</option>""".format(value=worktype.type_code,
                                                                                name=type_name)
-        body += """<form id="record2_form" method='POST' action='/production/record2/'><tr><td><select name="work_type" class="select custom-select" id="id_time_code" required>
+        body += """<tr><td><select name="work_type" class="select custom-select" id="id_time_code" required>
                                 <option value="">---------</option>
                                 {options}
                             </select></td>""".format(options=option_tmp)
@@ -290,7 +290,7 @@ def record_detail_sap_empno(request, sap_emp_no):
         body += """<td><input type="hidden" id="hid_record_dt2" name="hid_record_dt2" value='{record_dt2}'></td>""".format(
             record_dt2=record_dt)
         body += """<td><input type="hidden" id="hid_sap_emp_no" name="hid_sap_emp_no" value=""></td><td></td>"""
-        body += """<td><button type="button" class="btn btn-success m-1" onclick="record2_submit()">{new}</a></td></tr></form>""".format(new=_('New'))
+        body += """<td><input type="submit" class="btn btn-success m-1" value="{new}" onclick="record2_submit()"></td></tr>""".format(new=_('New'))
         body += """<tr><td colspan='3'>{trans_total_labor_time}</td><td style='text-align:right'>{total_labor_time}</td>
                         <td colspan='3' style='text-align:right'>{remain_labor_time}</td><td style='text-align:right'>{rest_time}</td></tr>""".format(
             total_labor_time=total_labor_time, rest_time=rest_time,

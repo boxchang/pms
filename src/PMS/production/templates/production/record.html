@@ -99,7 +99,7 @@ $(':input').keydown(function (e){
     function validation() {
         var labor_time = $("#id_labor_time").val();
         var std_labor_time = $("#hid_std_labor_time").val();
-        var good_qty = $("#good_qty").val();
+        var good_qty = $("#id_good_qty").val();
         var wo_qty = $("#hid_wo_qty").val();
 
         if(labor_time>std_labor_time*1.1){
@@ -109,6 +109,8 @@ $(':input').keydown(function (e){
             return confirm(msg);
         }
 
+        alert(good_qty);
+        alert(wo_qty);
         if(good_qty>wo_qty) {
             msg = "{% trans 'The operation quantity cannot over the production order quantity.' %}";
             alert(msg);
@@ -122,7 +124,6 @@ $(':input').keydown(function (e){
         <div class="col-1"></div>
         <div class="col-10">
             <form action="" method="POST" onSubmit="return validation()">
-            {% csrf_token %}
             {% crispy form %}
                 <input type="hidden" name="hid_std_labor_time" id="hid_std_labor_time">
                 <input type="hidden" name="hid_worked_labor_time" id="hid_worked_labor_time">

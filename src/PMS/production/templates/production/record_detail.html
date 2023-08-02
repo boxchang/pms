@@ -10,7 +10,6 @@
 <script>
 function record2_submit() {
     $("#hid_sap_emp_no").val($("#id_sap_emp_no").val());
-    $("#record2_form").submit();
 }
 </script>
 {% endblock js %}
@@ -22,7 +21,9 @@ function record2_submit() {
                 {% csrf_token %}
                 {% crispy form %}
             </form>
+            <form id="record2_form" method='POST' action='/production/record2/'>
             {{ html|safe }}
+            </form>
 
         </div>
         <div class="col-1"></div>
