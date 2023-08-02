@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-01 15:05+0800\n"
-"PO-Revision-Date: 2023-08-01 15:06+0800\n"
+"POT-Creation-Date: 2023-08-02 09:27+0800\n"
+"PO-Revision-Date: 2023-08-02 09:28+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: vi_VN\n"
@@ -26,7 +26,7 @@ msgstr ""
 #: .\assets\templates\assets\label.html:61
 #: .\assets\templates\assets\main.html:37
 #: .\assets\templates\assets\search.html:27
-#: .\bases\templates\bases\index.html:22
+#: .\bases\templates\bases\index.html:23
 #: .\bases\templates\bases\menu_base.html:30
 #: .\helpdesk\templates\helpdesk\helpdesk_base.html:13
 #: .\helpdesk\templates\helpdesk\search.html:21
@@ -304,7 +304,7 @@ msgid "reply_num"
 msgstr ""
 
 #: .\production\forms.py:15 .\production\forms.py:69 .\production\forms.py:103
-#: .\production\forms.py:188
+#: .\production\forms.py:188 .\production\views.py:299
 msgid "record_date"
 msgstr "ngày làm việc"
 
@@ -312,7 +312,7 @@ msgstr "ngày làm việc"
 msgid "export"
 msgstr "xuất khẩu"
 
-#: .\production\forms.py:47 .\production\forms.py:106
+#: .\production\forms.py:47 .\production\forms.py:106 .\production\views.py:232
 msgid "prod_order"
 msgstr "trình tự công việc"
 
@@ -358,23 +358,23 @@ msgstr "mã xác nhận"
 msgid "control_code"
 msgstr "mã kiểm soát"
 
-#: .\production\forms.py:114
+#: .\production\forms.py:114 .\production\views.py:232
 msgid "step_code"
 msgstr "mã trang web"
 
-#: .\production\forms.py:115
+#: .\production\forms.py:115 .\production\views.py:232
 msgid "step_name"
 msgstr "Tên trang web"
 
-#: .\production\forms.py:116
+#: .\production\forms.py:116 .\production\views.py:233
 msgid "labor_time"
 msgstr "giờ làm việc"
 
-#: .\production\forms.py:117
+#: .\production\forms.py:117 .\production\views.py:233
 msgid "mach_time"
 msgstr "giờ máy"
 
-#: .\production\forms.py:118
+#: .\production\forms.py:118 .\production\views.py:233
 msgid "good_qty"
 msgstr "Sản phẩm tốt"
 
@@ -394,11 +394,11 @@ msgstr "Tìm kiếm hồ sơ"
 msgid "SAP employee number is not correct or no data"
 msgstr "Mã số nhân viên SAP không chính xác hoặc không có dữ liệu"
 
-#: .\production\templates\production\record.html:56
+#: .\production\templates\production\record.html:74
 msgid "The first step has been not finished yet"
 msgstr "Bước đầu tiên vẫn chưa kết thúc"
 
-#: .\production\templates\production\record.html:87
+#: .\production\templates\production\record.html:106
 #, python-format, python-brace-format
 msgid ""
 "Remind that total recorded time {labor_time} already over 10%% of the "
@@ -407,9 +407,31 @@ msgstr ""
 "Nhắc rằng tổng thời gian ghi lại {labor_time} đã vượt quá 10%% so với thời "
 "gian tiêu chuẩn({standard_time})."
 
-#: .\production\templates\production\record.html:94
+#: .\production\templates\production\record.html:113
 msgid "The operation quantity cannot over the production order quantity."
 msgstr "Số lượng hoạt động không thể vượt quá số lượng đặt hàng sản xuất."
+
+#: .\production\views.py:87
+msgid "This record is existed"
+msgstr "dữ liệu đã tồn tại"
+
+#: .\production\views.py:296
+msgid "comment"
+msgstr "bình luận"
+
+#: .\production\views.py:296
+#: .\requests\templates\requests\request_base.html:172
+#: .\requests\templates\requests\request_base.html:193
+msgid "New"
+msgstr "Thêm vào"
+
+#: .\production\views.py:297
+msgid "total_labor_time"
+msgstr "tổng thời gian làm việc"
+
+#: .\production\views.py:297
+msgid "remain_labor_time"
+msgstr "thời gian chưa hoàn thành"
 
 #: .\projects\forms.py:16
 msgid "alphanumeric"
@@ -431,7 +453,6 @@ msgstr ""
 msgid "help_desc"
 msgstr ""
 
-#: .\projects\templates\projects\homepage.html:7
 #: .\projects\templates\projects\homepage.html:40
 msgid "home"
 msgstr ""
@@ -614,11 +635,6 @@ msgstr ""
 
 #: .\requests\templates\requests\request_base.html:67
 msgid "Share:"
-msgstr ""
-
-#: .\requests\templates\requests\request_base.html:172
-#: .\requests\templates\requests\request_base.html:193
-msgid "New"
 msgstr ""
 
 #: .\requests\templates\requests\request_base.html:189

@@ -8,12 +8,13 @@ import uuid
 from datetime import datetime
 import xlwt
 from django.urls import reverse
+from django.utils.translation import get_language
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from production.forms import RecordForm, RecordSearchForm, WoSearchForm, RecordManageForm, ExportForm
 from production.models import WOMain, ExcelTemp, WODetail, Record, Record2, WorkType
 from users.models import CustomUser
-
+from django.utils.translation import gettext_lazy as _
 
 def COOIS2Table(items):
     html = """<table border='1' class='table table-bordered table-striped'>
@@ -83,7 +84,7 @@ def record(request):
         #                                           'update_by': user})
         record = Record.objects.filter(record_dt=record_dt, sap_emp_no=sap_emp_no, wo_no=wo_no, cfm_code=cfm_code)
         if record:
-            error_msg = "該筆資料已存在，無法新增"
+            error_msg = _('This record is existed')
         else:
             record = Record.objects.create(record_dt=record_dt, emp_no=emp_no, wo_no=wo_no, cfm_code=cfm_code,
                                             labor_time=labor_time, mach_time=mach_time, ctr_code=ctr_code,
@@ -205,6 +206,7 @@ def record_detail(request):
 def record_detail_sap_empno(request, sap_emp_no):
     html = ""
     worktypes = WorkType.objects.all()
+    lang = get_language()
     if request.method == 'POST':
         sap_emp_no = request.POST['sap_emp_no']
         record_dt = request.POST['record_dt']
@@ -222,11 +224,13 @@ def record_detail_sap_empno(request, sap_emp_no):
         records = Record.objects.filter(record_dt=record_dt, sap_emp_no=sap_emp_no)
         record2s = Record2.objects.filter(record_dt=record_dt, sap_emp_no=sap_emp_no)
         table = "<table border='1' class='table table-bordered table-striped'>{header}{body}</table>"
-        header = """<tr><th style='width:150px'>工單</th><th style='width:150px'>站點代碼</th><th>站點名稱</th>
-                        <th style='text-align:center;width:100px'>人時</th>
-                        <th style='text-align:center'>機時</th>
-                        <th style='text-align:center'>良品</th>
-                        <th style='text-align:center'>NG</th><th></th>"""
+        header = """<tr><th style='width:150px'>{prod_order}</th><th style='width:150px'>{step_code}</th><th>{step_name}</th>
+                        <th style='text-align:center;width:100px'>{labor_time}</th>
+                        <th style='text-align:center'>{mach_time}</th>
+                        <th style='text-align:center'>{good_qty}</th>
+                        <th style='text-align:center'>NG</th><th></th>""".format(
+            prod_order=_('prod_order'), step_code=_('step_code'), step_name=_('step_name'),
+            labor_time=_('labor_time'), mach_time=_('mach_time'), good_qty=_('good_qty'))
         body = ""
         for record in records:
             total_labor_time += record.labor_time
@@ -267,24 +271,32 @@ def record_detail_sap_empno(request, sap_emp_no):
             rest_time = 0
 
         option_tmp = ""
+
         for worktype in worktypes:
+            type_name = worktype.type_name
+            if lang == "vi":
+                type_name = worktype.type_name_vi
+            elif lang == "en":
+                type_name = worktype.type_name_en
+
             option_tmp += """<option value="{value}">{name}</option>""".format(value=worktype.type_code,
-                                                                               name=worktype.type_name)
+                                                                               name=type_name)
         body += """<form id="record2_form" method='POST' action='/production/record2/'><tr><td><select name="work_type" class="select custom-select" id="id_time_code" required>
                                 <option value="">---------</option>
                                 {options}
                             </select></td>""".format(options=option_tmp)
-        body += """<td colspan='2'><input type="text" name="comment" placeholder="備註" class="textinput textInput form-control" id="id_comment"></td>"""
+        body += """<td colspan='2'><input type="text" name="comment" placeholder="{comment}" class="textinput textInput form-control" id="id_comment"></td>""".format(comment=_('comment'))
         body += """<td><input type="text" name="labor_time" class="textinput textInput form-control" id="id_labor_time" required></td>"""
         body += """<td><input type="hidden" id="hid_record_dt2" name="hid_record_dt2" value='{record_dt2}'></td>""".format(
             record_dt2=record_dt)
         body += """<td><input type="hidden" id="hid_sap_emp_no" name="hid_sap_emp_no" value=""></td><td></td>"""
-        body += """<td><button type="button" class="btn btn-success m-1" onclick="record2_submit()">新增</a></td></tr></form>"""
-        body += """<tr><td colspan='3'>總人時</td><td style='text-align:right'>{total_labor_time}</td>
-                        <td colspan='3' style='text-align:right'>待報工時</td><td style='text-align:right'>{rest_time}</td></tr>""".format(
-            total_labor_time=total_labor_time, rest_time=rest_time)
+        body += """<td><button type="button" class="btn btn-success m-1" onclick="record2_submit()">{new}</a></td></tr></form>""".format(new=_('New'))
+        body += """<tr><td colspan='3'>{trans_total_labor_time}</td><td style='text-align:right'>{total_labor_time}</td>
+                        <td colspan='3' style='text-align:right'>{remain_labor_time}</td><td style='text-align:right'>{rest_time}</td></tr>""".format(
+            total_labor_time=total_labor_time, rest_time=rest_time,
+            trans_total_labor_time=_('total_labor_time'), remain_labor_time=_('remain_labor_time'))
         html = table.format(header=header, body=body)
-        html += """<div style="text-align: right">報工日期：{record_dt}</div>""".format(record_dt=record_dt)
+        html += """<div style="text-align: right">{record_date}：{record_dt}</div>""".format(record_dt=record_dt, record_date=_('record_date'))
     form = RecordSearchForm(initial={'sap_emp_no': sap_emp_no, 'record_dt': record_dt})
     return render(request, 'production/record_detail.html', locals())
 

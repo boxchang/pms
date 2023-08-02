@@ -83,6 +83,8 @@ class Record(models.Model):
 class WorkType(models.Model):
     type_code = models.CharField(max_length=5, primary_key=True)
     type_name = models.CharField(max_length=30, blank=False, null=False)
+    type_name_vi = models.CharField(max_length=30, blank=False, null=False)
+    type_name_en = models.CharField(max_length=30, blank=False, null=False)
     create_at = models.DateTimeField(auto_now=True, null=True)
     create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
                                   related_name='worktype_create_by')

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-01 15:05+0800\n"
-"PO-Revision-Date: 2023-08-01 15:06+0800\n"
+"POT-Creation-Date: 2023-08-02 09:27+0800\n"
+"PO-Revision-Date: 2023-08-02 09:28+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: zh_TW\n"
@@ -26,7 +26,7 @@ msgstr ""
 #: .\assets\templates\assets\label.html:61
 #: .\assets\templates\assets\main.html:37
 #: .\assets\templates\assets\search.html:27
-#: .\bases\templates\bases\index.html:22
+#: .\bases\templates\bases\index.html:23
 #: .\bases\templates\bases\menu_base.html:30
 #: .\helpdesk\templates\helpdesk\helpdesk_base.html:13
 #: .\helpdesk\templates\helpdesk\search.html:21
@@ -304,7 +304,7 @@ msgid "reply_num"
 msgstr "回覆數"
 
 #: .\production\forms.py:15 .\production\forms.py:69 .\production\forms.py:103
-#: .\production\forms.py:188
+#: .\production\forms.py:188 .\production\views.py:299
 msgid "record_date"
 msgstr "作業日期"
 
@@ -312,7 +312,7 @@ msgstr "作業日期"
 msgid "export"
 msgstr "匯出"
 
-#: .\production\forms.py:47 .\production\forms.py:106
+#: .\production\forms.py:47 .\production\forms.py:106 .\production\views.py:232
 msgid "prod_order"
 msgstr "工單"
 
@@ -358,23 +358,23 @@ msgstr "確認碼"
 msgid "control_code"
 msgstr "控制碼"
 
-#: .\production\forms.py:114
+#: .\production\forms.py:114 .\production\views.py:232
 msgid "step_code"
 msgstr "站點代碼"
 
-#: .\production\forms.py:115
+#: .\production\forms.py:115 .\production\views.py:232
 msgid "step_name"
 msgstr "站點名稱"
 
-#: .\production\forms.py:116
+#: .\production\forms.py:116 .\production\views.py:233
 msgid "labor_time"
 msgstr "人時"
 
-#: .\production\forms.py:117
+#: .\production\forms.py:117 .\production\views.py:233
 msgid "mach_time"
 msgstr "機時"
 
-#: .\production\forms.py:118
+#: .\production\forms.py:118 .\production\views.py:233
 msgid "good_qty"
 msgstr "良品"
 
@@ -394,20 +394,42 @@ msgstr "報工查詢"
 msgid "SAP employee number is not correct or no data"
 msgstr "SAP員工編號不正確或尚未建立資料"
 
-#: .\production\templates\production\record.html:56
+#: .\production\templates\production\record.html:74
 msgid "The first step has been not finished yet"
 msgstr "第一個站點尚未報工"
 
-#: .\production\templates\production\record.html:87
+#: .\production\templates\production\record.html:106
 #, python-format, python-brace-format
 msgid ""
 "Remind that total recorded time {labor_time} already over 10%% of the "
 "standard time({standard_time})."
 msgstr "提醒總工時 {labor_time} 已經超過標準工時10%%({standard_time})"
 
-#: .\production\templates\production\record.html:94
+#: .\production\templates\production\record.html:113
 msgid "The operation quantity cannot over the production order quantity."
 msgstr "作業數量不能超過工單數量"
+
+#: .\production\views.py:87
+msgid "This record is existed"
+msgstr "資料已經存在"
+
+#: .\production\views.py:296
+msgid "comment"
+msgstr "備註"
+
+#: .\production\views.py:296
+#: .\requests\templates\requests\request_base.html:172
+#: .\requests\templates\requests\request_base.html:193
+msgid "New"
+msgstr "新增"
+
+#: .\production\views.py:297
+msgid "total_labor_time"
+msgstr "總人時"
+
+#: .\production\views.py:297
+msgid "remain_labor_time"
+msgstr "待報工人時"
 
 #: .\projects\forms.py:16
 msgid "alphanumeric"
@@ -429,7 +451,6 @@ msgstr "請輸入專案簡稱"
 msgid "help_desc"
 msgstr "請輸入專案描述"
 
-#: .\projects\templates\projects\homepage.html:7
 #: .\projects\templates\projects\homepage.html:40
 msgid "home"
 msgstr "首頁"
@@ -618,11 +639,6 @@ msgstr ""
 #: .\requests\templates\requests\request_base.html:67
 msgid "Share:"
 msgstr "分享網址："
-
-#: .\requests\templates\requests\request_base.html:172
-#: .\requests\templates\requests\request_base.html:193
-msgid "New"
-msgstr "新增"
 
 #: .\requests\templates\requests\request_base.html:189
 msgid "subrequest"

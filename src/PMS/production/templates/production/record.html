@@ -72,8 +72,8 @@ $(':input').keydown(function (e){
             success: function(data) {
                 if(data.first_step_done=="N") {
                     alert("{% trans 'The first step has been not finished yet' %}");
-                    $("#id_cfm_code").val('');
-                    return false;
+                    //$("#id_cfm_code").val('');
+                    //return false; 只提醒但不卡住，上線後再開啟
                 }
 
                 $("#id_plant").val(data.plant);
