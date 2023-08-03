@@ -124,7 +124,7 @@ def wo_detail(request):
         wo_no = request.POST.get('wo_no')
         if wo_no:
             wo_no = str(wo_no).strip()
-        steps = WODetail.objects.select_related('wo_main').filter(wo_main__wo_no=wo_no, wo_main__enable=True)
+        steps = WODetail.objects.select_related('wo_main').filter(wo_main__wo_no=wo_no, wo_main__enable=True).order_by('step_no')
         for step in steps:
             step_labor_time = 0
             step_mach_time = 0
@@ -224,17 +224,27 @@ def record_detail_sap_empno(request, sap_emp_no):
         records = Record.objects.filter(record_dt=record_dt, sap_emp_no=sap_emp_no)
         record2s = Record2.objects.filter(record_dt=record_dt, sap_emp_no=sap_emp_no)
         table = "<table border='1' class='table table-bordered table-striped'>{header}{body}</table>"
-        header = """<tr><th style='width:150px'>{prod_order}</th><th style='width:150px'>{step_code}</th><th>{step_name}</th>
+        header = """<tr>
+                        <th style='width:100px'>{prod_order}</th>
+                        <th style='width:100px'>{item_no}</th>
+                        <th style='width:200px'>{spec}</th>
+                        <th style='width:100px'>{step_code}</th><th>{step_name}</th>
                         <th style='text-align:center;width:100px'>{labor_time}</th>
-                        <th style='text-align:center'>{mach_time}</th>
-                        <th style='text-align:center'>{good_qty}</th>
-                        <th style='text-align:center'>NG</th><th></th></tr>""".format(
+                        <th style='text-align:center;width:100px'>{mach_time}</th>
+                        <th style='text-align:center;width:100px'>{good_qty}</th>
+                        <th style='text-align:center;width:100px'>NG</th>
+                        <th style='width:150px'></th></tr>""".format(
             prod_order=_('prod_order'), step_code=_('step_code'), step_name=_('step_name'),
-            labor_time=_('labor_time'), mach_time=_('mach_time'), good_qty=_('good_qty'))
+            labor_time=_('labor_time'), mach_time=_('mach_time'), good_qty=_('good_qty'),
+            item_no=_('item_no'), spec=_('spec'))
         body = ""
         for record in records:
             total_labor_time += record.labor_time
-            body_tmp = """<tr><td>{wo_no}</td><td>{step_code}</td><td>{step_name}</td>
+            body_tmp = """<tr>
+                                <td>{wo_no}</td>
+                                <td>{item_no}</td>
+                                <td>{spec}</td>
+                                <td>{step_code}</td><td>{step_name}</td>
                                 <td style='text-align:right'>{labor_time}</td>
                                 <td style='text-align:right'>{mach_time}</td>
                                 <td style='text-align:right'>{good_qty}</td>
@@ -249,11 +259,12 @@ def record_detail_sap_empno(request, sap_emp_no):
                 del_btn = ""
             body += body_tmp.format(wo_no=record.wo_no, step_code=record.step_code, step_name=record.step_name,
                                     labor_time=record.labor_time, mach_time=record.mach_time, good_qty=record.good_qty,
-                                    ng_qty=record.ng_qty, edit_btn=edit_btn, del_btn=del_btn)
+                                    ng_qty=record.ng_qty, edit_btn=edit_btn, del_btn=del_btn,
+                                    item_no=record.item_no, spec=record.spec)
 
         for record2 in record2s:
             total_labor_time += record2.labor_time
-            body_tmp = """<tr><td></td><td>{type_code}</td><td>{type_name}</td>
+            body_tmp = """<tr><td colspan='3'></td><td>{type_code}</td><td>{type_name}</td>
                                         <td style='text-align:right'>{labor_time}</td>
                                         <td style='text-align:center' colspan='3'>{comment}</td>
                                         <td>{del_btn}</td></tr>"""
@@ -281,17 +292,18 @@ def record_detail_sap_empno(request, sap_emp_no):
 
             option_tmp += """<option value="{value}">{name}</option>""".format(value=worktype.type_code,
                                                                                name=type_name)
-        body += """<tr><td><select name="work_type" class="select custom-select" id="id_time_code" required>
+        body += """<tr><td colspan='2'><select name="work_type" class="select custom-select" id="id_time_code" required>
                                 <option value="">---------</option>
                                 {options}
                             </select></td>""".format(options=option_tmp)
-        body += """<td colspan='2'><input type="text" name="comment" placeholder="{comment}" class="textinput textInput form-control" id="id_comment"></td>""".format(comment=_('comment'))
+        body += """<td colspan='3'><input type="text" name="comment" placeholder="{comment}" class="textinput textInput form-control" id="id_comment"></td>""".format(comment=_('comment'))
         body += """<td><input type="text" name="labor_time" class="textinput textInput form-control" id="id_labor_time" required></td>"""
         body += """<td><input type="hidden" id="hid_record_dt2" name="hid_record_dt2" value='{record_dt2}'></td>""".format(
             record_dt2=record_dt)
         body += """<td><input type="hidden" id="hid_sap_emp_no" name="hid_sap_emp_no" value=""></td><td></td>"""
         body += """<td><input type="submit" class="btn btn-success m-1" value="{new}" onclick="record2_submit()"></td></tr>""".format(new=_('New'))
-        body += """<tr><td colspan='3'>{trans_total_labor_time}</td><td style='text-align:right'>{total_labor_time}</td>
+        # 總人時計算
+        body += """<tr><td colspan='5' style='text-align:right'>{trans_total_labor_time}</td><td style='text-align:right'>{total_labor_time}</td>
                         <td colspan='3' style='text-align:right'>{remain_labor_time}</td><td style='text-align:right'>{rest_time}</td></tr>""".format(
             total_labor_time=total_labor_time, rest_time=rest_time,
             trans_total_labor_time=_('total_labor_time'), remain_labor_time=_('remain_labor_time'))
