@@ -58,6 +58,7 @@ $(':input').keydown(function (e){
         $("#id_good_qty").val('');
         $("#hid_std_labor_time").val('');
         $("#hid_worked_labor_time").val('');
+        $("#hid_worked_good_qty").val('');
         $("#hid_wo_qty").val('');
         $("#hid_step_no").val('');
         $("#hid_work_center").val('');
@@ -76,6 +77,9 @@ $(':input').keydown(function (e){
                     //return false; 只提醒但不卡住，上線後再開啟
                 }
 
+                var init_good_qty = parseFloat(data.good_qty) - parseFloat(data.worked_good_qty);
+                var init_labor_time = parseFloat(data.labor_time) - parseFloat(data.worked_labor_time);
+
                 $("#id_plant").val(data.plant);
                 $("#id_wo_no").val(data.wo_no);
                 $("#id_item_no").val(data.item_no);
@@ -83,11 +87,12 @@ $(':input').keydown(function (e){
                 $("#id_step_code").val(data.step_code);
                 $("#id_step_name").val(data.step_name);
                 $("#id_ctr_code").val(data.ctr_code);
-                $("#id_labor_time").val(data.labor_time);
+                $("#id_labor_time").val(init_labor_time);
                 $("#id_mach_time").val(data.mach_time);
-                $("#id_good_qty").val(data.good_qty);
+                $("#id_good_qty").val(init_good_qty);
                 $("#hid_std_labor_time").val(data.labor_time);
                 $("#hid_worked_labor_time").val(data.worked_labor_time);
+                $("#hid_worked_good_qty").val(data.worked_good_qty);
                 $("#hid_wo_qty").val(data.wo_qty);
                 $("#hid_step_no").val(data.step_no);
                 $("#hid_work_center").val(data.work_center);
@@ -97,10 +102,12 @@ $(':input').keydown(function (e){
     }
 
     function validation() {
-        var labor_time = $("#id_labor_time").val();
-        var std_labor_time = $("#hid_std_labor_time").val();
-        var good_qty = $("#id_good_qty").val();
-        var wo_qty = $("#hid_wo_qty").val();
+        var labor_time = parseFloat($("#id_labor_time").val());
+        var std_labor_time = parseFloat($("#hid_std_labor_time").val());
+        var good_qty = parseFloat($("#id_good_qty").val());
+        var wo_qty = parseFloat($("#hid_wo_qty").val());
+        var worked_labor_time = parseFloat($("#hid_worked_labor_time").val());
+        var worked_good_qty = parseFloat($("#hid_worked_good_qty").val());
 
         if(labor_time>std_labor_time*1.1){
             msg = "{% trans 'Remind that total recorded time {labor_time} already over 10% of the standard time({standard_time}).' %}";
@@ -109,7 +116,9 @@ $(':input').keydown(function (e){
             return confirm(msg);
         }
 
-        if(good_qty>wo_qty) {
+        //累計報工數量大於工單數量
+        var total_qty = worked_good_qty + good_qty;
+        if(total_qty > wo_qty) {
             msg = "{% trans 'The operation quantity cannot over the production order quantity.' %}";
             alert(msg);
             return false;
@@ -125,6 +134,7 @@ $(':input').keydown(function (e){
             {% crispy form %}
                 <input type="hidden" name="hid_std_labor_time" id="hid_std_labor_time">
                 <input type="hidden" name="hid_worked_labor_time" id="hid_worked_labor_time">
+                <input type="hidden" name="hid_worked_good_qty" id="hid_worked_good_qty">
                 <input type="hidden" name="hid_wo_qty" id="hid_wo_qty">
                 <input type="hidden" name="hid_step_no" id="hid_step_no">
                 <input type="hidden" name="hid_work_center" id="hid_work_center">
