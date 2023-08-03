@@ -42,11 +42,11 @@
                 <thead>
                     <tr class="text-center table-active">
                         <th width="40px" style="text-align: center;">SAP員編</th>
-                        <th width="50px" style="text-align: center;">姓名</th>
+                        <th width="150px" style="text-align: center;">姓名</th>
                         <th width="50px" style="text-align: center;">人時</th>
                         <th width="50px" style="text-align: center;">機時</th>
                         {% for worktype in worktypes %}
-                        <th width="60px" style="text-align: center">{{ worktype.type_name }}</th>
+                        <th width="10px" style="text-align: center">{{ worktype.type_name }}</th>
                         {% endfor %}
                         <th width="50px" style="text-align: center;">總人時</th>
                     </tr>

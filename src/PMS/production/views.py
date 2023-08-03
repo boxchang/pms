@@ -207,7 +207,7 @@ def record_detail(request):
 # 報工資料查詢
 def record_detail_sap_empno(request, sap_emp_no):
     html = ""
-    worktypes = WorkType.objects.all()
+    worktypes = WorkType.objects.all().order_by('type_code')
     lang = get_language()
     if request.method == 'POST':
         sap_emp_no = request.POST['sap_emp_no']
@@ -564,7 +564,7 @@ def record_manage(request):
         key_user = CustomUser.objects.get(sap_emp_no=sap_emp_no)
         record['sap_emp_no'] = sap_emp_no
         record['username'] = key_user.username
-        worktypes = WorkType.objects.all()
+        worktypes = WorkType.objects.all().order_by('type_code')
         for worktype in worktypes:
             result = Record2.objects.filter(record_dt=record_dt, sap_emp_no=sap_emp_no, work_type=worktype).aggregate(Sum('labor_time'))
             if not result['labor_time__sum']:
