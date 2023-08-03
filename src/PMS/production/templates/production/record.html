@@ -109,8 +109,6 @@ $(':input').keydown(function (e){
             return confirm(msg);
         }
 
-        alert(good_qty);
-        alert(wo_qty);
         if(good_qty>wo_qty) {
             msg = "{% trans 'The operation quantity cannot over the production order quantity.' %}";
             alert(msg);

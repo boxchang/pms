@@ -23,6 +23,10 @@ $("#id_wo_no").focus();
                 {% csrf_token %}
                 {% crispy form %}
             </form>
+            <div class="row p-3">
+                <div class="col-3">料號：{{ item_no }}</div>
+                <div class="col-3">料號說明：{{ spec }}</div>
+            </div>
             <table border="1" class='table table-bordered table-striped'>
                 <tr>
                     <th>工單</th>

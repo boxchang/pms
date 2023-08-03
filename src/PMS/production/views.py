@@ -142,6 +142,8 @@ def wo_detail(request):
             step.step_ng_qty = step_ng_qty
             step.std_labor_time = round(step.wo_labor_time/step.std_qty*step.wo_qty, 1)
             step.std_mach_time = round(step.wo_mach_time / step.std_qty * step.wo_qty, 1)
+            item_no = step.wo_main.item_no
+            spec = step.wo_main.spec
 
     form = WoSearchForm()
     return render(request, 'production/wo_detail.html', locals())
@@ -336,6 +338,15 @@ def get_step_info(request):
                 value['wo_qty'] = step.wo_qty
                 value['ctr_code'] = step.ctr_code
                 value['work_center'] = step.work_center
+
+                # 取得已報工數量及人時
+                worked_qty = 0
+                worked_time = 0
+                worked_rows = Record.objects.filter(cfm_code=step.cfm_code).aggregate(Sum('labor_time'), Sum('good_qty'))
+                if worked_rows['labor_time__sum']:
+                    value['worked_time'] = worked_rows['labor_time__sum']
+                if worked_rows['good_qty__sum']:
+                    value['worked_qty'] = worked_rows['good_qty__sum']
 
             if step.step_no != "0010":
                 records = Record.objects.filter(wo_no=value['wo_no'], step_no='0010')
