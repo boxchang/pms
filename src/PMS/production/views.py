@@ -230,7 +230,8 @@ def record_detail_sap_empno(request, sap_emp_no):
                         <th style='width:100px'>{prod_order}</th>
                         <th style='width:100px'>{item_no}</th>
                         <th style='width:200px'>{spec}</th>
-                        <th style='width:100px'>{step_code}</th><th>{step_name}</th>
+                        <th style='width:100px'>{step_code}</th>
+                        <th style='width:100px'>{step_name}</th>
                         <th style='text-align:center;width:100px'>{labor_time}</th>
                         <th style='text-align:center;width:100px'>{mach_time}</th>
                         <th style='text-align:center;width:100px'>{good_qty}</th>
