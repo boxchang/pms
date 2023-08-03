@@ -25,6 +25,21 @@ $(':input').keydown(function (e){
         e.preventDefault();
     }
 })
+
+//F2 trigger submit
+function hotkey()
+{
+    var e=window.event;
+    if(e.keyCode == 113)
+    {
+        $("#submit-id-submit").click();
+    }
+}// end hotkey
+
+document.onkeydown = hotkey; //當onkeydown 事件發生時調用hotkey函數
+
+
+
 {% endblock ready %}
 {% block js %}
 <script>
@@ -130,7 +145,7 @@ $(':input').keydown(function (e){
     <div class="row pt-3">
         <div class="col-1"></div>
         <div class="col-10">
-            <form action="" method="POST" onSubmit="return validation()">
+            <form action="" method="POST" onSubmit="return validation()" id="record_form">
             {% crispy form %}
                 <input type="hidden" name="hid_std_labor_time" id="hid_std_labor_time">
                 <input type="hidden" name="hid_worked_labor_time" id="hid_worked_labor_time">
