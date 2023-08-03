@@ -499,19 +499,23 @@ def record_manage(request):
         now = datetime.now()
         record_dt = datetime.strftime(now, '%Y-%m-%d')
 
-    # 取得同部門人員清單
-    dept_users = CustomUser.objects.filter(unit=request.user.unit)
-    dept_users = [dept_user.sap_emp_no for dept_user in dept_users]
+    if request.user.is_superuser:
+        record1_rows = Record.objects.filter(record_dt=record_dt).values('sap_emp_no').distinct()
+        record2_rows = Record2.objects.filter(record_dt=record_dt).values('sap_emp_no').distinct()
+    else:
+        # 取得同部門人員清單
+        dept_users = CustomUser.objects.filter(unit=request.user.unit)
+        dept_users = [dept_user.sap_emp_no for dept_user in dept_users]
+        record1_rows = Record.objects.filter(record_dt=record_dt, sap_emp_no__in=dept_users).values('sap_emp_no').distinct()
+        record2_rows = Record2.objects.filter(record_dt=record_dt, sap_emp_no__in=dept_users).values('sap_emp_no').distinct()
 
-    # 當日報工人員列表
-    list = []
-    rows = Record.objects.filter(record_dt=record_dt, sap_emp_no__in=dept_users).values('sap_emp_no').distinct()
-    for row in rows:
-        list.append(row['sap_emp_no'])
-    rows = Record2.objects.filter(record_dt=record_dt, sap_emp_no__in=dept_users).values('sap_emp_no').distinct()
-    for row in rows:
-        if not row['sap_emp_no'] in list:
-            list.append(row['sap_emp_no'])
+    list = []  # 當日報工人員列表
+    for record1_row in record1_rows:
+        list.append(record1_row['sap_emp_no'])
+
+    for record2_row in record2_rows:
+        if not record2_row['sap_emp_no'] in list:
+            list.append(record2_row['sap_emp_no'])
 
     # 人員報工統計
     records = []
