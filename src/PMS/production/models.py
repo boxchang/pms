@@ -57,7 +57,7 @@ class Record(models.Model):
     work_center = models.CharField(max_length=20, blank=False, null=False)
     plant = models.CharField(max_length=10, blank=False, null=False)
     wo_no = models.CharField(max_length=20, blank=False, null=False)
-    item_no = models.CharField(max_length=20, blank=True, null=True)
+    item_no = models.CharField(max_length=20, blank=False, null=False)
     spec = models.CharField(max_length=100, blank=False, null=False)
     emp_no = models.CharField(max_length=30, blank=False, null=False)
     username = models.CharField(max_length=30, blank=False, null=False)

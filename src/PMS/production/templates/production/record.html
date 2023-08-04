@@ -131,6 +131,7 @@ document.onkeydown = hotkey; //當onkeydown 事件發生時調用hotkey函數
             return confirm(msg);
         }
 
+        {% if not perms.users.perm_workhour %}
         //累計報工數量大於工單數量
         var total_qty = worked_good_qty + good_qty;
         if(total_qty > wo_qty) {
@@ -138,6 +139,7 @@ document.onkeydown = hotkey; //當onkeydown 事件發生時調用hotkey函數
             alert(msg);
             return false;
         }
+        {% endif %}
     }
 </script>
 {% endblock js %}
