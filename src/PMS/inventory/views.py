@@ -77,38 +77,42 @@ def main(request):
 
 def import_excel(request):
     if request.method == 'POST':
-        excel_file = request.FILES.get('files1')
-        if excel_file:
-            wb = openpyxl.load_workbook(excel_file)
-            sheet = wb.worksheets[0]
-            for iRow in range(2, sheet.max_row+1):
-                if not sheet.cell(row=iRow, column=1).value:
-                    break
-                type = sheet.cell(row=iRow, column=2).value
-                type = ItemType.objects.get(type_name=type)
-                vendor_code = sheet.cell(row=iRow, column=3).value
-                spec = sheet.cell(row=iRow, column=4).value
-                unit = sheet.cell(row=iRow, column=5).value
-                price = sheet.cell(row=iRow, column=7).value
+        try:
+            excel_file = request.FILES.get('files1')
+            if excel_file:
+                wb = openpyxl.load_workbook(excel_file)
+                sheet = wb.worksheets[0]
+                for iRow in range(2, sheet.max_row+1):
+                    if not sheet.cell(row=iRow, column=1).value:
+                        break
+                    type = sheet.cell(row=iRow, column=2).value
+                    type = ItemType.objects.get(type_name=type)
+                    vendor_code = sheet.cell(row=iRow, column=3).value
+                    spec = sheet.cell(row=iRow, column=4).value
+                    unit = sheet.cell(row=iRow, column=5).value
+                    price = sheet.cell(row=iRow, column=7).value
 
-                item = Item()
-                _key = type.category.catogory_code+type.type_code
-                _key_name = type.type_name
-                series = get_series_number(_key, _key_name)
-                item.item_code = item_code = type.category.catogory_code+type.type_code+str(series).zfill(5)
-                item.item_type = type
-                item.vendor_code = vendor_code
-                item.spec = spec
-                item.unit = unit
-                item.price = price
-                item.create_by = request.user
-                item.update_by = request.user
-                item.save()
+                    item = Item()
+                    _key = type.category.catogory_code+type.type_code
+                    _key_name = type.type_name
+                    series = get_series_number(_key, _key_name)
+                    item.item_code = item_code = type.category.catogory_code+type.type_code+str(series).zfill(5)
+                    item.item_type = type
+                    item.vendor_code = vendor_code
+                    item.spec = spec
+                    item.unit = unit
+                    item.price = price
+                    item.create_by = request.user
+                    item.update_by = request.user
+                    item.save()
+        except Exception as e:
+            print(e)
+
     return render(request, 'inventory/import.html', locals())
 
 
 def apply_list(request):
-    exclude_list = [5, 6, 7]
+    exclude_list = [4, 5, 6]
     if request.user:
         list = AppliedForm.objects.filter(Q(requester=request.user)|Q(approver=request.user))
     if request.user.has_perm("perm_misc_apply"):

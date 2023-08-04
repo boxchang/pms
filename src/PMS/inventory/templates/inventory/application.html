@@ -152,7 +152,7 @@
     //顯示請購清單
     cart_show = function(data) {
         var total_price = 0;
-        var tmp_table = "<table class=\"table\"><tr><th>品名</th><th width='100px'>參考價格</th><th width='100px'>數量</th><th width='80px'>單位</th><th width='100px'>參考總價</th><th></th></tr>{0}</table>";
+        var tmp_table = "<table class=\"table\"><tr><th>品名&規格</th><th width='100px'>參考價格</th><th width='100px'>數量</th><th width='80px'>單位</th><th width='100px'>參考總價</th><th></th></tr>{0}</table>";
         var tmp_item = "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>";
         var tmp_qty = "<input type=\"text\" class=\"form-control\" value=\"{0}\" onchange=\"cart_qty('{1}', this.value)\">"
         var tmp_btn = "<button type='button' class='btn btn-danger' onclick=\"cart_remove('{0}')\">移除</button>";
@@ -188,7 +188,7 @@
 
         //物品清單
         $("#button-id-search").click(function() {
-            var tmp_table = "<table class=\"table\"><tr><th>品名</th><th width=\"100px\">參考價格</th><th></th></tr>{0}</table>";
+            var tmp_table = "<table class=\"table\"><tr><th>品名&規格</th><th width=\"100px\">參考價格</th><th></th></tr>{0}</table>";
             var tmp_item = "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>";
             var tmp_btn = "<button type='button' class='btn btn-info' onclick=\"cart_add('{0}', '{1}', '{2}', '{3}')\">加入</button>";
             var temp="";
