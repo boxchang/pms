@@ -258,7 +258,7 @@ def ItemAPI(request):
             item_data = item_data.filter(item_type_id=int(type_id)).values('item_code', 'spec', 'price', 'unit')
         if keyword:
             query = Q(spec__icontains=keyword)
-            item_data = item_data.filter(query)
+            item_data = item_data.filter(query).values('item_code', 'spec', 'price', 'unit')
 
         for data in item_data:
             item_list.append({'item_code':data['item_code'], 'spec':data['spec'], 'price':data['price'], 'unit':data['unit']})
