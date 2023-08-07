@@ -235,21 +235,23 @@ def apply(request):
                 obj.save()
                 total_price += obj.amount
 
-            # 電子郵件內容樣板
-            pk = apply.pk
-            form = AppliedForm.objects.get(pk=pk)
-            email_template = render_to_string('inventory/email_template.html', locals())
+            email = apply.requester.manager.email
+            if email:
+                # 電子郵件內容樣板
+                pk = apply.pk
+                form = AppliedForm.objects.get(pk=pk)
+                email_template = render_to_string('inventory/email_template.html', locals())
 
-            email = EmailMessage(
-                '註冊成功通知信',  # 電子郵件標題
-                email_template,  # 電子郵件內容
-                settings.EMAIL_HOST_USER,  # 寄件者
-                ['hsiangchih.chang@tw.eagleburgmann.com']  # 收件者
-            )
-            email.fail_silently = False
-            email.content_subtype = 'html'
-            email.send()
-            print("郵件成功寄出")
+                email = EmailMessage(
+                    '總務用品請領單簽核通知',  # 電子郵件標題
+                    email_template,  # 電子郵件內容
+                    settings.EMAIL_HOST_USER,  # 寄件者
+                    [email]  # 收件者
+                )
+                email.fail_silently = False
+                email.content_subtype = 'html'
+                email.send()
+                print("郵件成功寄出")
 
         except Exception as e:
             print(e)

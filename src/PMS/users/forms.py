@@ -48,7 +48,7 @@ class CurrentCustomUserForm(forms.ModelForm):
     password1 = forms.CharField(label=_('password'), required=False, widget=forms.PasswordInput(attrs={'placeholder': _('Please type the password')}))
     password2 = forms.CharField(label=_('confirm_password'), required=False, widget=forms.PasswordInput(attrs={'placeholder': _('Please type the login password again')}))
     emp_no = forms.CharField(label=_('emp_no'), widget=forms.TextInput(attrs={'placeholder': _('emp_no')}))
-    sap_emp_no = forms.CharField(label=_('sap_emp_no'), widget=forms.TextInput(attrs={'placeholder': _('sap_emp_no')}))
+    sap_emp_no = forms.CharField(label=_('sap_emp_no'), widget=forms.TextInput(attrs={'placeholder': _('sap_emp_no')}), required=False)
     username = forms.CharField(label=_('name'))
     unit = forms.ModelChoiceField(label=_('dept'), queryset=Unit.objects.all(), widget=forms.Select(
         attrs={'class': "form-select"}))
