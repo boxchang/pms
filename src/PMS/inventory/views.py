@@ -209,7 +209,7 @@ def apply(request):
                 obj.save()
 
             # 電子郵件內容樣板
-            email_template = render_to_string('inventory/application.html', locals())
+            email_template = render_to_string('inventory/email_template.html', locals())
 
             email = EmailMessage(
                 '註冊成功通知信',  # 電子郵件標題
