@@ -197,6 +197,7 @@ def apply(request):
             apply.create_by = request.user
             apply.save()
 
+            total_price = 0
             for item in items:
                 obj = AppliedItem()
                 obj.item_code = item['item_code']
@@ -207,6 +208,7 @@ def apply(request):
                 obj.amount = item['total']
                 obj.applied_form = apply
                 obj.save()
+                total_price += obj.amount
 
             # 電子郵件內容樣板
             pk = apply.pk

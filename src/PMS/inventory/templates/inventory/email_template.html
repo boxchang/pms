@@ -60,13 +60,15 @@
             </tr>
         </tbody>
     </table>
-    <div style="text-align:center;width:100%;display:flex;justify-content: center;">
-        <div style="padding: 30px;float: left;">
-            <a href="http://10.96.101.11:8000/inventory/agree/{{ pk }}" class="btn btn-info" style="color:blue;">同意</a>
-        </div>
-        <div style="padding: 30px;float: left;">
-            <a href="http://10.96.101.11:8000/inventory/reject/{{ pk }}" class="btn btn-danger" onclick="return confirm('確定是否要退單?')" style="color:red;">退單</a>
-        </div>
-    </div>
+    <table>
+        <tr>
+            <td style="padding: 30px;">
+                <a href="http://10.96.101.11:8000/inventory/agree/{{ pk }}" class="btn btn-info" style="color:blue;">同意</a>
+            </td>
+            <td style="padding: 30px;">
+                <a href="http://10.96.101.11:8000/inventory/reject/{{ pk }}" class="btn btn-danger" style="color:red;">退單</a>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
