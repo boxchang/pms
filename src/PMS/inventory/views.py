@@ -159,10 +159,14 @@ def agree(request, pk):
 
 def mail_agree(request, pk):
     if request.method == 'GET':
-        apply = AppliedForm.objects.get(pk=pk)
-        apply.status = FormStatus.objects.get(pk=2)
-        apply.approver = request.user
-        apply.save()
+        total_price = 0
+        form = AppliedForm.objects.get(pk=pk)
+        for item in form.applied_form_item.all():
+            total_price += item.amount
+
+        form.status = FormStatus.objects.get(pk=2)
+        form.approver = request.user
+        form.save()
         action = "agree"
 
         return render(request, 'inventory/email_template.html', locals())
