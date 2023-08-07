@@ -261,6 +261,6 @@ PRINTER = "TSC TTP-345"
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.east.seal2.ads'  #SMTP伺服器
 EMAIL_PORT = 25  #TLS通訊埠號
-EMAIL_USE_TLS = True  #開啟TLS(傳輸層安全性)
+EMAIL_USE_TLS = False  #開啟TLS(傳輸層安全性)
 EMAIL_HOST_USER = 'ebtw-general@tw.eagleburgmann.com'  #寄件者電子郵件
 EMAIL_HOST_PASSWORD = ''
