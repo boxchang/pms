@@ -4,10 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Noah - Inventory</title>
-    <link rel="stylesheet" href="http://10.96.101.11:8000/static/jquery-ui/jquery-ui.min.css">
-    <link rel="stylesheet" href="http://10.96.101.11:8000/static/bootstrap-4.1.3/css/bootstrap.min.css">
-    <script src="http://10.96.101.11:8000/static/bootstrap-4.1.3/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="/static/fontawesome-5.4.2/css/all.css">
     <style type="text/css">
         input:required {
             background: #ffffe7;
@@ -92,68 +88,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-    <div class="row p-3">
-        <div class="col-1"></div>
-        <div class="col-10">
-            <fieldset>
-                <legend><span class="p-3">請領資料</span></legend>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div class="row">
-                            <div class="col-2 p-2" style="text-align:right;">申請日期：</div>
-                            <div class="col-2 p-2 content">{{ form.apply_date }}</div>
-                            <div class="col-2 p-2" style="text-align:right;">狀態：</div>
-                            <div class="col-2 p-2 content">{{ form.status }}</div>
-                            <div class="col-2 p-2" style="text-align:right;">簽核者：</div>
-                            <div class="col-2 p-2 content">{{ form.requester.manager|default:'' }}</div>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="row">
-                            <div class="col-2 p-2" style="text-align:right;">申請部門：</div>
-                            <div class="col-2 p-2 content">{{ form.unit }}</div>
-                            <div class="col-2 p-2" style="text-align:right;">申請者：</div>
-                            <div class="col-2 p-2 content">{{ form.requester }}</div>
-                            <div class="col-2 p-2" style="text-align:right;">分機：</div>
-                            <div class="col-2 p-2 content">{{ form.ext_number }}</div>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="row">
-                            <div class="col-2 p-2" style="text-align:right;">申請原因：</div>
-                            <div class="col-10 p-2 content">{{ form.reason }}</div>
-                        </div>
-                    </li>
-                </ul>
-            </fieldset>
-            <table class="table table-bordered table-striped">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>品名</th>
-                        <th>參考價格</th>
-                        <th>數量</th>
-                        <th>單位</th>
-                        <th>參考總價</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in form.applied_form_item.all %}
-                        <tr>
-                            <td>{{ item.spec }}</td>
-                            <td>{{ item.price }}</td>
-                            <td>{{ item.qty }}</td>
-                            <td>{{ item.unit }}</td>
-                            <td style="text-align: right">{{ item.amount }}</td>
-                        </tr>
-                    {% endfor %}
-                    <tr>
-                        <td colspan="5" style="text-align: right">總金額：{{ total_price }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="col-1"></div>
-    </div>
+    <table>
+        <tr>
+            <td style="text-align:right;">申請日期：</td>
+            <td>{{ form.apply_date }}</td>
+            <td style="text-align:right;">狀態：</td>
+            <td>{{ form.status }}</td>
+            <td style="text-align:right;">簽核者：</td>
+            <td>{{ form.requester.manager|default:'' }}</td>
+        </tr>
+        <tr>
+            <td style="text-align:right;">申請部門：</td>
+            <td>{{ form.unit }}</td>
+            <td style="text-align:right;">申請者：</td>
+            <td>{{ form.requester }}</td>
+            <td style="text-align:right;">分機：</td>
+            <td>{{ form.ext_number }}</td>
+        </tr>
+        <tr>
+            <td class="col-2 p-2" style="text-align:right;">申請原因：</td>
+            <td class="col-10 p-2 content">{{ form.reason }}</td>
+        </tr>
+    </table>
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>品名</th>
+                <th>參考價格</th>
+                <th>數量</th>
+                <th>單位</th>
+                <th>參考總價</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in form.applied_form_item.all %}
+                <tr>
+                    <td>{{ item.spec }}</td>
+                    <td>{{ item.price }}</td>
+                    <td>{{ item.qty }}</td>
+                    <td>{{ item.unit }}</td>
+                    <td style="text-align: right">{{ item.amount }}</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="5" style="text-align: right">總金額：{{ total_price }}</td>
+            </tr>
+        </tbody>
+    </table>
     <div style="text-align:center">
         <a href="/inventory/agree/{{ pk }}" class="btn btn-info">同意</a>
         <a href="/inventory/reject/{{ pk }}" class="btn btn-danger" onclick="return confirm('確定是否要退單?')">退單</a>
