@@ -13,6 +13,10 @@
         if("{{ action }}"=="reject"){
             alert("已退單成功");
         }
+
+        if("{{ action }}"=="agree"){
+            alert("已簽核成功");
+        }
     </script>
 </head>
 <body>
@@ -68,10 +72,10 @@
     <table width="100%">
         <tr>
             <td style="padding: 30px;text-align: center;">
-                <a href="http://10.96.101.11:8000/inventory/agree/{{ pk }}" class="btn btn-info" style="color:blue;">同意</a>
+                <a href="http://10.96.101.11:8000/inventory/mail_agree/{{ pk }}" class="btn btn-info" style="color:blue;">同意</a>
             </td>
             <td style="padding: 30px;text-align: center;">
-                <a href="http://10.96.101.11:8000/inventory/reject/{{ pk }}" class="btn btn-danger" style="color:red;">退單</a>
+                <a href="http://10.96.101.11:8000/inventory/mail_reject/{{ pk }}" class="btn btn-danger" style="color:red;">退單</a>
             </td>
         </tr>
     </table>

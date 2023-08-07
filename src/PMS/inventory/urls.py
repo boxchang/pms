@@ -18,4 +18,5 @@ urlpatterns = [
     url(r'^change_status/', change_status, name='inv_change_status'),
     url(r'^mail/', mail_test, name='mail_test'),
     url(r'^mail_reject/(?P<pk>\d+)/$', mail_reject, name='inv_mail_reject'),
+    url(r'^mail_agree/(?P<pk>\d+)/$', mail_agree, name='inv_mail_agree'),
 ]

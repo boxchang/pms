@@ -157,6 +157,17 @@ def agree(request, pk):
     return redirect(reverse('inv_approve'))
 
 
+def mail_agree(request, pk):
+    if request.method == 'GET':
+        apply = AppliedForm.objects.get(pk=pk)
+        apply.status = FormStatus.objects.get(pk=2)
+        apply.approver = request.user
+        apply.save()
+        action = "agree"
+
+        return render(request, 'inventory/email_template.html', locals())
+
+
 def reject(request, pk):
     if request.method == 'GET':
         apply = AppliedForm.objects.get(pk=pk)
