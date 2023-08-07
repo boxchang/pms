@@ -161,13 +161,17 @@ def mail_agree(request, pk):
     if request.method == 'GET':
         total_price = 0
         form = AppliedForm.objects.get(pk=pk)
+
         for item in form.applied_form_item.all():
             total_price += item.amount
 
-        form.status = FormStatus.objects.get(pk=2)
-        form.approver = request.user
-        form.save()
-        action = "agree"
+        if form.status == 2:
+            action = "done"
+        else:
+            form.status = FormStatus.objects.get(pk=2)
+            form.approver = request.user
+            form.save()
+            action = "agree"
 
         return render(request, 'inventory/email_template.html', locals())
 
@@ -188,9 +192,12 @@ def mail_reject(request, pk):
         for item in form.applied_form_item.all():
             total_price += item.amount
 
-        form.status = FormStatus.objects.get(pk=6)
-        form.save()
-        action = "reject"
+        if form.status == 2:
+            action = "done"
+        else:
+            form.status = FormStatus.objects.get(pk=6)
+            form.save()
+            action = "reject"
 
         return render(request, 'inventory/email_template.html', locals())
 
