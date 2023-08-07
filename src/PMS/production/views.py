@@ -16,6 +16,7 @@ from production.models import WOMain, ExcelTemp, WODetail, Record, Record2, Work
 from users.models import CustomUser
 from django.utils.translation import gettext_lazy as _
 
+
 def COOIS2Table(items):
     html = """<table border='1' class='table table-bordered table-striped'>
                     {Rows}

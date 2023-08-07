@@ -1,17 +1,18 @@
 import json
 from datetime import datetime
-
 import openpyxl
 from django.db import connection
 from django.db.models import Q
 from django.http import JsonResponse, Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse
-
 from bases.utils import django_go_sql, get_invform_status_dropdown
 from inventory.forms import OfficeInvForm, InvAppliedHistoryForm
 from inventory.models import ItemType, Item, AppliedForm, FormStatus, AppliedItem, Series
 from users.models import CustomUser, Unit
+from django.core.mail import EmailMessage
+from django.conf import settings
+from django.template.loader import render_to_string
 
 
 # 滾序號
@@ -277,3 +278,19 @@ def change_status(request):
         obj.save()
 
         return redirect(obj.get_absolute_url())
+
+
+def mail_test(request):
+    # 電子郵件內容樣板
+    email_template = render_to_string(
+        'inventory/email_template.html',
+        {'username': request.user.username}
+    )
+    email = EmailMessage(
+        '註冊成功通知信',  # 電子郵件標題
+        email_template,  # 電子郵件內容
+        settings.EMAIL_HOST_USER,  # 寄件者
+        ['hsiangchih.chang@tw.eagleburgmann.com']  # 收件者
+    )
+    email.fail_silently = False
+    email.send()

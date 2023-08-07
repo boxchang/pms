@@ -255,3 +255,12 @@ EXE_FILE = "C:\\\"Program Files\"\\Seagull\\\"BarTender 2022\"\\BarTend.exe"
 ASSET_BTW_FILE = os.path.join(BASE_DIR, 'PMS', 'settings', 'bartender', 'template.btw')
 NON_ASSET_BTW_FILE = os.path.join(BASE_DIR, 'PMS', 'settings', 'bartender', 'non_asset.btw')
 PRINTER = "TSC TTP-345"
+
+
+# SMTP Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.east.seal2.ads'  #SMTP伺服器
+EMAIL_PORT = 587  #TLS通訊埠號
+EMAIL_USE_TLS = True  #開啟TLS(傳輸層安全性)
+EMAIL_HOST_USER = 'ebtw-general@tw.eagleburgmann.com'  #寄件者電子郵件
+EMAIL_HOST_PASSWORD = ''  #Gmail應用程式的密碼
