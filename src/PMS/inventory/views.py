@@ -165,7 +165,7 @@ def mail_agree(request, pk):
         for item in form.applied_form_item.all():
             total_price += item.amount
 
-        if form.status == 2:
+        if form.status.id in [2, 6]:
             action = "done"
         else:
             form.status = FormStatus.objects.get(pk=2)
@@ -192,7 +192,7 @@ def mail_reject(request, pk):
         for item in form.applied_form_item.all():
             total_price += item.amount
 
-        if form.status == 2:
+        if form.status.id in [2, 6]:
             action = "done"
         else:
             form.status = FormStatus.objects.get(pk=6)
