@@ -48,24 +48,24 @@
         <tbody>
             {% for item in form.applied_form_item.all %}
                 <tr>
-                    <td>{{ item.spec }}</td>
-                    <td>{{ item.price }}</td>
-                    <td>{{ item.qty }}</td>
-                    <td>{{ item.unit }}</td>
-                    <td style="text-align: right">{{ item.amount }}</td>
+                    <td style="text-align:center;color: blue;">{{ item.spec }}</td>
+                    <td style="text-align:center;color: blue;">{{ item.price }}</td>
+                    <td style="text-align:center;color: blue;">{{ item.qty }}</td>
+                    <td style="text-align:center;color: blue;">{{ item.unit }}</td>
+                    <td style="text-align: right;color: blue;">{{ item.amount }}</td>
                 </tr>
             {% endfor %}
             <tr>
-                <td colspan="5" style="text-align: right">總金額：{{ total_price }}</td>
+                <td colspan="5" style="text-align: right;color: blue;">總金額：{{ total_price }}</td>
             </tr>
         </tbody>
     </table>
-    <div style="text-align:center">
-        <div style="padding: 30px;">
-            <a href="http://10.96.101.11/inventory/agree/{{ pk }}" class="btn btn-info">同意</a>
+    <div style="text-align:center;width:100%;display:flex;justify-content: center;">
+        <div style="padding: 30px;float: left;">
+            <a href="http://10.96.101.11:8000/inventory/agree/{{ pk }}" class="btn btn-info" style="color:blue;">同意</a>
         </div>
-        <div style="padding: 30px;">
-            <a href="http://10.96.101.11/inventory/reject/{{ pk }}" class="btn btn-danger" onclick="return confirm('確定是否要退單?')">退單</a>
+        <div style="padding: 30px;float: left;">
+            <a href="http://10.96.101.11:8000/inventory/reject/{{ pk }}" class="btn btn-danger" onclick="return confirm('確定是否要退單?')" style="color:red;">退單</a>
         </div>
     </div>
 </body>
