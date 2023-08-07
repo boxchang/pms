@@ -208,6 +208,19 @@ def apply(request):
                 obj.applied_form = apply
                 obj.save()
 
+            # 電子郵件內容樣板
+            email_template = render_to_string('inventory/application.html', locals())
+
+            email = EmailMessage(
+                '註冊成功通知信',  # 電子郵件標題
+                email_template,  # 電子郵件內容
+                settings.EMAIL_HOST_USER,  # 寄件者
+                ['hsiangchih.chang@tw.eagleburgmann.com']  # 收件者
+            )
+            email.fail_silently = False
+            email.send()
+
+
         except Exception as e:
             print(e)
 
