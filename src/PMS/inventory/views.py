@@ -195,7 +195,7 @@ def apply(request):
             apply.reason = reason
             apply.status = FormStatus.objects.get(pk=1)
             apply.create_by = request.user
-            pk = apply.save()
+            apply.save()
 
             for item in items:
                 obj = AppliedItem()
@@ -209,6 +209,7 @@ def apply(request):
                 obj.save()
 
             # 電子郵件內容樣板
+            pk = apply.pk
             form = AppliedForm.objects.get(pk=pk)
             email_template = render_to_string('inventory/email_template.html', locals())
 
