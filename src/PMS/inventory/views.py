@@ -219,7 +219,7 @@ def apply(request):
             )
             email.fail_silently = False
             email.send()
-
+            print("郵件成功寄出")
 
         except Exception as e:
             print(e)
