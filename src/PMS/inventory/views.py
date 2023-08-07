@@ -209,6 +209,8 @@ def apply(request):
                 obj.save()
 
             # 電子郵件內容樣板
+            pk = apply.pk
+            form = AppliedForm.objects.get(pk=pk)
             email_template = render_to_string('inventory/email_template.html', locals())
 
             email = EmailMessage(
