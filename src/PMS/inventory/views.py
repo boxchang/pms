@@ -10,7 +10,7 @@ from bases.utils import django_go_sql, get_invform_status_dropdown
 from inventory.forms import OfficeInvForm, InvAppliedHistoryForm
 from inventory.models import ItemType, Item, AppliedForm, FormStatus, AppliedItem, Series
 from users.models import CustomUser, Unit
-from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.core.mail import EmailMessage
 from django.conf import settings
 from django.template.loader import render_to_string
 
@@ -211,13 +211,14 @@ def apply(request):
             # 電子郵件內容樣板
             email_template = render_to_string('inventory/email_template.html', locals())
 
-            email = EmailMultiAlternatives(
+            email = EmailMessage(
                 '註冊成功通知信',  # 電子郵件標題
+                email_template,  # 電子郵件內容
                 settings.EMAIL_HOST_USER,  # 寄件者
                 ['hsiangchih.chang@tw.eagleburgmann.com']  # 收件者
             )
             email.fail_silently = False
-            email.attach_alternative(email_template, "text/html")  # 電子郵件內容
+            email.content_subtype = 'html'
             email.send()
             print("郵件成功寄出")
 
