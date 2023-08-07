@@ -5,113 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Noah - Inventory</title>
     <style type="text/css">
-        input:required {
-            background: #ffffe7;
-        }
 
-        select:required {
-            background: #ffffe7;
-        }
-
-        .content {
-            color: blue;
-        }
-
-        .django-ckeditor-widget{
-            display: inline !important;
-        }
-
-        img{
-            max-width:100%;
-        }
-        th{
-            font-family:arial,sans-serif,Meiryo,Microsoft JhengHei;
-        }
-        td{
-            font-family:arial,sans-serif,Meiryo,Microsoft JhengHei;
-        }
-        option{
-            font-family:arial,sans-serif,Meiryo,Microsoft JhengHei;
-        }
-        a{
-            font-family:arial,sans-serif,Meiryo,Microsoft JhengHei;
-        }
-        div{
-            font-family:arial,sans-serif,Meiryo,Microsoft JhengHei;
-        }
-        html, body {
-          height: 100%;
-        }
-        /* width */
-        ::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
-        }
-
-        /* Track */
-        ::-webkit-scrollbar-track {
-          background: #f1f1f1;
-        }
-
-        /* Handle */
-        ::-webkit-scrollbar-thumb {
-          background: #888;
-            border-radius: 5px;
-        }
-
-        /* Handle on hover */
-        ::-webkit-scrollbar-thumb:hover {
-          background: #555;
-        }
-
-        .box-nav {
-            text-align: center;
-            padding-top: 60px;
-        }
-
-        .box-nav-btn {
-            margin-top: 5px;
-            width: 50px;
-            height: 50px;
-            display: block;
-        }
-
-        .box-nav a {
-            color: #CCC;
-        }
-
-        .box-nav a:hover {
-            color: #000;
-        }
     </style>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-    <table>
+    <div style="padding:20px;text-align:center;font-size:1.1em;">請領資料</div>
+    <table width="100%" border="1">
         <tr>
             <td style="text-align:right;">申請日期：</td>
-            <td>{{ form.apply_date }}</td>
+            <td style="text-align:center;color: blue;">{{ form.apply_date }}</td>
             <td style="text-align:right;">狀態：</td>
-            <td>{{ form.status }}</td>
+            <td style="text-align:center;color: blue;">{{ form.status }}</td>
             <td style="text-align:right;">簽核者：</td>
-            <td>{{ form.requester.manager|default:'' }}</td>
+            <td style="text-align:center;color: blue;">{{ form.requester.manager|default:'' }}</td>
         </tr>
         <tr>
             <td style="text-align:right;">申請部門：</td>
-            <td>{{ form.unit }}</td>
+            <td style="text-align:center;color: blue;">{{ form.unit }}</td>
             <td style="text-align:right;">申請者：</td>
-            <td>{{ form.requester }}</td>
+            <td style="text-align:center;color: blue;">{{ form.requester }}</td>
             <td style="text-align:right;">分機：</td>
-            <td>{{ form.ext_number }}</td>
+            <td style="text-align:center;color: blue;">{{ form.ext_number }}</td>
         </tr>
         <tr>
-            <td class="col-2 p-2" style="text-align:right;">申請原因：</td>
-            <td class="col-10 p-2 content">{{ form.reason }}</td>
+            <td style="text-align:right;">申請原因：</td>
+            <td style="text-align:center;color: blue;">{{ form.reason }}</td>
         </tr>
     </table>
-    <table class="table table-bordered table-striped">
-        <thead class="thead-dark">
+    <div style="padding-top: 30px;"></div>
+    <table width="100%" border="1">
+        <thead>
             <tr>
                 <th>品名</th>
                 <th>參考價格</th>
@@ -136,8 +61,12 @@
         </tbody>
     </table>
     <div style="text-align:center">
-        <a href="/inventory/agree/{{ pk }}" class="btn btn-info">同意</a>
-        <a href="/inventory/reject/{{ pk }}" class="btn btn-danger" onclick="return confirm('確定是否要退單?')">退單</a>
+        <div style="padding: 30px;">
+            <a href="http://10.96.101.11/inventory/agree/{{ pk }}" class="btn btn-info">同意</a>
+        </div>
+        <div style="padding: 30px;">
+            <a href="http://10.96.101.11/inventory/reject/{{ pk }}" class="btn btn-danger" onclick="return confirm('確定是否要退單?')">退單</a>
+        </div>
     </div>
 </body>
 </html>
