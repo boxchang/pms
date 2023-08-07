@@ -1,6 +1,6 @@
 from django.urls import re_path as url
 from inventory.views import main, apply, TypeAPI, ItemAPI, detail, agree, apply_list, approve, reject, import_excel, \
-    statistic, change_status, delete, mail_test, mail_reject
+    statistic, change_status, delete, mail_test, mail_reject, mail_agree
 
 urlpatterns = [
     url(r'^main/', main, name='inv_main'),
