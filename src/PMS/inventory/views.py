@@ -7,8 +7,8 @@ from django.http import JsonResponse, Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from bases.utils import django_go_sql, get_invform_status_dropdown
-from inventory.forms import OfficeInvForm, InvAppliedHistoryForm
-from inventory.models import ItemType, Item, AppliedForm, FormStatus, AppliedItem, Series
+from inventory.forms import OfficeInvForm, InvAppliedHistoryForm, OfficeItemForm
+from inventory.models import ItemType, Item, AppliedForm, FormStatus, AppliedItem, Series, Apply_attachment
 from users.models import CustomUser, Unit
 from django.core.mail import EmailMessage
 from django.conf import settings
@@ -233,6 +233,22 @@ def apply(request):
             apply.create_by = request.user
             apply.save()
 
+            if request.FILES.get('file1'):
+                request_file = Apply_attachment(files=request.FILES['file1'])
+                request_file.apply = apply
+                request_file.create_by = request.user
+                request_file.save()
+            if request.FILES.get('file2'):
+                request_file = Apply_attachment(files=request.FILES['file2'])
+                request_file.apply = apply
+                request_file.create_by = request.user
+                request_file.save()
+            if request.FILES.get('file3'):
+                request_file = Apply_attachment(files=request.FILES['file3'])
+                request_file.apply = apply
+                request_file.create_by = request.user
+                request_file.save()
+
             total_price = 0
             for item in items:
                 obj = AppliedItem()
@@ -287,6 +303,11 @@ def detail(request, pk):
         if form.requester == request.user:
             isCreater = True
 
+        files = Apply_attachment.objects.filter(apply=form)
+        for file in files:
+            file.files.filename = file.files.name[file.files.name.rindex('/')+1:]
+
+
     except AppliedForm.DoesNotExist:
         raise Http404('Form does not exist')
 
@@ -296,7 +317,7 @@ def detail(request, pk):
 
 #API類別
 def TypeAPI(request, category_id):
-    type_data = ItemType.objects.filter(category_id = int(category_id)).values('id','type_name')
+    type_data = ItemType.objects.filter(category_id=int(category_id)).values('id','type_name')
     type_list = []
     for data in type_data:
         type_list.append({'id':data['id'], 'type_name':data['type_name']})
@@ -320,7 +341,7 @@ def ItemAPI(request):
         for data in item_data:
             item_list.append({'item_code':data['item_code'], 'spec':data['spec'], 'price':data['price'], 'unit':data['unit']})
 
-    return JsonResponse(item_list, safe = False)
+    return JsonResponse(item_list, safe=False)
 
 
 def change_status(request):
@@ -350,3 +371,15 @@ def mail_test(request):
     )
     email.fail_silently = False
     email.send()
+
+
+def recieved(request, pk):
+    item = AppliedItem.objects.get(pk=pk)
+    if request.POST:
+        applied_form = AppliedForm.objects.get(pk=item.applied_form.pk)
+        form = OfficeItemForm(request.POST, instance=item)
+        form.save()
+        return redirect(applied_form.get_absolute_url())
+
+    form = OfficeItemForm(instance=item)
+    return render(request, 'inventory/recieved.html', locals())

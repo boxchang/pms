@@ -101,6 +101,14 @@ class AppliedItem(models.Model):
     received_qty = models.IntegerField(default=0)
 
 
+class Apply_attachment(models.Model):
+    apply = models.ForeignKey('AppliedForm', related_name='apply_files', on_delete=models.CASCADE)
+    files = models.FileField(upload_to='uploads/inventory/apply/%Y/%m/')
+    description = models.CharField(max_length=50, blank=True)
+    create_at = models.DateTimeField(auto_now_add=True, editable=True)  # 建立日期
+    create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='form_files_create_by')  # 建立者
+
+
 class Series(models.Model):
     key = models.CharField(max_length=50, blank=False, null=False)
     series = models.IntegerField()

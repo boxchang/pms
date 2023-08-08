@@ -37,30 +37,70 @@
             </ul>
         </fieldset>
         <table class="table table-bordered table-striped">
-            <thead class="thead-dark">
+            <thead class="table-info">
                 <tr>
-                    <th>品名</th>
-                    <th>參考價格</th>
-                    <th>數量</th>
-                    <th>單位</th>
-                    <th>參考總價</th>
+                    <th style="width: 300px">品名</th>
+                    <th style="width: 70px;text-align: center;">參考價格</th>
+                    <th style="width: 70px;text-align: center;">數量</th>
+                    <th style="width: 50px;text-align: center;">單位</th>
+                    <th style="width: 70px;text-align: center;">參考總價</th>
+                    <th style="width: 70px;text-align: center;">已發放</th>
+                    <th style="width: 200px">備註</th>
                 </tr>
             </thead>
             <tbody>
                 {% for item in form.applied_form_item.all %}
                     <tr>
+                        {% if perms.users.perm_misc_apply %}
+                            <td>{{ item.spec }}[<a href="{% url 'inv_recieved' item.pk %}">編輯</a>]</td>
+                        {% else %}
                         <td>{{ item.spec }}</td>
-                        <td>{{ item.price }}</td>
-                        <td>{{ item.qty }}</td>
-                        <td>{{ item.unit }}</td>
+                        {% endif %}
+                        <td style="text-align: right">{{ item.price }}</td>
+                        <td style="text-align: center">{{ item.qty }}</td>
+                        <td style="text-align: center">{{ item.unit }}</td>
                         <td style="text-align: right">{{ item.amount }}</td>
+                        <td style="text-align: center">{{ item.received_qty }}</td>
+                        <td>{{ item.comment|default:'' }}</td>
                     </tr>
                 {% endfor %}
                 <tr>
-                    <td colspan="5" style="text-align: right">總金額：{{ total_price }}</td>
+                    <td colspan="4" style="text-align: right">總金額：</td>
+                    <td style="text-align: right">{{ total_price }}</td>
+                    <td colspan="2"></td>
                 </tr>
             </tbody>
         </table>
+        {% if files %}
+        <table class="table table-bordered table-sm">
+            <thead class="table-info">
+                <tr>
+                    <th style="width:10%">
+                        #
+                    </th>
+                    <th style="width:40%;text-align: left;">
+                        檔名
+                    </th>
+                    <th style="width:10%;text-align: center;">
+                        附件
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for file in files %}
+                <tr>
+                    <td class="text-center">
+                        附件{{ forloop.counter }}
+                    </td>
+                    <td>{{ file.files.filename }}</td>
+                    <td class="text-center">
+                        <a href="{{ file.files.url }}" target="_blank"><i class="fas fa-file-download fa-2x text-info"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
         {% if isCreater %}
         <div style="text-align:center">
             <a href="{% url 'inv_delete' pk %}" class="btn btn-danger" onclick="return confirm('確認要刪除?')">刪除</a>
@@ -78,8 +118,8 @@
                                     {{ status_html | safe }}
                                 </form>
                             </div>
-                            <div class="col">
-                                <a href="{% url 'inv_delete' pk %}" class="btn btn-danger" onclick="return confirm('確認要刪除?')">刪除</a>
+                            <div class="col" style="text-align: right">
+                                <a href="{% url 'inv_delete' pk %}" class="btn btn-light" onclick="return confirm('確認要刪除?')">刪除</a>
                             </div>
                         </div>
                     </li>

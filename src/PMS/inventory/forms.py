@@ -55,7 +55,7 @@ class InvAppliedHistoryForm(forms.ModelForm):
 class OfficeInvForm(forms.ModelForm):
     class Meta:
         model = AppliedForm
-        fields = ('unit', 'requester', 'apply_date', 'ext_number', 'reason')
+        fields = ('unit', 'requester', 'apply_date', 'ext_number', 'reason', 'file1', 'file2', 'file3')
 
     reason = forms.CharField(required=True, label="原因", widget=forms.Textarea(attrs={'rows': 4, 'cols': 15}))
     unit = forms.ModelChoiceField(required=True, label="申請部門", queryset=Unit.objects.all(), widget=forms.Select(attrs={"onChange": "dept_change()"}))
@@ -67,6 +67,9 @@ class OfficeInvForm(forms.ModelForm):
     item = forms.ModelChoiceField(required=False, label="物品", queryset=Item.objects.all())
     item_qty = forms.IntegerField(required=False, label="數量")
     keyword = forms.CharField(required=False, label="關鍵字")
+    file1 = forms.FileField(required=False, label="附件1")
+    file2 = forms.FileField(required=False, label="附件2")
+    file3 = forms.FileField(required=False, label="附件3")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -86,6 +89,12 @@ class OfficeInvForm(forms.ModelForm):
                 Div('reason', css_class='col-md-12'),
                 css_class='row'),
             Div(
+                Div('file1', css_class='col-md-4'),
+                Div('file2', css_class='col-md-4'),
+                Div('file3', css_class='col-md-4'),
+                css_class='row'),
+            HTML('<hr />'),
+            Div(
                 Div('category', css_class='col-md-2'),
                 Div('type', css_class='col-md-2'),
                 Div('keyword', css_class='col-md-2'),
@@ -102,3 +111,50 @@ class OfficeInvForm(forms.ModelForm):
                 "showTodayButton": False,
             }
         )
+
+
+class OfficeItemForm(forms.ModelForm):
+    class Meta:
+        model = AppliedItem
+        fields = ('item_code', 'spec', 'price', 'qty', 'unit', 'amount', 'received_qty', 'comment')
+
+    item_code = forms.CharField(required=False, label="料號")
+    spec = forms.CharField(required=False, label="品名")
+    price = forms.IntegerField(required=False, label="參考價格")
+    qty = forms.IntegerField(required=False, label="數量")
+    unit = forms.CharField(required=False, label="單位")
+    amount = forms.IntegerField(required=False, label="參考總價")
+    received_qty = forms.IntegerField(required=True, label="已發放數量")
+    comment = forms.CharField(required=False, label="備註", widget=forms.Textarea(attrs={'rows': 4, 'cols': 15}))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['item_code'].widget.attrs['readonly'] = True
+        self.fields['spec'].widget.attrs['readonly'] = True
+        self.fields['price'].widget.attrs['readonly'] = True
+        self.fields['qty'].widget.attrs['readonly'] = True
+        self.fields['unit'].widget.attrs['readonly'] = True
+        self.fields['amount'].widget.attrs['readonly'] = True
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.form_show_errors = True
+
+        self.helper.layout = Layout(
+            Div(
+                Div('item_code', css_class='col-md-3'),
+                Div('spec', css_class='col-md-3'),
+                css_class='row'),
+            Div(
+                Div('price', css_class='col-md-3'),
+                Div('qty', css_class='col-md-3'),
+                Div('unit', css_class='col-md-3'),
+                Div('amount', css_class='col-md-3'),
+                css_class='row'),
+            Div(
+                Div('received_qty', css_class='col-md-3'),
+                css_class='row'),
+            Div(
+                Div('comment', css_class='col-md-9'),
+                css_class='row'),
+        )
+
