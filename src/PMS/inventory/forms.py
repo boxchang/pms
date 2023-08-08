@@ -98,7 +98,12 @@ class OfficeInvForm(forms.ModelForm):
                 Div('category', css_class='col-md-2'),
                 Div('type', css_class='col-md-2'),
                 Div('keyword', css_class='col-md-2'),
-                Div(Button('search', '查詢', css_class='btn btn-info'), css_class='col-md-3 d-flex align-items-center search_btn_fix'),
+                Div(Button('search', '查詢', css_class='btn btn-info'), css_class='col-md-2 d-flex align-items-center search_btn_fix'),
+                Div(
+                    HTML("<a href='#' id='key_template' class='btn btn-light m-1'>鑰匙申請範本</a>"),
+                    HTML("<a href='#' id='stamp_template' class='btn btn-light m-1'>印章申請範本</a>"),
+                    HTML("<a href='#' id='card_template' class='btn btn-light m-1'>名片申請範本</a>"),
+                    css_class='col-md-3 d-flex align-items-center'),
                 css_class='row'),
         )
 

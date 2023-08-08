@@ -338,8 +338,9 @@ def ItemAPI(request):
             query = Q(spec__icontains=keyword)
             item_data = item_data.filter(query).values('item_code', 'spec', 'price', 'unit')
 
-        for data in item_data:
-            item_list.append({'item_code':data['item_code'], 'spec':data['spec'], 'price':data['price'], 'unit':data['unit']})
+        if type_id or keyword:
+            for data in item_data:
+                item_list.append({'item_code':data['item_code'], 'spec':data['spec'], 'price':data['price'], 'unit':data['unit']})
 
     return JsonResponse(item_list, safe=False)
 
