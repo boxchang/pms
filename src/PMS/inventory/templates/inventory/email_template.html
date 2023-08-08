@@ -47,7 +47,8 @@
             <td style="text-align:center;color: blue;">{{ form.reason }}</td>
         </tr>
     </table>
-    <div style="padding-top: 30px;"></div>
+    <br />
+    <br />
     <table width="100%" border="1">
         <thead>
             <tr>
@@ -73,19 +74,14 @@
             </tr>
         </tbody>
     </table>
+    <br />
+    <br />
     {% if files %}
-    <table class="table table-bordered table-sm">
-        <thead class="table-info">
+    <table width="100%" border="1">
+        <thead>
             <tr>
-                <th style="width:10%">
-                    #
-                </th>
-                <th style="width:40%;text-align: left;">
-                    檔名
-                </th>
-                <th style="width:10%;text-align: center;">
-                    附件
-                </th>
+                <th style="width:10%">#</th>
+                <th style="width:40%;text-align: left;">附件</th>
             </tr>
         </thead>
         <tbody>
@@ -94,10 +90,7 @@
                 <td class="text-center">
                     附件{{ forloop.counter }}
                 </td>
-                <td>{{ file.files.filename }}</td>
-                <td class="text-center">
-                    <a href="{{ file.files.url }}" target="_blank"><i class="fas fa-file-download fa-2x text-info"></i></a>
-                </td>
+                <td><a href="{{ file.files.url }}" target="_blank">{{ file.files.filename }}</a></td>
             </tr>
         {% endfor %}
         </tbody>
