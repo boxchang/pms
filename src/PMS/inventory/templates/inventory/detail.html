@@ -6,7 +6,15 @@
     <div class="col-1"></div>
     <div class="col-10">
         <fieldset>
-            <legend><span class="p-3">請領資料</span></legend>
+            <div class="row">
+                <div class="col p-3" style="font-size: 1.5em">請領資料</div>
+                <div class="col p-3" style="text-align: right">
+                    <form method="post" action="{% url 'inv_change_status' %}" id="status_form">
+                        {% csrf_token %}
+                        {{ status_html | safe }}
+                    </form>
+                </div>
+            </div>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                     <div class="row">
@@ -101,30 +109,10 @@
             </tbody>
         </table>
         {% endif %}
-        {% if isCreater %}
+        {% if isCreater or perms.users.perm_misc_apply %}
         <div style="text-align:center">
             <a href="{% url 'inv_delete' pk %}" class="btn btn-danger" onclick="return confirm('確認要刪除?')">刪除</a>
         </div>
-        {% endif %}
-        {% if perms.users.perm_misc_apply %}
-            <fieldset>
-                <legend><span class="p-3">管理者</span></legend>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div class="row">
-                            <div class="col">
-                                <form method="post" action="{% url 'inv_change_status' %}" id="status_form">
-                                    {% csrf_token %}
-                                    {{ status_html | safe }}
-                                </form>
-                            </div>
-                            <div class="col" style="text-align: right">
-                                <a href="{% url 'inv_delete' pk %}" class="btn btn-light" onclick="return confirm('確認要刪除?')">刪除</a>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </fieldset>
         {% endif %}
     </div>
     <div class="col-1"></div>
