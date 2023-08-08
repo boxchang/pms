@@ -268,6 +268,9 @@ def apply(request):
                 # 電子郵件內容樣板
                 pk = apply.pk
                 form = AppliedForm.objects.get(pk=pk)
+                files = Apply_attachment.objects.filter(apply=form)
+                for file in files:
+                    file.files.filename = file.files.name[file.files.name.rindex('/') + 1:]
                 email_template = render_to_string('inventory/email_template.html', locals())
 
                 email = EmailMessage(

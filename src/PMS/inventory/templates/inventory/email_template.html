@@ -73,6 +73,36 @@
             </tr>
         </tbody>
     </table>
+    {% if files %}
+    <table class="table table-bordered table-sm">
+        <thead class="table-info">
+            <tr>
+                <th style="width:10%">
+                    #
+                </th>
+                <th style="width:40%;text-align: left;">
+                    檔名
+                </th>
+                <th style="width:10%;text-align: center;">
+                    附件
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for file in files %}
+            <tr>
+                <td class="text-center">
+                    附件{{ forloop.counter }}
+                </td>
+                <td>{{ file.files.filename }}</td>
+                <td class="text-center">
+                    <a href="{{ file.files.url }}" target="_blank"><i class="fas fa-file-download fa-2x text-info"></i></a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
     {% if action == "email" %}
     <table width="100%">
         <tr>
