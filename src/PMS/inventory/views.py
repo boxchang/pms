@@ -30,7 +30,7 @@ def get_series_number(_key, _key_name):
 def statistic(request):
     item_map = []
     with connection.cursor() as cursor:
-        sql = """select item_code,spec,cost_center,unitId,unitName, sum(qty) sum_qty from inventory_appliedform a, inventory_applieditem b, users_unit c 
+        sql = """select item_code,spec,cost_center,unitId,unitName, sum(qty)-sum(received_qty) sum_qty from inventory_appliedform a, inventory_applieditem b, users_unit c 
                  where a.form_no = b.applied_form_id and a.unit_id = c.id
                     and a.status_id=2
                     group by item_code,spec,cost_center,unitId,unitName"""
