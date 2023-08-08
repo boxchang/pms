@@ -262,6 +262,7 @@ def apply(request):
                 obj.save()
                 total_price += obj.amount
 
+            action = "email"
             email = apply.requester.manager.email
             if email:
                 # 電子郵件內容樣板
