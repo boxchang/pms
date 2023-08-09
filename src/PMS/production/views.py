@@ -358,14 +358,24 @@ def get_step_info(request):
 
                 # 取得已報工數量及人時
                 worked_good_qty = 0
+                worked_ng_qty = 0
                 worked_labor_time = 0
-                worked_rows = Record.objects.filter(cfm_code=step.cfm_code).aggregate(Sum('labor_time'), Sum('good_qty'))
-                if worked_rows['labor_time__sum']:
-                    worked_labor_time = worked_rows['labor_time__sum']
+                worked_mach_time = 0
+                worked_rows = Record.objects.filter(cfm_code=step.cfm_code).aggregate(Sum('labor_time'), Sum('mach_time'), Sum('good_qty'), Sum('ng_qty'))
+
                 if worked_rows['good_qty__sum']:
                     worked_good_qty = worked_rows['good_qty__sum']
+                if worked_rows['ng_qty__sum']:
+                    worked_ng_qty = worked_rows['ng_qty__sum']
+                if worked_rows['labor_time__sum']:
+                    worked_labor_time = worked_rows['labor_time__sum']
+                if worked_rows['mach_time__sum']:
+                    worked_mach_time = worked_rows['mach_time__sum']
+
                 value['worked_good_qty'] = worked_good_qty
+                value['worked_ng_qty'] = worked_ng_qty
                 value['worked_labor_time'] = worked_labor_time
+                value['worked_mach_time'] = worked_mach_time
 
             if step.step_no != "0010":
                 records = Record.objects.filter(wo_no=value['wo_no'], step_no='0010')
