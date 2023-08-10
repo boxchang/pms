@@ -51,6 +51,27 @@ class InvAppliedHistoryForm(forms.ModelForm):
             }
         )
 
+class SearchForm(forms.Form):
+    category = forms.ModelChoiceField(required=False, label="物品類別", queryset=ItemCategory.objects.all())
+    type = forms.ModelChoiceField(required=False, label="物品種類", queryset=ItemType.objects.all())
+    keyword = forms.CharField(required=False, label="關鍵字")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.form_show_errors = True
+
+        self.helper.layout = Layout(
+            Div(
+                Div('category', css_class='col-md-3'),
+                Div('type', css_class='col-md-3'),
+                Div('keyword', css_class='col-md-3'),
+                Div(Button('search', '查詢', css_class='btn btn-info'), css_class='col-md-2 d-flex align-items-center search_btn_fix'),
+                css_class='row'),
+        )
+
 
 class OfficeInvForm(forms.ModelForm):
     class Meta:
@@ -92,18 +113,6 @@ class OfficeInvForm(forms.ModelForm):
                 Div('file1', css_class='col-md-4'),
                 Div('file2', css_class='col-md-4'),
                 Div('file3', css_class='col-md-4'),
-                css_class='row'),
-            HTML('<hr />'),
-            Div(
-                Div('category', css_class='col-md-2'),
-                Div('type', css_class='col-md-2'),
-                Div('keyword', css_class='col-md-2'),
-                Div(Button('search', '查詢', css_class='btn btn-info'), css_class='col-md-2 d-flex align-items-center search_btn_fix'),
-                Div(
-                    HTML("<a href='#' id='key_template' class='btn btn-light m-1'>鑰匙申請範本</a>"),
-                    HTML("<a href='#' id='stamp_template' class='btn btn-light m-1'>印章申請範本</a>"),
-                    HTML("<a href='#' id='card_template' class='btn btn-light m-1'>名片申請範本</a>"),
-                    css_class='col-md-3 d-flex align-items-center'),
                 css_class='row'),
         )
 

@@ -1,10 +1,11 @@
 from django.urls import re_path as url
 from inventory.views import main, apply, TypeAPI, ItemAPI, detail, agree, apply_list, approve, reject, import_excel, \
-    statistic, change_status, delete, mail_test, mail_reject, mail_agree, recieved
+    statistic, change_status, delete, mail_test, mail_reject, mail_agree, recieved, pr_apply, search
 
 urlpatterns = [
     url(r'^main/', main, name='inv_main'),
     url(r'^apply/', apply, name='inv_apply'),
+    url(r'^pr_apply/', pr_apply, name='inv_pr_apply'),
     url(r'^typeapi/(?P<category_id>\d+)', TypeAPI, name='catogory_typeapi'),
     url(r'^itemapi/', ItemAPI, name='catogory_itemapi'),
     url(r'^detail/(?P<pk>\d+)/$', detail, name='inv_detail'),
@@ -20,4 +21,5 @@ urlpatterns = [
     url(r'^mail_reject/(?P<pk>\d+)/$', mail_reject, name='inv_mail_reject'),
     url(r'^mail_agree/(?P<pk>\d+)/$', mail_agree, name='inv_mail_agree'),
     url(r'^recieved/(?P<pk>\d+)/$', recieved, name='inv_recieved'),
+    url(r'^search/', search, name='inv_search'),
 ]

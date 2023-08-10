@@ -7,18 +7,9 @@
 <div class="p-3">
     {% crispy form %}
     <hr />
-    <div class="row">
-        <div class="col">
-            <input type="button" onclick="popupfunc();" class='btn btn-info m-1' value="請購物品查詢">
-        </div>
-        <div class="col">
-            <a href='#' id='key_template' class='btn btn-light m-1'>鑰匙申請範本</a>
-            <a href='#' id='stamp_template' class='btn btn-light m-1'>印章申請範本</a>
-            <a href='#' id='card_template' class='btn btn-light m-1'>名片申請範本</a>
-        </div>
-    </div>
+    <input type="button" onclick="popupfunc();" class='btn btn-info m-1' value="請購物品查詢">
 </div>
-<div class="">
+<div class="p-3">
     <div class="col">
         <div style="background: #ffffe7">
             <div id="cart_list"></div>
@@ -37,8 +28,7 @@
 {% block js %}
 <script>
     function popupfunc() {
-        x = window.open("/inventory/search/","popup_page","location=1,status=1,scrollbars=1,  width=1000,height=1000")
-        x.moveTo(0, 0);
+        window.open("/inventory/search/","popup_page","status=1,height:500,width:600,toolbar=0,resizeable=0")
     }
 
     function dept_change() {
@@ -131,7 +121,9 @@
     }
 
     //新增雜項
-    cart_misc_add = function(item_code, unit, spec, price) {
+    cart_misc_add = function(item_code, unit) {
+        spec = $("#spec").val();
+        price = $("#price").val();
         var item = {"item_code": item_code, "spec": spec, "price": price, "qty": 1, "total": price*1, "unit": unit};
         list.push(item);
         cart_show(list);
@@ -160,23 +152,12 @@
         cart_show(list);
     }
 
-    //備註
-    cart_comment = function(item_code, comment) {
-        list.forEach(function(item) {
-            if(item.item_code == item_code){
-                item.comment = comment;
-            }
-        });
-        cart_show(list);
-    }
-
     //顯示請購清單
     cart_show = function(data) {
         var total_price = 0;
-        var tmp_table = "<table class=\"table\"><tr><th>品名&規格</th><th width='100px'>參考價格</th><th width='100px'>數量</th><th width='80px'>單位</th><th width='100px'>參考總價</th><th>備註</th><th></th></tr>{0}</table>";
-        var tmp_item = "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td></tr>";
-        var tmp_qty = "<input type=\"text\" class=\"form-control\" value=\"{0}\" onchange=\"cart_qty('{1}', this.value)\">";
-        var tmp_comment = "<input type=\"text\" class=\"form-control\" value=\"{0}\" onchange=\"cart_comment('{1}', this.value)\">";
+        var tmp_table = "<table class=\"table\"><tr><th>品名&規格</th><th width='100px'>參考價格</th><th width='100px'>數量</th><th width='80px'>單位</th><th width='100px'>參考總價</th><th></th></tr>{0}</table>";
+        var tmp_item = "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>";
+        var tmp_qty = "<input type=\"text\" class=\"form-control\" value=\"{0}\" onchange=\"cart_qty('{1}', this.value)\">"
         var tmp_btn = "<button type='button' class='btn btn-danger' onclick=\"cart_remove('{0}')\">移除</button>";
         var temp = "";
         var items = "";
@@ -186,8 +167,7 @@
         $.each(data, function(index, item){
             remove_btn = String.format(tmp_btn, item.spec);
             add_qty = String.format(tmp_qty, item.qty, item.item_code);
-            comment = String.format(tmp_comment, item.comment, item.item_code)
-            temp = String.format(tmp_item, item.spec, item.price, add_qty, item.unit, item.total, comment, remove_btn);
+            temp = String.format(tmp_item, item.spec, item.price, add_qty, item.unit, item.total, remove_btn);
             items = items + temp;
             total_price += item.price * item.qty;
         })

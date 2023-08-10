@@ -93,6 +93,7 @@ class AppliedItem(models.Model):
     applied_form = models.ForeignKey(AppliedForm, related_name='applied_form_item', on_delete=models.CASCADE)
     item_code = models.CharField(max_length=10)
     spec = models.CharField(max_length=200)
+    model = models.CharField(max_length=200, blank=True, null=True)
     price = models.IntegerField(default=0)
     qty = models.IntegerField(default=0)
     unit = models.CharField(max_length=10)

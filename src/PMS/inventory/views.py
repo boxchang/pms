@@ -1,13 +1,14 @@
 import json
 from datetime import datetime
 import openpyxl
+from django.contrib.auth.decorators import login_required
 from django.db import connection
 from django.db.models import Q
 from django.http import JsonResponse, Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from bases.utils import django_go_sql, get_invform_status_dropdown
-from inventory.forms import OfficeInvForm, InvAppliedHistoryForm, OfficeItemForm
+from inventory.forms import OfficeInvForm, InvAppliedHistoryForm, OfficeItemForm, SearchForm
 from inventory.models import ItemType, Item, AppliedForm, FormStatus, AppliedItem, Series, Apply_attachment
 from users.models import CustomUser, Unit
 from django.core.mail import EmailMessage
@@ -27,6 +28,7 @@ def get_series_number(_key, _key_name):
     return _series
 
 
+@login_required
 def statistic(request):
     item_map = []
     with connection.cursor() as cursor:
@@ -76,6 +78,7 @@ def main(request):
     return render(request, 'inventory/application.html', locals())
 
 
+@login_required
 def import_excel(request):
     if request.method == 'POST':
         try:
@@ -112,6 +115,7 @@ def import_excel(request):
     return render(request, 'inventory/import.html', locals())
 
 
+@login_required
 def apply_list(request):
     exclude_list = [4, 5, 6]
     if request.user:
@@ -138,6 +142,7 @@ def apply_list(request):
     return render(request, 'inventory/list.html', locals())
 
 
+@login_required
 def approve(request):
     tmp_list = AppliedForm.objects.filter(status_id=1)
     list = []
@@ -148,6 +153,7 @@ def approve(request):
     return render(request, 'inventory/approve.html', locals())
 
 
+@login_required
 def agree(request, pk):
     if request.method == 'GET':
         apply = AppliedForm.objects.get(pk=pk)
@@ -176,6 +182,7 @@ def mail_agree(request, pk):
         return render(request, 'inventory/email_template.html', locals())
 
 
+@login_required
 def reject(request, pk):
     if request.method == 'GET':
         apply = AppliedForm.objects.get(pk=pk)
@@ -202,6 +209,7 @@ def mail_reject(request, pk):
         return render(request, 'inventory/email_template.html', locals())
 
 
+@login_required
 def delete(request, pk):
     if request.method == 'GET':
         apply = AppliedForm.objects.get(pk=pk)
@@ -210,6 +218,7 @@ def delete(request, pk):
     return redirect(reverse('inv_list'))
 
 
+@login_required
 def apply(request):
     if request.method == 'POST':
         hidCart_list = request.POST.get('hidCart_list')
@@ -258,6 +267,7 @@ def apply(request):
                 obj.qty = item['qty']
                 obj.unit = item['unit']
                 obj.amount = item['total']
+                obj.comment = item['comment']
                 obj.applied_form = apply
                 obj.save()
                 total_price += obj.amount
@@ -290,9 +300,11 @@ def apply(request):
         return redirect(apply.get_absolute_url())
 
     form = OfficeInvForm()
+    search_form = SearchForm()
     return render(request, 'inventory/application.html', locals())
 
 
+@login_required
 def detail(request, pk):
     try:
         total_price = 0
@@ -388,3 +400,92 @@ def recieved(request, pk):
 
     form = OfficeItemForm(instance=item)
     return render(request, 'inventory/recieved.html', locals())
+
+
+def pr_apply(request):
+    if request.method == 'POST':
+        hidCart_list = request.POST.get('hidCart_list')
+        if hidCart_list:
+            items = json.loads(hidCart_list)
+
+        unit = request.POST.get('unit')
+        requester = request.POST.get('requester')
+        apply_date = request.POST.get('apply_date')
+        ext_number = request.POST.get('ext_number')
+        reason = request.POST.get('reason')
+
+        try:
+            apply = AppliedForm()
+            apply.unit = Unit.objects.get(pk=unit)
+            apply.requester = CustomUser.objects.get(emp_no=requester)
+            apply.apply_date = apply_date
+            apply.ext_number = ext_number
+            apply.reason = reason
+            apply.status = FormStatus.objects.get(pk=1)
+            apply.create_by = request.user
+            apply.save()
+
+            if request.FILES.get('file1'):
+                request_file = Apply_attachment(files=request.FILES['file1'])
+                request_file.apply = apply
+                request_file.create_by = request.user
+                request_file.save()
+            if request.FILES.get('file2'):
+                request_file = Apply_attachment(files=request.FILES['file2'])
+                request_file.apply = apply
+                request_file.create_by = request.user
+                request_file.save()
+            if request.FILES.get('file3'):
+                request_file = Apply_attachment(files=request.FILES['file3'])
+                request_file.apply = apply
+                request_file.create_by = request.user
+                request_file.save()
+
+            total_price = 0
+            for item in items:
+                obj = AppliedItem()
+                obj.item_code = item['item_code']
+                obj.spec = item['spec']
+                obj.price = item['price']
+                obj.qty = item['qty']
+                obj.unit = item['unit']
+                obj.amount = item['total']
+                obj.applied_form = apply
+                obj.save()
+                total_price += obj.amount
+
+            action = "email"
+            email = apply.requester.manager.email
+            if email:
+                # 電子郵件內容樣板
+                pk = apply.pk
+                form = AppliedForm.objects.get(pk=pk)
+                files = Apply_attachment.objects.filter(apply=form)
+                for file in files:
+                    file.files.filename = file.files.name[file.files.name.rindex('/') + 1:]
+                email_template = render_to_string('inventory/email_template.html', locals())
+
+                email = EmailMessage(
+                    '總務用品請領單簽核通知',  # 電子郵件標題
+                    email_template,  # 電子郵件內容
+                    settings.EMAIL_HOST_USER,  # 寄件者
+                    [email]  # 收件者
+                )
+                email.fail_silently = False
+                email.content_subtype = 'html'
+                email.send()
+                print("郵件成功寄出")
+
+        except Exception as e:
+            print(e)
+
+        return redirect(apply.get_absolute_url())
+
+    form = OfficeInvForm()
+    search_form = SearchForm()
+    return render(request, 'inventory/pr_apply.html', locals())
+
+
+def search(request):
+    search_form = SearchForm()
+    return render(request, 'inventory/search.html', locals())
