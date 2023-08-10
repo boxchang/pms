@@ -71,7 +71,7 @@ class Pic_attachment(models.Model):
 
 
 class AppliedForm(models.Model):
-    form_no = models.AutoField(primary_key=True)
+    form_no = models.CharField(max_length=20, primary_key=True)
     unit = models.ForeignKey(Unit, related_name='applied_unit', on_delete=models.DO_NOTHING)
     requester = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='applied_form_requester')
     approver = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='applied_form_approver', blank=True, null=True)
@@ -84,6 +84,8 @@ class AppliedForm(models.Model):
     create_at = models.DateTimeField(auto_now_add=True, editable=True)  # 建立日期
     create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
                                   related_name='inv_form_create_by')  # 建立者
+    update_at = models.DateTimeField(auto_now=True, null=True)
+    update_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='inv_form_update_by')
 
     def get_absolute_url(self):
         return reverse('inv_detail', kwargs={'pk': self.pk})

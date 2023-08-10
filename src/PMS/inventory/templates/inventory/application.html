@@ -115,7 +115,7 @@
 
     //新增品項
     cart_add = function(item_code, spec, price, unit) {
-        var item = {"item_code": item_code, "spec": spec, "price": price, "qty": 1, "total": price*1, "unit": unit};
+        var item = {"item_code": item_code, "spec": spec, "price": price, "qty": 1, "total": price*1, "unit": unit, "comment": ""};
         var valid = true;
         list.forEach(function(list_item) {
             if(list_item.item_code == item_code){
@@ -132,7 +132,7 @@
 
     //新增雜項
     cart_misc_add = function(item_code, unit, spec, price) {
-        var item = {"item_code": item_code, "spec": spec, "price": price, "qty": 1, "total": price*1, "unit": unit};
+        var item = {"item_code": item_code, "spec": spec, "price": price, "qty": 1, "total": price*1, "unit": unit, "comment": ""};
         list.push(item);
         cart_show(list);
     }

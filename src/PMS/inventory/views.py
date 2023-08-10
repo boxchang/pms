@@ -213,7 +213,9 @@ def mail_reject(request, pk):
 def delete(request, pk):
     if request.method == 'GET':
         apply = AppliedForm.objects.get(pk=pk)
-        apply.delete()
+        apply.status = FormStatus.objects.get(pk=4)
+        apply.update_by = request.user
+        apply.save()
 
     return redirect(reverse('inv_list'))
 
@@ -233,6 +235,9 @@ def apply(request):
 
         try:
             apply = AppliedForm()
+            YYYYMM = datetime.now().strftime("%Y%m")
+            key = "OR"+YYYYMM
+            apply.form_no = key + str(get_series_number(key, "文具請領")).zfill(3)
             apply.unit = Unit.objects.get(pk=unit)
             apply.requester = CustomUser.objects.get(emp_no=requester)
             apply.apply_date = apply_date
@@ -240,6 +245,7 @@ def apply(request):
             apply.reason = reason
             apply.status = FormStatus.objects.get(pk=1)
             apply.create_by = request.user
+            apply.update_by = request.user
             apply.save()
 
             if request.FILES.get('file1'):
