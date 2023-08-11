@@ -540,28 +540,29 @@ def import_excel(request):
 
                 asset = Asset()
                 asset.auto_encode = False
-                asset.asset_no = sheet.cell(row = iRow, column = 1).value or ''
-                if sheet.cell(row = iRow, column = 2).value:
-                    asset.status = AssetStatus.objects.get(status_name=sheet.cell(row = iRow, column = 2).value)
-                if sheet.cell(row = iRow, column = 3).value:
-                    asset.category = AssetCategory.objects.get(category_name=sheet.cell(row = iRow, column = 3).value)
-                if sheet.cell(row = iRow, column = 4).value:
-                    asset.type = AssetType.objects.get(type_name=sheet.cell(row = iRow, column = 4).value)
-                if sheet.cell(row = iRow, column = 5).value:
-                    asset.brand = Brand.objects.get(brand_name=sheet.cell(row = iRow, column = 5).value)
-                asset.model = sheet.cell(row = iRow, column = 6).value or ''
-                asset.desc = sheet.cell(row = iRow, column = 7).value or ''
-                if sheet.cell(row = iRow, column = 8).value:
-                    asset.area = AssetArea.objects.get(area_name=sheet.cell(row = iRow, column = 8).value)
-                asset.location = Location.objects.get(location_name=sheet.cell(row = iRow, column = 9).value)
-                asset.location_desc = sheet.cell(row = iRow, column = 10).value or ''
-                if sheet.cell(row = iRow, column = 11).value:
-                    asset.owner_unit = Unit.objects.get(unit_name=sheet.cell(row = iRow, column = 11).value)
-                if sheet.cell(row = iRow, column = 12).value:
-                    asset.keeper_unit = Unit.objects.get(unit_name=sheet.cell(row = iRow, column = 12).value)
-                asset.keeper_name = sheet.cell(row = iRow, column = 13).value or ''
-                asset.pur_date = sheet.cell(row = iRow, column = 14).value or ''
-                asset.pur_price = sheet.cell(row = iRow, column = 15).value
+                asset.asset_no = sheet.cell(row=iRow, column=1).value or ''
+                asset.sap_asset_no = sheet.cell(row=iRow, column=2).value or ''
+                if sheet.cell(row=iRow, column=3).value:
+                    asset.status = AssetStatus.objects.get(status_name=sheet.cell(row=iRow, column=2).value)
+                if sheet.cell(row=iRow, column=4).value:
+                    asset.category = AssetCategory.objects.get(category_name=sheet.cell(row=iRow, column=3).value)
+                if sheet.cell(row=iRow, column=5).value:
+                    asset.type = AssetType.objects.get(type_name=sheet.cell(row=iRow, column=4).value)
+                if sheet.cell(row=iRow, column=6).value:
+                    asset.brand = Brand.objects.get(brand_name=sheet.cell(row=iRow, column=5).value)
+                asset.model = sheet.cell(row=iRow, column=7).value or ''
+                asset.desc = sheet.cell(row=iRow, column=8).value or ''
+                if sheet.cell(row=iRow, column=9).value:
+                    asset.area = AssetArea.objects.get(area_name=sheet.cell(row=iRow, column=9).value)
+                asset.location = Location.objects.get(location_name=sheet.cell(row=iRow, column=10).value)
+                asset.location_desc = sheet.cell(row=iRow, column=11).value or ''
+                if sheet.cell(row=iRow, column=12).value:
+                    asset.owner_unit = Unit.objects.get(unit_name=sheet.cell(row=iRow, column=12).value)
+                if sheet.cell(row=iRow, column=13).value:
+                    asset.keeper_unit = Unit.objects.get(unit_name=sheet.cell(row=iRow, column=13).value)
+                asset.keeper_name = sheet.cell(row=iRow, column=14).value or ''
+                asset.pur_date = sheet.cell(row=iRow, column=15).value or ''
+                asset.pur_price = sheet.cell(row=iRow, column=16).value
                 asset.create_by = request.user
                 asset.update_by = request.user
                 asset.save()
