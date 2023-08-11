@@ -489,6 +489,7 @@ def pr_apply(request):
 
     form = OfficeInvForm()
     search_form = SearchForm()
+    attach_form = AttachmentForm()
     return render(request, 'inventory/pr_apply.html', locals())
 
 
