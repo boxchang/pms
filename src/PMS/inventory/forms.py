@@ -52,7 +52,7 @@ class InvAppliedHistoryForm(forms.ModelForm):
         )
 
 class SearchForm(forms.Form):
-    category = forms.ModelChoiceField(required=False, label="物品類別", queryset=ItemCategory.objects.all())
+    category = forms.ModelChoiceField(required=False, label="物品類別", queryset=ItemCategory.objects.all(), to_field_name="catogory_code")
     type = forms.ModelChoiceField(required=False, label="物品種類", queryset=ItemType.objects.all())
     keyword = forms.CharField(required=False, label="關鍵字")
 
@@ -65,10 +65,13 @@ class SearchForm(forms.Form):
 
         self.helper.layout = Layout(
             Div(
-                Div('category', css_class='col-md-3'),
-                Div('type', css_class='col-md-3'),
-                Div('keyword', css_class='col-md-3'),
-                Div(Button('search', '查詢', css_class='btn btn-info'), css_class='col-md-2 d-flex align-items-center search_btn_fix'),
+                Div('category', css_class='col-md-4'),
+                Div('type', css_class='col-md-4'),
+                css_class='row'),
+            Div(
+                Div('keyword', css_class='col-md-10'),
+                Div(Button('search', '查詢', css_class='btn btn-info'),
+                    css_class='col-md-2 d-flex align-items-center search_btn_fix pt-3'),
                 css_class='row'),
         )
 
@@ -76,7 +79,7 @@ class SearchForm(forms.Form):
 class OfficeInvForm(forms.ModelForm):
     class Meta:
         model = AppliedForm
-        fields = ('unit', 'requester', 'apply_date', 'ext_number', 'reason', 'file1', 'file2', 'file3')
+        fields = ('unit', 'requester', 'apply_date', 'ext_number', 'reason')
 
     reason = forms.CharField(required=True, label="原因", widget=forms.Textarea(attrs={'rows': 4, 'cols': 15}))
     unit = forms.ModelChoiceField(required=True, label="申請部門", queryset=Unit.objects.all(), widget=forms.Select(attrs={"onChange": "dept_change()"}))
@@ -88,9 +91,7 @@ class OfficeInvForm(forms.ModelForm):
     item = forms.ModelChoiceField(required=False, label="物品", queryset=Item.objects.all())
     item_qty = forms.IntegerField(required=False, label="數量")
     keyword = forms.CharField(required=False, label="關鍵字")
-    file1 = forms.FileField(required=False, label="附件1")
-    file2 = forms.FileField(required=False, label="附件2")
-    file3 = forms.FileField(required=False, label="附件3")
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -109,11 +110,6 @@ class OfficeInvForm(forms.ModelForm):
             Div(
                 Div('reason', css_class='col-md-12'),
                 css_class='row'),
-            Div(
-                Div('file1', css_class='col-md-4'),
-                Div('file2', css_class='col-md-4'),
-                Div('file3', css_class='col-md-4'),
-                css_class='row'),
         )
 
         self.fields['apply_date'].widget = DatePickerInput(
@@ -124,6 +120,27 @@ class OfficeInvForm(forms.ModelForm):
                 "showClear": False,
                 "showTodayButton": False,
             }
+        )
+
+
+class AttachmentForm(forms.Form):
+    file1 = forms.FileField(required=False, label="附件1")
+    file2 = forms.FileField(required=False, label="附件2")
+    file3 = forms.FileField(required=False, label="附件3")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.form_show_errors = True
+
+        self.helper.layout = Layout(
+            Div(
+                Div('file1', css_class='col-md-4'),
+                Div('file2', css_class='col-md-4'),
+                Div('file3', css_class='col-md-4'),
+                css_class='row'),
         )
 
 

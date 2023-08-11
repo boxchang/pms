@@ -8,7 +8,7 @@ from django.http import JsonResponse, Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from bases.utils import django_go_sql, get_invform_status_dropdown
-from inventory.forms import OfficeInvForm, InvAppliedHistoryForm, OfficeItemForm, SearchForm
+from inventory.forms import OfficeInvForm, InvAppliedHistoryForm, OfficeItemForm, SearchForm, AttachmentForm
 from inventory.models import ItemType, Item, AppliedForm, FormStatus, AppliedItem, Series, Apply_attachment
 from users.models import CustomUser, Unit
 from django.core.mail import EmailMessage
@@ -307,6 +307,7 @@ def apply(request):
 
     form = OfficeInvForm()
     search_form = SearchForm()
+    attach_form = AttachmentForm()
     return render(request, 'inventory/application.html', locals())
 
 
@@ -339,7 +340,7 @@ def detail(request, pk):
 
 #API類別
 def TypeAPI(request, category_id):
-    type_data = ItemType.objects.filter(category_id=int(category_id)).values('id','type_name')
+    type_data = ItemType.objects.filter(category_id=int(category_id)).values('id', 'type_name').order_by('type_code')
     type_list = []
     for data in type_data:
         type_list.append({'id':data['id'], 'type_name':data['type_name']})
@@ -353,16 +354,15 @@ def ItemAPI(request):
     if request.method == 'POST':
         type_id = request.POST.get('type_id')
         keyword = request.POST.get('keyword')
-        item_data = Item.objects.all()
+        item_data = Item.objects.all().values('item_code', 'spec', 'price', 'unit')
         if type_id:
             item_data = item_data.filter(item_type_id=int(type_id)).values('item_code', 'spec', 'price', 'unit')
         if keyword:
             query = Q(spec__icontains=keyword)
             item_data = item_data.filter(query).values('item_code', 'spec', 'price', 'unit')
 
-        if type_id or keyword:
-            for data in item_data:
-                item_list.append({'item_code':data['item_code'], 'spec':data['spec'], 'price':data['price'], 'unit':data['unit']})
+        for data in item_data:
+            item_list.append({'item_code':data['item_code'], 'spec':data['spec'], 'price':data['price'], 'unit':data['unit']})
 
     return JsonResponse(item_list, safe=False)
 

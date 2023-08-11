@@ -77,70 +77,27 @@
             window.opener.cart_misc_add(item_code, unit, spec, price);
         }
 
-        //刪除品項
-        cart_remove = function(spec) {
-            var tmp_list = [];
-            list.forEach(function(item) {
-                if(item.spec != spec){
-                    tmp_list.push(item);
-                }
-            });
-            list = tmp_list;
-            cart_show(list);
-        }
-
-        //單價變動
-        cart_qty = function(item_code, qty) {
-            list.forEach(function(item) {
-                if(item.item_code == item_code){
-                    item.qty = qty;
-                    item.total = item.price*qty;
-                }
-            });
-            cart_show(list);
-        }
-
-        //顯示請購清單
-        cart_show = function(data) {
-            var total_price = 0;
-            var tmp_table = "<table class=\"table\"><tr><th>品名&規格</th><th width='100px'>參考價格</th><th width='100px'>數量</th><th width='80px'>單位</th><th width='100px'>參考總價</th><th></th></tr>{0}</table>";
-            var tmp_item = "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>";
-            var tmp_qty = "<input type=\"text\" class=\"form-control\" value=\"{0}\" onchange=\"cart_qty('{1}', this.value)\">"
-            var tmp_btn = "<button type='button' class='btn btn-danger' onclick=\"cart_remove('{0}')\">移除</button>";
-            var temp = "";
-            var items = "";
-            var remove_btn = "";
-            var add_qty = "";
-            $("#cart_list").html("");
-            $.each(data, function(index, item){
-                remove_btn = String.format(tmp_btn, item.spec);
-                add_qty = String.format(tmp_qty, item.qty, item.item_code);
-                temp = String.format(tmp_item, item.spec, item.price, add_qty, item.unit, item.total, remove_btn);
-                items = items + temp;
-                total_price += item.price * item.qty;
-            })
-            $("#cart_list").append(String.format(tmp_table, items));
-            $("#hidCart_list").val(JSON.stringify(list));
-            $("#hidTotal_price").val(total_price);
-            $("#cart_total_price").html("總金額："+total_price);
-        }
-
+        
         //Ready
         $(function (){
             category = $('#id_category');
-            asset_type = $('#id_type');
+            item_type = $('#id_type');
 
-            changeSelect(0, asset_type);
+            changeSelect(0, item_type);
 
-            category.change(function(){
-                asset_type.empty().append('<option value="">---------</option>');
-                changeSelect(this.value, asset_type)
+            category.change(function() {
+                item_type.empty().append('<option value="">---------</option>');
+                changeSelect(this.value, item_type)
+            })
+
+            item_type.change(function() {
+                $("#button-id-search").click();
             })
 
             //物品清單
             $("#button-id-search").click(function() {
                 var tmp_table = "<table class=\"table\"><tr><th>品名&規格</th><th width=\"100px\">參考價格</th><th></th></tr>{0}</table>";
-                var tmp_item = "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>";
+                var tmp_item = "<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>";
                 var tmp_btn = "<button type='button' class='btn btn-info' onclick=\"cart_add('{0}', '{1}', '{2}', '{3}')\">加入</button>";
                 var temp="";
                 var items="";
@@ -158,8 +115,8 @@
                         $("#search_result").html();
                         $.each(data, function(index, item){
 
-                            if(item.spec=="雜項"){
-                                txtSpec = "<input type=\"text\" name=\"spec\" id=\"spec\">";
+                            if(item.spec=="自行輸入"){
+                                txtSpec = "<input type=\"text\" name=\"spec\" id=\"spec\" style=\"width:100%;\">";
                                 txtPrice = "<input type=\"text\" name=\"price\" id=\"price\" value=\"0\">";
                                 tmp_btn = "<button type='button' class='btn btn-warn' onclick=\"cart_misc_add('{0}', '{1}')\">加入</button>";
                                 add_btn = String.format(tmp_btn, item.item_code, item.unit);

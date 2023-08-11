@@ -4,12 +4,12 @@ from inventory.models import ItemCategory, ItemType, Item, FormStatus
 
 @admin.register(ItemCategory)
 class ItemCategoryAdmin(admin.ModelAdmin):
-    list_display = ('catogory_code', 'category_name')
+    list_display = ('catogory_code', 'category_name', 'manual')
 
 
 @admin.register(ItemType)
 class ItemTypeAdmin(admin.ModelAdmin):
-    list_display = ('category', 'type_code', 'type_name')
+    list_display = ('category', 'type_code', 'type_name', 'is_attached')
 
 
 @admin.register(Item)

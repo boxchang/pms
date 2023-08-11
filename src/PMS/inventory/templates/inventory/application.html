@@ -18,19 +18,24 @@
         </div>
     </div>
 </div>
-<div class="">
+<div>
     <div class="col">
         <div style="background: #ffffe7">
             <div id="cart_list"></div>
             <div id="cart_total_price" class="p-3" style="text-align: right"></div>
-            <hr />
-            <div style="text-align:center">
-                <input type="hidden" id="hidCart_list" name="hidCart_list" />
-                <input type="hidden" id="hidTotal_price" name="hidTotal_price" />
-                <input type="submit" value="確認送簽" class='btn btn-info' onclick="return validation()" />
-            </div>
         </div>
     </div>
+</div>
+<div>
+    <div class="col">
+        {% crispy attach_form %}
+    </div>
+</div>
+<hr />
+<div style="text-align:center;height: 100px">
+    <input type="hidden" id="hidCart_list" name="hidCart_list" />
+    <input type="hidden" id="hidTotal_price" name="hidTotal_price" />
+    <input type="submit" value="確認送簽" class='btn btn-info' onclick="return validation()" />
 </div>
 </form>
 {% endblock %}
