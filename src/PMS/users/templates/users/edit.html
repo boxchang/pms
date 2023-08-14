@@ -18,6 +18,9 @@
       <li class="nav-item">
         <a class="nav-link" id="login-record-tab" data-toggle="pill" href="#login-record" role="tab" aria-controls="login-record" aria-selected="false">登入紀錄</a>
       </li>
+      <li class="nav-item pl-3">
+        <a class="btn btn-light" href="/admin/users/customuser/{{ user.pk }}/change/" target="_blank">進階設定</a>
+      </li>
     </ul>
     <div class="tab-content" id="pills-tabContent">
       <div class="tab-pane fade show active" id="user-data" role="tabpanel" aria-labelledby="user-data-tab">
@@ -55,34 +58,8 @@
 {% block ready %}
     $('[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
       var target = $(e.target).text() // activated tab
-      //alert(e.target.id);
-        //延長紀錄
-        if(e.target.id=='postponed_record') {
-
-        }
-
         //登入紀錄
         if(e.target.id=='login_record') {
-
-        }
-
-        //查詢紀錄
-        if(e.target.id=='searching_record') {
-
-        }
-
-        //上傳定位紀錄
-        if(e.target.id=='searching_record2') {
-
-        }
-
-        //上傳定位照片紀錄
-        if(e.target.id=='searching_record3') {
-
-        }
-
-        //車單下載紀錄
-        if(e.target.id=='searching_record4') {
 
         }
     });
