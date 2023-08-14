@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Group
 from django.urls import reverse
 from django.db import models
 from django.conf import settings
@@ -41,6 +42,7 @@ class AssetArea(models.Model):
 
 class AssetCategory(models.Model):
     category_name = models.CharField(max_length=50, blank=False, null=False)
+    perm_group = models.ForeignKey(Group, on_delete=models.DO_NOTHING, related_name='category_group', null=True, blank=True)
     create_at = models.DateTimeField(auto_now_add=True, editable=True)  # 建立日期
     create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
                                   related_name='category_create_by')  # 建立者

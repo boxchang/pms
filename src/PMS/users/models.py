@@ -84,7 +84,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
     shot = models.FileField(upload_to='uploads/profile', null=True, blank=True)
-    mobile_number = models.CharField(_('mobile number'), max_length=30, blank=False,
+    mobile_number = models.CharField(_('mobile number'), max_length=30, blank=True,
                                      help_text=_(
                                          'Required. digits and +-() only.'),
                                      validators=[validators.RegexValidator(r'^[0-9+()-]+$',

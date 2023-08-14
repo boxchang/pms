@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # coding=utf-8
+from django.contrib.auth.models import AnonymousUser
 from django.core import serializers
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
@@ -21,6 +22,9 @@ from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.core.paginator import Paginator
 import xlwt
 from django.db.models import Q
+
+from users.models import CustomUser
+
 
 def print_cmd(EXCEL_FILE, BTW_FILE):
     CMD = """{EXE_FILE} /AF=\"{BTW_FILE}\" /D=\"{EXCEL_FILE}\" /PRN=\"{PRINTER}\" /P/X""".format(EXE_FILE=EXE_FILE, BTW_FILE=BTW_FILE, EXCEL_FILE=EXCEL_FILE, PRINTER=PRINTER)
@@ -379,6 +383,10 @@ def create(request):
             return redirect(tmp_form.get_absolute_url())
     else:
         form = AssetModelForm()
+    # 權限管理
+    if not request.user.is_anonymous:
+        groups = request.user.groups.all()
+        form.fields['category'].queryset = AssetCategory.objects.filter(perm_group__in=groups)
 
     return render(request, 'assets/edit.html', locals())
 
@@ -412,6 +420,11 @@ def update(request, pk):
         form = AssetModelForm(instance=asset)
         pics = Pic_attachment.objects.filter(asset=asset).all()
         docs = Doc_attachment.objects.filter(asset=asset).all()
+
+    # 權限管理
+    if not request.user.is_anonymous:
+        groups = request.user.groups.all()
+        form.fields['category'].queryset = AssetCategory.objects.filter(perm_group__in=groups)
 
     return render(request, 'assets/edit.html', locals())
 
@@ -475,6 +488,10 @@ def clean_session(request):
 def main(request):
     clean_session(request)
     form = AssetSearchForm()
+    # 權限管理
+    if not request.user.is_anonymous:
+        groups = request.user.groups.all()
+        form.fields['category'].queryset = AssetCategory.objects.filter(perm_group__in=groups)
     return render(request, 'assets/main.html', locals())
 
 #刪除Label檔案

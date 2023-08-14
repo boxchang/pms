@@ -84,7 +84,7 @@ class AssetAreaAdmin(admin.ModelAdmin):
 
 @admin.register(AssetCategory)
 class AssetCategoryAdmin(admin.ModelAdmin):
-    list_display = ('category_name',)
+    list_display = ('category_name', 'perm_group')
 
 
 @admin.register(AssetType)
