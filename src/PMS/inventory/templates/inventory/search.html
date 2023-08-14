@@ -102,14 +102,14 @@
                 var temp="";
                 var items="";
                 var add_btn=""
-
+                category_id = $("#id_category").val();
                 type_id = $("#id_type").val();
                 keyword = $("#id_keyword").val();
                 $("#search_result").html(""); //初始化
                 $.ajax({
                     url: '{% url 'catogory_itemapi' %}', type: 'post',
                     dataType: 'json',
-                    data: {"csrfmiddlewaretoken": "{{ csrf_token }}", "type_id": type_id, "keyword": keyword},
+                    data: {"csrfmiddlewaretoken": "{{ csrf_token }}", "category_id": category_id, "type_id": type_id, "keyword": keyword},
                     success: function(data) {
                         //取得種類清單
                         $("#search_result").html();

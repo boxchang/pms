@@ -352,9 +352,13 @@ def TypeAPI(request, category_id):
 def ItemAPI(request):
     item_list = []
     if request.method == 'POST':
+        category_id = request.POST.get('category_id')
         type_id = request.POST.get('type_id')
         keyword = request.POST.get('keyword')
         item_data = Item.objects.all().values('item_code', 'spec', 'price', 'unit')
+        if category_id:
+            item_type = ItemType.objects.filter(category_id=category_id)
+            item_data = item_data.filter(item_type__in=item_type).values('item_code', 'spec', 'price', 'unit')
         if type_id:
             item_data = item_data.filter(item_type_id=int(type_id)).values('item_code', 'spec', 'price', 'unit')
         if keyword:

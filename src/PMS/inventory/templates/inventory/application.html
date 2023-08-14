@@ -214,46 +214,6 @@
             changeSelect(this.value, asset_type)
         })
 
-        //物品清單
-        $("#button-id-search").click(function() {
-            var tmp_table = "<table class=\"table\"><tr><th>品名&規格</th><th width=\"100px\">參考價格</th><th></th></tr>{0}</table>";
-            var tmp_item = "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>";
-            var tmp_btn = "<button type='button' class='btn btn-info' onclick=\"cart_add('{0}', '{1}', '{2}', '{3}')\">加入</button>";
-            var temp="";
-            var items="";
-            var add_btn=""
-
-            type_id = $("#id_type").val();
-            keyword = $("#id_keyword").val();
-            $("#search_result").html(""); //初始化
-            $.ajax({
-                url: '{% url 'catogory_itemapi' %}', type: 'post',
-                dataType: 'json',
-                data: {"csrfmiddlewaretoken": "{{ csrf_token }}", "type_id": type_id, "keyword": keyword},
-                success: function(data) {
-                    //取得種類清單
-                    $("#search_result").html();
-                    $.each(data, function(index, item){
-
-                        if(item.spec=="雜項"){
-                            txtSpec = "<input type=\"text\" name=\"spec\" id=\"spec\">";
-                            txtPrice = "<input type=\"text\" name=\"price\" id=\"price\" value=\"0\">";
-                            tmp_btn = "<button type='button' class='btn btn-warn' onclick=\"cart_misc_add('{0}', '{1}')\">加入</button>";
-                            add_btn = String.format(tmp_btn, item.item_code, item.unit);
-                            temp = String.format(tmp_item, txtSpec, txtPrice, add_btn);
-                            items = items + temp;
-                        }else{
-                            add_btn = String.format(tmp_btn, item.item_code, item.spec, item.price, item.unit);
-                            temp = String.format(tmp_item, item.spec, item.price, add_btn);
-                            items = items + temp;
-                        }
-                    })
-                    $("#search_result").append(String.format(tmp_table, items));
-                }
-            });
-
-        })
-
         $("#id_keyword").on('keypress', function(e) {
             if(e.which==13) {
                 $("#button-id-search").click();
