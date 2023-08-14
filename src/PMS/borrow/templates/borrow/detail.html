@@ -71,7 +71,7 @@
                             <td>{{ item.asset.type }}</td>
                             <td>{{ item.asset.brand }}</td>
                             <td>{{ item.asset.model }}</td>
-                            <td>{{ item.asset.comment }}</td>
+                            <td>{{ item.asset.desc }}</td>
                             <td style="text-align: center"><a href="/borrow/item_delete/{{ borrow.form_no }}/{{ item.asset.pk }}/" class="btn btn-danger" onclick="return confirm('Are you sure?')">刪除</a></td>
                         </tr>
                     {% endfor %}

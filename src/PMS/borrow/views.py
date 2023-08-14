@@ -7,7 +7,7 @@ from borrow.models import Borrow, BorrowItem
 
 
 # bootstrap sub table
-from users.models import Unit
+from users.models import Unit, CustomUser
 
 
 def get_borrow_item_api(request, pk):
@@ -75,8 +75,8 @@ def apply(request):
 
         try:
             borrow = Borrow()
-            borrow.app_dept = apply_dept
-            borrow.app_user = apply_user
+            borrow.app_dept = Unit.objects.get(id=apply_dept)
+            borrow.app_user = CustomUser.objects.get(emp_no=apply_user)
             borrow.comment = comment
             borrow.apply_date = apply_date
             borrow.expect_date = expect_date
@@ -142,6 +142,10 @@ def detail(request, form_no):
 
 def form_delete(request, form_no):
     borrow = Borrow.objects.get(form_no=form_no)
+    for item in borrow.borrow_item.all():
+        asset = Asset.objects.get(id=item.asset_id)
+        asset.status = AssetStatus.objects.get(id=9)  # 可出借
+        asset.save()
     borrow.delete()
     return render(request, 'borrow/record.html', locals())
 
@@ -149,6 +153,9 @@ def form_delete(request, form_no):
 def item_delete(request, form_no, asset_id):
     borrow = Borrow.objects.get(form_no=form_no)
     asset = Asset.objects.get(id=asset_id)
+    asset.status = AssetStatus.objects.get(id=9)  # 可出借
+    asset.save()
+
     item = BorrowItem.objects.get(asset=asset)
     item.delete()
     return render(request, 'borrow/record.html', locals())
