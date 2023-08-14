@@ -64,17 +64,17 @@
                         {% else %}
                         <td>{{ item.spec }}</td>
                         {% endif %}
-                        <td style="text-align: right">${{ item.price }}</td>
+                        <td style="text-align: right">{{ item.price }} 元</td>
                         <td style="text-align: center">{{ item.qty }}</td>
                         <td style="text-align: center">{{ item.unit }}</td>
-                        <td style="text-align: right">${{ item.amount }}</td>
+                        <td style="text-align: right">{{ item.amount }} 元</td>
                         <td style="text-align: center">{{ item.received_qty }}</td>
                         <td>{{ item.comment|default:'' }}</td>
                     </tr>
                 {% endfor %}
                 <tr>
                     <td colspan="4" style="text-align: right">總金額：</td>
-                    <td style="text-align: right">${{ total_price }}</td>
+                    <td style="text-align: right">{{ total_price }} 元</td>
                     <td colspan="2"></td>
                 </tr>
             </tbody>
