@@ -92,6 +92,12 @@ document.onkeydown = hotkey; //當onkeydown 事件發生時調用hotkey函數
                     //return false; 只提醒但不卡住，上線後再開啟
                 }
 
+                if(!data.step_name) {
+                    msg = "{% trans 'There is no this confirmation code information.' %}";
+                    alert(msg);
+                    return false;
+                }
+
                 var init_good_qty = parseFloat(data.good_qty) - parseFloat(data.worked_good_qty) - parseFloat(data.worked_ng_qty);
                 var init_labor_time = parseFloat(data.labor_time) - parseFloat(data.worked_labor_time);
                 var init_mach_time = parseFloat(data.mach_time) - parseFloat(data.worked_mach_time);
@@ -124,6 +130,13 @@ document.onkeydown = hotkey; //當onkeydown 事件發生時調用hotkey函數
         var wo_qty = parseFloat($("#hid_wo_qty").val());
         var worked_labor_time = parseFloat($("#hid_worked_labor_time").val());
         var worked_good_qty = parseFloat($("#hid_worked_good_qty").val());
+        var step_name = $("#id_step_name").val();
+
+        if(step_name=="") {
+            msg = "{% trans 'There is no this confirmation code information.' %}";
+            alert(msg);
+            return false;
+        }
 
         if(labor_time>std_labor_time*1.1){
             msg = "{% trans 'Remind that total recorded time {labor_time} already over 10% of the standard time({standard_time}).' %}";
