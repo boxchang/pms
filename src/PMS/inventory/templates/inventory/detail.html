@@ -119,8 +119,8 @@
 </div>
 {% if isApprover %}
 <div style="text-align:center">
-    <a href="{% url 'inv_agree' pk %}" class="btn btn-info">同意</a>
-    <a href="{% url 'inv_reject' pk %}" class="btn btn-danger" onclick="return confirm('確定是否要退單?')">退單</a>
+    <a href="{% url 'inv_agree' key %}" class="btn btn-info">同意</a>
+    <a href="{% url 'inv_reject' key %}" class="btn btn-danger" onclick="return confirm('確定是否要退單?')">退單</a>
 </div>
 {% endif %}
 

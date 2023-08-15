@@ -153,20 +153,27 @@ def approve(request):
     return render(request, 'inventory/approve.html', locals())
 
 
+def unlock(key):
+    apply_date = key[0:4] + "-" + key[4:6] + "-" + key[6:8]
+    pk = key[8:]
+    return apply_date, pk
+
 @login_required
-def agree(request, pk):
+def agree(request, key):
     if request.method == 'GET':
-        apply = AppliedForm.objects.get(pk=pk)
+        apply_date, pk = unlock(key)
+        apply = AppliedForm.objects.get(pk=pk, apply_date=apply_date)
         apply.status = FormStatus.objects.get(pk=2)
         apply.approver = request.user
         apply.save()
     return redirect(reverse('inv_approve'))
 
 
-def mail_agree(request, pk):
+def mail_agree(request, key):
     if request.method == 'GET':
         total_price = 0
-        form = AppliedForm.objects.get(pk=pk)
+        apply_date, pk = unlock(key)
+        form = AppliedForm.objects.get(pk=pk, apply_date=apply_date)
 
         for item in form.applied_form_item.all():
             total_price += item.amount
@@ -183,19 +190,21 @@ def mail_agree(request, pk):
 
 
 @login_required
-def reject(request, pk):
+def reject(request, key):
     if request.method == 'GET':
-        apply = AppliedForm.objects.get(pk=pk)
+        apply_date, pk = unlock(key)
+        apply = AppliedForm.objects.get(pk=pk, apply_date=apply_date)
         apply.status = FormStatus.objects.get(pk=6)
         apply.save()
 
     return redirect(reverse('inv_approve'))
 
 
-def mail_reject(request, pk):
+def mail_reject(request, key):
     if request.method == 'GET':
         total_price = 0
-        form = AppliedForm.objects.get(pk=pk)
+        apply_date, pk = unlock(key)
+        form = AppliedForm.objects.get(pk=pk, apply_date=apply_date)
         for item in form.applied_form_item.all():
             total_price += item.amount
 
@@ -283,6 +292,7 @@ def apply(request):
             if email:
                 # 電子郵件內容樣板
                 pk = apply.pk
+                key = "{apply_date}{series}".format(apply_date=apply.apply_date.replace('-', ''), series=apply.pk)
                 form = AppliedForm.objects.get(pk=pk)
                 files = Apply_attachment.objects.filter(apply=form)
                 for file in files:
@@ -329,6 +339,8 @@ def detail(request, pk):
         files = Apply_attachment.objects.filter(apply=form)
         for file in files:
             file.files.filename = file.files.name[file.files.name.rindex('/')+1:]
+        key = "{apply_date}{series}".format(apply_date=form.apply_date.replace('-', ''),
+                                           series=form.pk)
 
 
     except AppliedForm.DoesNotExist:
