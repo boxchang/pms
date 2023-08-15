@@ -40,10 +40,10 @@ $(function() {
         ]
 
     var item_column = [
-            {field: 'type_name', title: '資產類別', sortable:true, width: '10%', halign:'center'},
-            {field: 'asset_no', title: '資產編號', sortable:true, width: '10%', halign:'center'},
-            {field: 'model', title: '物品', sortable:true, width: '30%'},
-            {field: 'desc', title: '備註', sortable:true, width: '50%'}
+            {field: 'asset_no', title: '資產編號', sortable:true, width: '150px', halign:'center', align:'center'},
+            {field: 'type_name', title: '資產類別', sortable:true, width: '100px', halign:'center', align:'center'},
+            {field: 'model', title: '物品', sortable:true},
+            {field: 'desc', title: '備註', sortable:true}
         ]
 
     var createBootstrapTable = function (){
@@ -72,7 +72,7 @@ $(function() {
         });
 
         var buildChildTable = function ($detail,row) {
-            $detail.html('<table></table>').find('table').bootstrapTable({
+            $detail.html("<table class='table table-bordered table-hover'></table>").find('table').bootstrapTable({
                 url: "/borrow/"+row.form_no+"/item/",
                 method:"get",
                 queryParams:{},

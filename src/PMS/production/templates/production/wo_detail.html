@@ -25,7 +25,7 @@ $("#id_wo_no").focus();
             </form>
             <div class="row p-3">
                 <div class="col-3">料號：{{ item_no }}</div>
-                <div class="col-3">料號說明：{{ spec }}</div>
+                <div class="col-9">料號說明：{{ spec }}</div>
             </div>
             <table border="1" class='table table-bordered table-striped'>
                 <tr>
@@ -43,7 +43,21 @@ $("#id_wo_no").focus();
                     <th>實際人時(MIN)</th>
                 </tr>
                 {% for step in steps %}
-                <tr>
+                    {% for work_reocrd in step.work_records %}
+                        <tr style="background-color: white">
+                            <td colspan="2"></td>
+                            <td style="text-align: center">{{ work_reocrd.record_dt }}</td>
+                            <td style="text-align: center">{{ work_reocrd.sap_emp_no }}</td>
+                            <td style="text-align: center">{{ work_reocrd.username }}</td>
+                            <td style="color: blue;font-weight:bold;text-align: right">{{ work_reocrd.good_qty }}</td>
+                            <td style="color: blue;font-weight:bold;text-align: right">{{ work_reocrd.ng_qty }}</td>
+                            <td colspan="2"></td>
+                            <td style="color: blue;font-weight:bold;text-align: right">{{ work_reocrd.mach_time }}</td>
+                            <td></td>
+                            <td style="color: blue;font-weight:bold;text-align: right">{{ work_reocrd.labor_time }}</td>
+                        </tr>
+                    {% endfor %}
+                <tr style="background-color: rgba(0,0,0,.05)">
                     <td>{{ wo_no }}</td>
                     <td>{{ step.step_no }}</td>
                     <td>{{ step.step_code }}</td>

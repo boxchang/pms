@@ -137,6 +137,7 @@ def wo_detail(request):
                 step_mach_time += record.mach_time
                 step_good_qty += record.good_qty
                 step_ng_qty += record.ng_qty
+            step.work_records = records
             step.step_labor_time = step_labor_time
             step.step_mach_time = step_mach_time
             step.step_good_qty = step_good_qty
