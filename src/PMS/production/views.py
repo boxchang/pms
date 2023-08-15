@@ -224,6 +224,7 @@ def record_detail(request):
 # 報工資料查詢
 def record_detail_sap_empno(request, sap_emp_no):
     html = ""
+    username = ""
     worktypes = WorkType.objects.all().order_by('type_code')
     lang = get_language()
     if request.method == 'POST':
@@ -238,6 +239,9 @@ def record_detail_sap_empno(request, sap_emp_no):
             record_dt = datetime.strftime(now, '%Y-%m-%d')
 
     if sap_emp_no:
+        user = CustomUser.objects.get(sap_emp_no=sap_emp_no)
+        if user:
+            username = user.username
         total_labor_time = 0
         rest_time = 0
         records = Record.objects.filter(record_dt=record_dt, sap_emp_no=sap_emp_no)
@@ -328,7 +332,7 @@ def record_detail_sap_empno(request, sap_emp_no):
             total_labor_time=total_labor_time, rest_time=rest_time,
             trans_total_labor_time=_('total_labor_time'), remain_labor_time=_('remain_labor_time'))
         html = table.format(header=header, body=body)
-        html += """<div style="text-align: right">{record_date}：{record_dt}</div>""".format(record_dt=record_dt, record_date=_('record_date'))
+        html += """<div style="text-align: right;color: #CCC">{username} {record_date}：{record_dt}</div>""".format(record_dt=record_dt, record_date=_('record_date'), username=username)
     form = RecordSearchForm(initial={'sap_emp_no': sap_emp_no, 'record_dt': record_dt})
     return render(request, 'production/record_detail.html', locals())
 
