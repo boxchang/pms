@@ -179,7 +179,7 @@
     cart_show = function(data) {
         var total_price = 0;
         var tmp_table = "<table class=\"table\"><tr><th>品名&規格</th><th width='100px'>參考價格</th><th width='100px'>數量</th><th width='80px'>單位</th><th width='100px'>參考總價</th><th>備註</th><th></th></tr>{0}</table>";
-        var tmp_item = "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td></tr>";
+        var tmp_item = "<tr><td>{0}</td><td>{1} 元</td><td>{2}</td><td>{3}</td><td>{4} 元</td><td>{5}</td><td>{6}</td></tr>";
         var tmp_qty = "<input type=\"text\" class=\"form-control\" value=\"{0}\" onchange=\"cart_qty('{1}', this.value)\">";
         var tmp_comment = "<input type=\"text\" class=\"form-control\" value=\"{0}\" onchange=\"cart_comment('{1}', this.value)\">";
         var tmp_btn = "<button type='button' class='btn btn-danger' onclick=\"cart_remove('{0}')\">移除</button>";
@@ -199,7 +199,7 @@
         $("#cart_list").append(String.format(tmp_table, items));
         $("#hidCart_list").val(JSON.stringify(list));
         $("#hidTotal_price").val(total_price);
-        $("#cart_total_price").html("總金額："+total_price);
+        $("#cart_total_price").html("總金額："+total_price+" 元");
     }
 
     //Ready
