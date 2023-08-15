@@ -97,7 +97,7 @@
             //物品清單
             $("#button-id-search").click(function() {
                 var tmp_table = "<table class=\"table\"><tr><th>品名&規格</th><th width=\"100px\">參考價格</th><th>單位</th><th></th></tr>{0}</table>";
-                var tmp_item = "<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>";
+                var tmp_item = "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>";
                 var tmp_btn = "<button type='button' class='btn btn-info' onclick=\"cart_add('{0}', '{1}', '{2}', '{3}', '{4}')\">加入</button>";
                 var temp="";
                 var items="";
@@ -126,7 +126,7 @@
                                 txtPrice = "<input type=\"text\" name=\"price\" id=\"price\" value=\"0\">";
                                 tmp_btn = "<button type='button' class='btn btn-warn' onclick=\"cart_misc_add('{0}', '{1}')\">加入</button>";
                                 add_btn = String.format(tmp_btn, item.item_code, item.unit);
-                                temp = String.format(tmp_item, txtSpec, txtPrice, add_btn);
+                                temp = String.format(tmp_item, txtSpec, txtPrice, item.unit, add_btn);
                                 items = items + temp;
                             }else{
                                 add_btn = String.format(tmp_btn, item.item_code, item.spec, item.price, item.unit);
