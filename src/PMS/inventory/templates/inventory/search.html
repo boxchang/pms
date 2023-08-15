@@ -96,9 +96,9 @@
 
             //物品清單
             $("#button-id-search").click(function() {
-                var tmp_table = "<table class=\"table\"><tr><th>品名&規格</th><th width=\"100px\">參考價格</th><th></th></tr>{0}</table>";
+                var tmp_table = "<table class=\"table\"><tr><th>品名&規格</th><th width=\"100px\">參考價格</th><th>單位</th><th></th></tr>{0}</table>";
                 var tmp_item = "<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>";
-                var tmp_btn = "<button type='button' class='btn btn-info' onclick=\"cart_add('{0}', '{1}', '{2}', '{3}')\">加入</button>";
+                var tmp_btn = "<button type='button' class='btn btn-info' onclick=\"cart_add('{0}', '{1}', '{2}', '{3}', '{4}')\">加入</button>";
                 var temp="";
                 var items="";
                 var add_btn=""
@@ -106,6 +106,12 @@
                 type_id = $("#id_type").val();
                 keyword = $("#id_keyword").val();
                 $("#search_result").html(""); //初始化
+
+                if(category_id==""){
+                    alert("必須選擇物品類別");
+                    return false;
+                }
+
                 $.ajax({
                     url: '{% url 'catogory_itemapi' %}', type: 'post',
                     dataType: 'json',
@@ -124,7 +130,7 @@
                                 items = items + temp;
                             }else{
                                 add_btn = String.format(tmp_btn, item.item_code, item.spec, item.price, item.unit);
-                                temp = String.format(tmp_item, item.spec, item.price, add_btn);
+                                temp = String.format(tmp_item, item.spec, item.price, item.unit, add_btn);
                                 items = items + temp;
                             }
                         })

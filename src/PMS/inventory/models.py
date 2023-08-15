@@ -54,7 +54,7 @@ class Item(models.Model):
     unit = models.CharField(max_length=10, blank=False, null=False)
     item_type = models.ForeignKey(ItemType, related_name='item_type', on_delete=models.CASCADE)
     spec = models.CharField(max_length=2000, blank=True, null=True)
-    price = models.IntegerField(default=0)
+    price = models.FloatField(default=0)
     enabled = models.BooleanField(default=True)
     create_at = models.DateTimeField(auto_now_add=True, editable=True)  # 建立日期
     create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='item_create_by')  # 建立者
