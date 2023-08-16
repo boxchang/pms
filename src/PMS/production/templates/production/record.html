@@ -138,13 +138,6 @@ document.onkeydown = hotkey; //當onkeydown 事件發生時調用hotkey函數
             return false;
         }
 
-        if(labor_time>std_labor_time*1.1){
-            msg = "{% trans 'Remind that total recorded time {labor_time} already over 10% of the standard time({standard_time}).' %}";
-            msg = msg.replace("{labor_time}", labor_time);
-            msg = msg.replace("{standard_time}", Math.round(std_labor_time*1.1*10)/10);
-            return confirm(msg);
-        }
-
         {% if not perms.users.perm_workhour %}
         //累計報工數量大於工單數量
         var total_qty = worked_good_qty + good_qty;
@@ -154,6 +147,15 @@ document.onkeydown = hotkey; //當onkeydown 事件發生時調用hotkey函數
             return false;
         }
         {% endif %}
+
+        //使用confirm防呆一定要放在最下方
+        if(labor_time>std_labor_time*1.1){
+            msg = "{% trans 'Remind that total recorded time {labor_time} already over 10% of the standard time({standard_time}).' %}";
+            msg = msg.replace("{labor_time}", labor_time);
+            msg = msg.replace("{standard_time}", Math.round(std_labor_time*1.1*10)/10);
+            return confirm(msg);
+        }
+
     }
 </script>
 {% endblock js %}

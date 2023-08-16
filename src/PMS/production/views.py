@@ -239,9 +239,9 @@ def record_detail_sap_empno(request, sap_emp_no):
             record_dt = datetime.strftime(now, '%Y-%m-%d')
 
     if sap_emp_no:
-        user = CustomUser.objects.get(sap_emp_no=sap_emp_no)
-        if user:
-            username = user.username
+        key_user = CustomUser.objects.get(sap_emp_no=sap_emp_no)
+        if key_user:
+            username = key_user.username
         total_labor_time = 0
         rest_time = 0
         records = Record.objects.filter(record_dt=record_dt, sap_emp_no=sap_emp_no)
