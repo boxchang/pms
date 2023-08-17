@@ -77,6 +77,7 @@ def record(request):
         step_code = request.POST.get('step_code')
         step_name = request.POST.get('step_name')
         plant = request.POST.get('plant')
+        comment = request.POST.get('comment')
         request.session['record_dt'] = record_dt
         key_user = CustomUser.objects.get(sap_emp_no=sap_emp_no)
         # record = Record.objects.update_or_create(record_dt=record_dt, emp_no=emp_no, wo_no=wo_no, cfm_code=cfm_code,
@@ -92,7 +93,7 @@ def record(request):
                                             labor_time=labor_time, mach_time=mach_time, ctr_code=ctr_code,
                                             good_qty=good_qty, ng_qty=ng_qty, item_no=item_no, spec=spec, username=username,
                                             step_no=step_no, step_code=step_code, step_name=step_name, sap_emp_no=sap_emp_no,
-                                            update_by=key_user, plant=plant, work_center=work_center)
+                                            update_by=key_user, plant=plant, work_center=work_center, comment=comment)
 
             return redirect(record.get_absolute_url())
 
@@ -112,11 +113,13 @@ def record2(request):
 
         comment = request.POST.get('comment')
         labor_time = request.POST.get('labor_time')
-        record2 = Record2.objects.update_or_create(record_dt=record_dt, sap_emp_no=sap_emp_no, work_type=work_type,
-                                                 defaults={'labor_time': labor_time,
-                                                           'comment': comment,
-                                                           'create_by': key_user})
-        return redirect(record2[0].get_absolute_url())
+        # record2 = Record2.objects.update_or_create(record_dt=record_dt, sap_emp_no=sap_emp_no, work_type=work_type,
+        #                                          defaults={'labor_time': labor_time,
+        #                                                    'comment': comment,
+        #                                                    'create_by': key_user})
+        record2 = Record2.objects.create(record_dt=record_dt, sap_emp_no=sap_emp_no, work_type=work_type,
+                                         labor_time=labor_time, comment=comment, create_by=key_user)
+        return redirect(record2.get_absolute_url())
     return render(request, 'production/record.html', locals())
 
 
@@ -189,12 +192,13 @@ def record_edit(request, pk):
         step_no = request.POST.get('hid_step_no')
         step_code = request.POST.get('step_code')
         step_name = request.POST.get('step_name')
+        comment = request.POST.get('comment')
         plant = request.POST.get('plant')
 
         record.update(labor_time=labor_time, mach_time=mach_time, good_qty=good_qty, ng_qty=ng_qty, item_no=item_no,
                                             spec=spec, username=username, wo_no=wo_no,
                                             step_no=step_no, step_code=step_code, step_name=step_name, sap_emp_no=sap_emp_no,
-                                            update_by=request.user, plant=plant, work_center=work_center)
+                                            update_by=request.user, plant=plant, work_center=work_center, comment=comment)
 
         form = RecordSearchForm(initial={'record_dt': record_dt})
 
@@ -247,8 +251,8 @@ def record_detail_sap_empno(request, sap_emp_no):
         rest_time = 0
         records = Record.objects.filter(record_dt=record_dt, sap_emp_no=sap_emp_no)
         record2s = Record2.objects.filter(record_dt=record_dt, sap_emp_no=sap_emp_no)
-        table = "<table border='1' class='table table-bordered table-striped'>{header}{body}</table>"
-        header = """<tr>
+        table = "<table border='1' class='table table-bordered'>{header}{body}</table>"
+        header = """<tr style='background-color:#EEE;'>
                         <th style='width:100px'>{prod_order}</th>
                         <th style='width:100px'>{item_no}</th>
                         <th style='width:200px'>{spec}</th>
@@ -266,14 +270,18 @@ def record_detail_sap_empno(request, sap_emp_no):
         for record in records:
             total_labor_time += record.labor_time
             body_tmp = """<tr>
-                                <td>{wo_no}</td>
-                                <td>{item_no}</td>
-                                <td>{spec}</td>
-                                <td>{step_code}</td><td>{step_name}</td>
-                                <td style='text-align:right'>{labor_time}</td>
-                                <td style='text-align:right'>{mach_time}</td>
-                                <td style='text-align:right'>{good_qty}</td>
-                                <td style='text-align:right'>{ng_qty}</td><td>{edit_btn}{del_btn}</td></tr>"""
+                            <td rowspan='2' height='120px'>{wo_no}</td>
+                            <td rowspan='2'>{item_no}</td>
+                            <td rowspan='2'>{spec}</td>
+                            <td height='60px'>{step_code}</td><td>{step_name}</td>
+                            <td style='text-align:right'>{labor_time}</td>
+                            <td style='text-align:right'>{mach_time}</td>
+                            <td style='text-align:right'>{good_qty}</td>
+                            <td style='text-align:right'>{ng_qty}</td><td>{edit_btn}{del_btn}</td></tr>"""
+            body_tmp += """<tr>
+                            <td colspan='5'>{comment}</td>
+                            <td></td>
+                           </tr>"""
             if not request.user.is_anonymous:
                 edit_btn = """<a class=\"btn btn-info m-1\" href=\"/production\\record_edit\\{record_pk}\" role=\"button\">編輯</a>""".format(
                     record_pk=record.pk)
@@ -282,10 +290,11 @@ def record_detail_sap_empno(request, sap_emp_no):
             else:
                 edit_btn = ""
                 del_btn = ""
+            comment = "" if record.comment is None else record.comment
             body += body_tmp.format(wo_no=record.wo_no, step_code=record.step_code, step_name=record.step_name,
                                     labor_time=record.labor_time, mach_time=record.mach_time, good_qty=record.good_qty,
                                     ng_qty=record.ng_qty, edit_btn=edit_btn, del_btn=del_btn,
-                                    item_no=record.item_no, spec=record.spec)
+                                    item_no=record.item_no, spec=record.spec, comment=comment)
 
         for record2 in record2s:
             total_labor_time += record2.labor_time

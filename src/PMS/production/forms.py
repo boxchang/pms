@@ -98,7 +98,7 @@ class RecordForm(forms.ModelForm):
     class Meta:
         model = Record
         fields = ('worked_labor_time', 'record_dt', 'plant', 'wo_no', 'item_no', 'spec', 'emp_no', 'username', 'sap_emp_no', 'step_code', 'step_name', 'cfm_code',
-                  'labor_time', 'mach_time', 'good_qty', 'ng_qty', 'ctr_code')
+                  'labor_time', 'mach_time', 'good_qty', 'ng_qty', 'ctr_code', 'comment')
 
     record_dt = forms.DateField(label=_('record_date'))
     worked_labor_time = forms.DateField(required=False, label=_('worked_labor_time'))
@@ -117,6 +117,7 @@ class RecordForm(forms.ModelForm):
     mach_time = forms.CharField(required=False, label=_('mach_time'))
     good_qty = forms.IntegerField(required=True, label=_('good_qty'))
     ng_qty = forms.IntegerField(required=True, label=_('ng_qty'), initial=0)
+    comment = forms.CharField(required=False, label=_('comment'))
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -159,6 +160,7 @@ class RecordForm(forms.ModelForm):
             Div(
                 Div('good_qty', css_class='col-md-3'),
                 Div('ng_qty', css_class='col-md-3'),
+                Div('comment', css_class='col-md-6'),
                 css_class='row'),
             Div(
                 Div('mach_time', css_class='col-md-3'),
