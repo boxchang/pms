@@ -24,9 +24,15 @@ class ExcelTemp(models.Model):
     create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
                                   related_name='wo_excel_temp_create_by')  # 建立者
 
+class COOIS_Record(models.Model):
+    batch_no = models.CharField(max_length=20, primary_key=True)
+    file_name = models.CharField(max_length=50, blank=False, null=False)
+    create_at = models.DateTimeField(auto_now_add=True, editable=True)  # 建立日期
+    create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
+                                  related_name='coois_create_by')  # 建立者
 
 class WOMain(models.Model):
-    batch_no = models.CharField(max_length=20, primary_key=True)
+    id = models.CharField(max_length=20, primary_key=True)
     plant = models.CharField(max_length=10, blank=False, null=False)
     wo_no = models.CharField(max_length=20, blank=False, null=False)
     item_no = models.CharField(max_length=20, blank=True, null=True)

@@ -1,6 +1,7 @@
+import os
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import AnonymousUser
-from django.db.models import Max, Q, Sum
+from django.core.files.storage import default_storage
+from django.db.models import Sum
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 import openpyxl
@@ -12,10 +13,10 @@ from django.utils.translation import get_language
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from production.forms import RecordForm, RecordSearchForm, WoSearchForm, RecordManageForm, ExportForm
-from production.models import WOMain, ExcelTemp, WODetail, Record, Record2, WorkType
+from production.models import ExcelTemp, WODetail, Record, Record2, WorkType, COOIS_Record
 from users.models import CustomUser
 from django.utils.translation import gettext_lazy as _
-
+from django.conf import settings
 
 def COOIS2Table(items):
     html = """<table border='1' class='table table-bordered table-striped'>
@@ -464,7 +465,8 @@ def build_exceltemp_data(request, excel_file):
         temp.wo_mach_time = wo['wo_mach_time']
         temp.std_qty = wo['std_qty']
         temp.create_by = request.user
-        temp.save()
+        if str(wo['status']).find('PRT') >= 0:  # 已列印的工單才匯入系統
+            temp.save()
 
 
 @login_required
@@ -472,43 +474,51 @@ def excel_import(request):
     if request.method == 'POST':
         excel_file = request.FILES.get('files1')
         if excel_file:
-            build_exceltemp_data(request, excel_file)
+            # build_exceltemp_data(request, excel_file)
+            #
+            # rows = ExcelTemp.objects.values('plant', 'wo_no', 'item_no', 'spec').distinct()
+            # for row in rows:
+            #     tmp = WOMain.objects.filter(wo_no=row['wo_no']).aggregate(version=Max('version'))
+            #     if not tmp['version']:  # 新增資料
+            #         version = 1
+            #     else:
+            #         WOMain.objects.filter(wo_no=row['wo_no'], enable=True).update(enable=False)
+            #         version = int(tmp['version']) + 1
+            #
+            #     wo_main = WOMain()
+            #     wo_main.batch_no = uuid.uuid4().hex[:10]
+            #     wo_main.item_no = row['item_no']
+            #     wo_main.spec = row['spec']
+            #     wo_main.plant = row['plant']
+            #     wo_main.wo_no = row['wo_no']
+            #     wo_main.version = version
+            #     wo_main.create_by = request.user
+            #     wo_main.save()
+            #
+            #     tmp_details = ExcelTemp.objects.filter(wo_no=row['wo_no']).all()
+            #     for tmp_detail in tmp_details:
+            #         detail = WODetail()
+            #         detail.wo_main = wo_main
+            #         detail.cfm_code = tmp_detail.cfm_code
+            #         detail.ctr_code = tmp_detail.ctr_code
+            #         detail.status = tmp_detail.status
+            #         detail.work_center = tmp_detail.work_center
+            #         detail.step_no = tmp_detail.step_no
+            #         detail.step_code = tmp_detail.step_code
+            #         detail.step_name = tmp_detail.step_name
+            #         detail.wo_qty = tmp_detail.wo_qty
+            #         detail.wo_labor_time = tmp_detail.wo_labor_time
+            #         detail.wo_mach_time = tmp_detail.wo_mach_time
+            #         detail.std_qty = tmp_detail.std_qty
+            #         detail.save()
+            save_path = os.path.join(settings.MEDIA_ROOT, 'uploads', 'production', 'coois', excel_file.name)
+            file_name = default_storage.save(save_path, excel_file)
 
-            rows = ExcelTemp.objects.values('plant', 'wo_no', 'item_no', 'spec').distinct()
-            for row in rows:
-                tmp = WOMain.objects.filter(wo_no=row['wo_no']).aggregate(version=Max('version'))
-                if not tmp['version']:  # 新增資料
-                    version = 1
-                else:
-                    WOMain.objects.filter(wo_no=row['wo_no'], enable=True).update(enable=False)
-                    version = int(tmp['version']) + 1
-
-                wo_main = WOMain()
-                wo_main.batch_no = uuid.uuid4().hex[:10]
-                wo_main.item_no = row['item_no']
-                wo_main.spec = row['spec']
-                wo_main.plant = row['plant']
-                wo_main.wo_no = row['wo_no']
-                wo_main.version = version
-                wo_main.create_by = request.user
-                wo_main.save()
-
-                tmp_details = ExcelTemp.objects.filter(wo_no=row['wo_no']).all()
-                for tmp_detail in tmp_details:
-                    detail = WODetail()
-                    detail.wo_main = wo_main
-                    detail.cfm_code = tmp_detail.cfm_code
-                    detail.ctr_code = tmp_detail.ctr_code
-                    detail.status = tmp_detail.status
-                    detail.work_center = tmp_detail.work_center
-                    detail.step_no = tmp_detail.step_no
-                    detail.step_code = tmp_detail.step_code
-                    detail.step_name = tmp_detail.step_name
-                    detail.wo_qty = tmp_detail.wo_qty
-                    detail.wo_labor_time = tmp_detail.wo_labor_time
-                    detail.wo_mach_time = tmp_detail.wo_mach_time
-                    detail.std_qty = tmp_detail.std_qty
-                    detail.save()
+            coois = COOIS_Record()
+            coois.batch_no = ""
+            coois.file_name = file_name
+            coois.create_by = request.user
+            coois.save()
 
     return render(request, 'production/import.html', locals())
 
