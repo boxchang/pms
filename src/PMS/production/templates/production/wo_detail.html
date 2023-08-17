@@ -45,7 +45,7 @@ $("#id_wo_no").focus();
                 {% for step in steps %}
                     {% for work_reocrd in step.work_records %}
                         <tr style="background-color: white">
-                            <td colspan="2"></td>
+                            <td colspan="2" style="text-align: right">┏</td>
                             <td style="text-align: center">{{ work_reocrd.record_dt }}</td>
                             <td style="text-align: center">{{ work_reocrd.sap_emp_no }}</td>
                             <td style="text-align: center">{{ work_reocrd.username }}</td>
