@@ -86,6 +86,7 @@
             changeSelect(0, item_type);
 
             category.change(function() {
+                $("#button-id-search").click();
                 item_type.empty().append('<option value="">---------</option>');
                 changeSelect(this.value, item_type)
             })

@@ -99,7 +99,7 @@ class AppliedItem(models.Model):
     item_code = models.CharField(max_length=10)
     spec = models.CharField(max_length=200)
     model = models.CharField(max_length=200, blank=True, null=True)
-    price = models.IntegerField(default=0)
+    price = models.FloatField(default=0)
     qty = models.IntegerField(default=0)
     unit = models.CharField(max_length=10)
     amount = models.IntegerField(default=0)
