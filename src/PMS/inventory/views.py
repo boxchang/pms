@@ -172,8 +172,8 @@ def mail_agree(request, key):
         total_price = 0
         apply_date, pk = unlock(key)
         form = AppliedForm.objects.get(pk=pk, apply_date=apply_date)
-
-        for item in form.applied_form_item.all():
+        items = form.applied_form_item.all().order_by('category')
+        for item in items:
             total_price += item.amount
 
         if form.status.id in [2, 6]:
@@ -203,7 +203,8 @@ def mail_reject(request, key):
         total_price = 0
         apply_date, pk = unlock(key)
         form = AppliedForm.objects.get(pk=pk, apply_date=apply_date)
-        for item in form.applied_form_item.all():
+        items = form.applied_form_item.all().order_by('category')
+        for item in items:
             total_price += item.amount
 
         if form.status.id in [2, 6]:
