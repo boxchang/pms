@@ -95,6 +95,7 @@ class AppliedForm(models.Model):
 
 class AppliedItem(models.Model):
     applied_form = models.ForeignKey(AppliedForm, related_name='applied_form_item', on_delete=models.CASCADE)
+    category = models.CharField(max_length=50)
     item_code = models.CharField(max_length=10)
     spec = models.CharField(max_length=200)
     model = models.CharField(max_length=200, blank=True, null=True)

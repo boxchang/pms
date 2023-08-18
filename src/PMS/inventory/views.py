@@ -246,7 +246,7 @@ def apply(request):
             key = "OR"+YYYYMM
             apply.form_no = key + str(get_series_number(key, "文具請領")).zfill(3)
             apply.unit = Unit.objects.get(pk=unit)
-            apply.requester = CustomUser.objects.get(emp_no=requester)
+            apply.requester = CustomUser.objects.get(id=requester)
             apply.apply_date = apply_date
             apply.ext_number = ext_number
             apply.reason = reason
@@ -274,6 +274,7 @@ def apply(request):
             total_price = 0
             for item in items:
                 obj = AppliedItem()
+                obj.category = item['category']
                 obj.item_code = item['item_code']
                 obj.spec = item['spec']
                 obj.price = item['price']
@@ -382,7 +383,8 @@ def ItemAPI(request):
             item_data = item_data.filter(query).values('item_code', 'spec', 'price', 'unit')
 
         for data in item_data:
-            item_list.append({'item_code': data['item_code'], 'spec': data['spec'], 'price': round(data['price'], 2), 'unit':data['unit']})
+            category = ItemCategory.objects.get(id=category_id)
+            item_list.append({'item_code': data['item_code'], 'spec': data['spec'], 'price': round(data['price'], 2), 'unit': data['unit'], 'category': category.category_name})
 
     return JsonResponse(item_list, safe=False)
 
@@ -443,7 +445,7 @@ def pr_apply(request):
         try:
             apply = AppliedForm()
             apply.unit = Unit.objects.get(pk=unit)
-            apply.requester = CustomUser.objects.get(emp_no=requester)
+            apply.requester = CustomUser.objects.get(id=requester)
             apply.apply_date = apply_date
             apply.ext_number = ext_number
             apply.reason = reason

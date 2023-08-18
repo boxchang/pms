@@ -119,8 +119,8 @@
     var list = [];
 
     //新增品項
-    cart_add = function(item_code, spec, price, unit) {
-        var item = {"item_code": item_code, "spec": spec, "price": price, "qty": 1, "total": price*1, "unit": unit, "comment": ""};
+    cart_add = function(category, item_code, spec, price, unit) {
+        var item = {"item_code": item_code, "spec": spec, "price": price, "qty": 1, "total": price*1, "unit": unit, "comment": "", "category": category};
         var valid = true;
         list.forEach(function(list_item) {
             if(list_item.item_code == item_code){
@@ -136,8 +136,8 @@
     }
 
     //新增雜項
-    cart_misc_add = function(item_code, unit, spec, price) {
-        var item = {"item_code": item_code, "spec": spec, "price": price, "qty": 1, "total": price*1, "unit": unit, "comment": ""};
+    cart_misc_add = function(category, item_code, unit, spec, price) {
+        var item = {"item_code": item_code, "spec": spec, "price": price, "qty": 1, "total": price*1, "unit": unit, "comment": "", "category": category};
         list.push(item);
         cart_show(list);
     }
@@ -178,8 +178,8 @@
     //顯示請購清單
     cart_show = function(data) {
         var total_price = 0;
-        var tmp_table = "<table class=\"table\"><tr><th>品名&規格</th><th width='100px'>參考價格</th><th width='100px'>數量</th><th width='80px'>單位</th><th width='100px'>參考總價</th><th>備註</th><th></th></tr>{0}</table>";
-        var tmp_item = "<tr><td>{0}</td><td>{1} 元</td><td>{2}</td><td>{3}</td><td>{4} 元</td><td>{5}</td><td>{6}</td></tr>";
+        var tmp_table = "<table class=\"table\"><tr><th width='100px'>物品類別</th><th>品名&規格</th><th width='100px'>參考價格</th><th width='100px'>數量</th><th width='80px'>單位</th><th width='100px'>參考總價</th><th>備註</th><th></th></tr>{0}</table>";
+        var tmp_item = "<tr><td>{0}</td><td>{1}</td><td>{2} 元</td><td>{3}</td><td>{4}</td><td>{5} 元</td><td>{6}</td><td>{7}</td></tr>";
         var tmp_qty = "<input type=\"text\" class=\"form-control\" value=\"{0}\" onchange=\"cart_qty('{1}', this.value)\">";
         var tmp_comment = "<input type=\"text\" class=\"form-control\" value=\"{0}\" onchange=\"cart_comment('{1}', this.value)\">";
         var tmp_btn = "<button type='button' class='btn btn-danger' onclick=\"cart_remove('{0}')\">移除</button>";
@@ -192,7 +192,7 @@
             remove_btn = String.format(tmp_btn, item.spec);
             add_qty = String.format(tmp_qty, item.qty, item.item_code);
             comment = String.format(tmp_comment, item.comment, item.item_code)
-            temp = String.format(tmp_item, item.spec, item.price, add_qty, item.unit, item.total, comment, remove_btn);
+            temp = String.format(tmp_item, item.category, item.spec, item.price, add_qty, item.unit, item.total, comment, remove_btn);
             items = items + temp;
             total_price += item.price * item.qty;
         })

@@ -308,18 +308,16 @@ def unit_sync(request):
         rows = db.select_sql(sql)
 
         for row in rows:
-            try:
+            try:  # 新增
                 unit = Unit.objects.get(unitId=row.unitId)
                 unit.unitName = row.unitName
-                #unit.manager = CustomUser.objects.get(emp_no=row.managerId)
-                unit.manager = CustomUser.objects.get(emp_no='111045')
+                unit.manager = CustomUser.objects.get(emp_no=row.managerId)
                 unit.isValid = row.isValid
                 unit.update_by = request.user
                 unit.save()
-            except:
+            except:  # 更新
                 unit = Unit(orgId=row.orgId, unitId=row.unitId, unitName=row.unitName, isValid=row.isValid)
-                #unit.manager = CustomUser.objects.get(emp_no=row.managerId)
-                unit.manager = CustomUser.objects.get(emp_no='111045')
+                unit.manager = CustomUser.objects.get(emp_no=row.managerId)
                 unit.create_by = request.user
                 unit.update_by = request.user
                 unit.save()
@@ -383,5 +381,5 @@ def get_deptuser_api(request):
         html = "<option value="" selected>---------</option>"
 
         for employee in employees:
-            html += """<option value="{value}">{name}</option>""".format(value=employee.emp_no, name=employee.username)
+            html += """<option value="{value}">{name}</option>""".format(value=employee.id, name=employee.username)
     return JsonResponse(html, safe=False)

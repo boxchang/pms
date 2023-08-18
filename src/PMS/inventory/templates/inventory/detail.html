@@ -47,6 +47,7 @@
         <table class="table table-bordered table-striped">
             <thead class="table-info">
                 <tr>
+                    <th style="width: 70px;text-align: center;">物品類別</th>
                     <th style="width: 300px">品名</th>
                     <th style="width: 70px;text-align: center;">參考價格</th>
                     <th style="width: 70px;text-align: center;">數量</th>
@@ -59,10 +60,11 @@
             <tbody>
                 {% for item in form.applied_form_item.all %}
                     <tr>
+                        <td>{{ item.category }}</td>
                         {% if perms.users.perm_misc_apply %}
                             <td>{{ item.spec }}[<a href="{% url 'inv_recieved' item.pk %}">編輯</a>]</td>
                         {% else %}
-                        <td>{{ item.spec }}</td>
+                            <td>{{ item.spec }}</td>
                         {% endif %}
                         <td style="text-align: right">{{ item.price }} 元</td>
                         <td style="text-align: center">{{ item.qty }}</td>
@@ -73,7 +75,7 @@
                     </tr>
                 {% endfor %}
                 <tr>
-                    <td colspan="4" style="text-align: right">總金額：</td>
+                    <td colspan="5" style="text-align: right">總金額：</td>
                     <td style="text-align: right">{{ total_price }} 元</td>
                     <td colspan="2"></td>
                 </tr>

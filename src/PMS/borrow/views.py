@@ -76,7 +76,7 @@ def apply(request):
         try:
             borrow = Borrow()
             borrow.app_dept = Unit.objects.get(id=apply_dept)
-            borrow.app_user = CustomUser.objects.get(emp_no=apply_user)
+            borrow.app_user = CustomUser.objects.get(id=apply_user)
             borrow.comment = comment
             borrow.apply_date = apply_date
             borrow.expect_date = expect_date
