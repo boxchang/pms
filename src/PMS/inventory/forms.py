@@ -53,7 +53,7 @@ class InvAppliedHistoryForm(forms.ModelForm):
 
 class SearchForm(forms.Form):
     category = forms.ModelChoiceField(required=False, label="物品類別", queryset=ItemCategory.objects.all(), to_field_name="catogory_code")
-    type = forms.ModelChoiceField(required=False, label="物品種類", queryset=ItemType.objects.all())
+    type = forms.ModelChoiceField(required=False, label="物品種類", queryset=ItemType.objects.none())
     keyword = forms.CharField(required=False, label="關鍵字")
 
     def __init__(self, *args, **kwargs):

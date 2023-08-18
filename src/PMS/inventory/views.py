@@ -9,7 +9,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from bases.utils import django_go_sql, get_invform_status_dropdown
 from inventory.forms import OfficeInvForm, InvAppliedHistoryForm, OfficeItemForm, SearchForm, AttachmentForm
-from inventory.models import ItemType, Item, AppliedForm, FormStatus, AppliedItem, Series, Apply_attachment
+from inventory.models import ItemType, Item, AppliedForm, FormStatus, AppliedItem, Series, Apply_attachment, \
+    ItemCategory
 from users.models import CustomUser, Unit
 from django.core.mail import EmailMessage
 from django.conf import settings
@@ -89,26 +90,23 @@ def import_excel(request):
                 for iRow in range(2, sheet.max_row+1):
                     if not sheet.cell(row=iRow, column=1).value:
                         break
-                    type = sheet.cell(row=iRow, column=2).value
+                    category = sheet.cell(row=iRow, column=2).value
+                    category = ItemCategory.objects.get(category_name=category)
+                    type = sheet.cell(row=iRow, column=3).value
                     type = ItemType.objects.get(type_name=type)
-                    vendor_code = sheet.cell(row=iRow, column=3).value
-                    spec = sheet.cell(row=iRow, column=4).value
-                    unit = sheet.cell(row=iRow, column=5).value
-                    price = sheet.cell(row=iRow, column=7).value
+                    vendor_code = sheet.cell(row=iRow, column=4).value
+                    spec = sheet.cell(row=iRow, column=5).value
+                    unit = sheet.cell(row=iRow, column=6).value
+                    price = sheet.cell(row=iRow, column=8).value
 
                     item = Item()
                     _key = type.category.catogory_code+type.type_code
                     _key_name = type.type_name
                     series = get_series_number(_key, _key_name)
-                    item.item_code = item_code = type.category.catogory_code+type.type_code+str(series).zfill(5)
-                    item.item_type = type
-                    item.vendor_code = vendor_code
-                    item.spec = spec
-                    item.unit = unit
-                    item.price = price
-                    item.create_by = request.user
-                    item.update_by = request.user
-                    item.save()
+                    item_code = type.category.catogory_code+type.type_code+str(series).zfill(5)
+                    item = Item.objects.update_or_create(item_type=type, vendor_code=vendor_code, spec=spec, unit=unit,
+                                                         price=price, create_by=request.user, update_by=request.user,
+                                                             defaults={'item_code': item_code,})
         except Exception as e:
             print(e)
 
