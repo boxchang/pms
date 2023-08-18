@@ -366,7 +366,12 @@ def ItemAPI(request):
         category_id = request.POST.get('category_id')
         type_id = request.POST.get('type_id')
         keyword = request.POST.get('keyword')
-        item_data = Item.objects.all().values('item_code', 'spec', 'price', 'unit')
+
+        if type_id:
+            item_data = Item.objects.all().values('item_code', 'spec', 'price', 'unit')
+        else:
+            item_data = Item.objects.exclude(spec__contains="自行輸入").values('item_code', 'spec', 'price', 'unit')
+
         if category_id:
             item_type = ItemType.objects.filter(category_id=category_id)
             item_data = item_data.filter(item_type__in=item_type).values('item_code', 'spec', 'price', 'unit')
@@ -377,7 +382,7 @@ def ItemAPI(request):
             item_data = item_data.filter(query).values('item_code', 'spec', 'price', 'unit')
 
         for data in item_data:
-            item_list.append({'item_code':data['item_code'], 'spec':data['spec'], 'price':data['price'], 'unit':data['unit']})
+            item_list.append({'item_code': data['item_code'], 'spec': data['spec'], 'price': round(data['price'], 2), 'unit':data['unit']})
 
     return JsonResponse(item_list, safe=False)
 
