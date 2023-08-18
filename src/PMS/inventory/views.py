@@ -326,7 +326,8 @@ def detail(request, pk):
     try:
         total_price = 0
         form = AppliedForm.objects.get(pk=pk)
-        for item in form.applied_form_item.all():
+        items = form.applied_form_item.all().order_by('category')
+        for item in items:
             total_price += item.amount
         status_html = get_invform_status_dropdown(form)
 
