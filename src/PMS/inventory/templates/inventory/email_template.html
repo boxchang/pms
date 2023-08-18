@@ -52,6 +52,7 @@
     <table width="100%" border="1">
         <thead>
             <tr>
+                <th>物品類別</th>
                 <th>品名</th>
                 <th>參考價格</th>
                 <th>數量</th>
@@ -62,6 +63,7 @@
         <tbody>
             {% for item in form.applied_form_item.all %}
                 <tr>
+                    <td style="text-align:center;color: blue;">{{ item.category }}</td>
                     <td style="text-align:center;color: blue;">{{ item.spec }}</td>
                     <td style="text-align:center;color: blue;">{{ item.price }}</td>
                     <td style="text-align:center;color: blue;">{{ item.qty }}</td>
