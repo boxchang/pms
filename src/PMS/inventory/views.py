@@ -33,32 +33,31 @@ def get_series_number(_key, _key_name):
 def statistic(request):
     item_map = []
     with connection.cursor() as cursor:
-        sql = """select item_code,spec,cost_center,unitId,unitName, sum(qty)-sum(received_qty) sum_qty from inventory_appliedform a, inventory_applieditem b, users_unit c 
+        sql = """select category,item_code,spec,cost_center,unitId,unitName, sum(qty)-sum(received_qty) sum_qty from inventory_appliedform a, inventory_applieditem b, users_unit c 
                  where a.form_no = b.applied_form_id and a.unit_id = c.id
                     and a.status_id=2
-                    group by item_code,spec,cost_center,unitId,unitName having sum_qty > 0"""
+                    group by  category,item_code,spec,cost_center,unitId,unitName having sum_qty > 0"""
         rows = django_go_sql(sql)
 
-        item_map = (list(set((dic["spec"] for dic in rows))))
         unit_map = (list(set((dic["unitName"] for dic in rows))))
 
     html_row = "<table border='1' class='table table-bordered table-striped'>"
     # 部門HEADER
-    html_row += "<tr><td style='width:200px'></td>"
+    html_row += "<tr><td style='width:20px'></td><td style='width:200px'></td>"
     for unit_data in unit_map:
         html_row += "<td style='text-align:center;width:50px;'>" + unit_data + "</td>"
     html_row += "<td style='text-align:center;width:50px'>加總</td>"
     html_row += "</tr>"
 
     # 統計數值
-    for item_data in item_map:
+    for row1 in rows:
         sum_qty = 0
-        html_row += "<tr><td>"+item_data+"</td>"
+        html_row += "<tr><td style='text-align: center'>"+row1['category']+"</td><td>"+row1['spec']+"</td>"
         for unit_data in unit_map:
             value = ""
-            for row in rows:
-                if row["spec"]==item_data and row["unitName"]==unit_data:
-                    value = row["sum_qty"]
+            for row2 in rows:
+                if row2["spec"] == row1['spec'] and row2["unitName"] == unit_data:
+                    value = row2["sum_qty"]
                     sum_qty += value
             if value:
                 html_row += "<td style='text-align:right;'>"+str(value)+"</td>"
