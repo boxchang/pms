@@ -143,6 +143,7 @@ def detail(request):
         perm_workhour = member.has_perm('users.perm_workhour')
         perm_user_manage = member.has_perm('users.perm_user_manage')
         perm_misc_apply = member.has_perm('users.perm_misc_apply')
+        perm_svr_monitor = member.has_perm('users.perm_svr_monitor')
 
         form = CurrentCustomUserForm(instance=member)
         form.fields['emp_no'].widget.attrs['readonly'] = True
@@ -273,6 +274,11 @@ def user_auth_api(request):
             add_permission(user, 'perm_misc_apply')
         else:
             remove_permission(user, 'perm_misc_apply')
+
+        if request.POST.get('perm_svr_monitor'):
+            add_permission(user, 'perm_svr_monitor')
+        else:
+            remove_permission(user, 'perm_svr_monitor')
 
         msg = "權限更新完成"
         return JsonResponse(msg, safe=False)

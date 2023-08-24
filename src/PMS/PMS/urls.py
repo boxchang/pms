@@ -40,6 +40,7 @@ router.register(r'borrow', BorrowByViewSet)
 
 urlpatterns = [
     url('admin/', admin.site.urls),
+    url(r'^monitor/', include('monitor.urls')),
     url(r'^production/', include('production.urls')),
     url(r'^inventory/', include('inventory.urls')),
     url(r'^borrow/', include('borrow.urls')),

@@ -199,7 +199,7 @@
         $("#cart_list").append(String.format(tmp_table, items));
         $("#hidCart_list").val(JSON.stringify(list));
         $("#hidTotal_price").val(total_price);
-        $("#cart_total_price").html("總金額："+total_price+" 元");
+        $("#cart_total_price").html("總金額："+total_price.toFixed(2)+" 元");
     }
 
     //Ready
