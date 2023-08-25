@@ -1,3 +1,6 @@
+import json
+from ast import literal_eval
+
 from django.shortcuts import render
 import socket
 from monitor.models import Config
@@ -11,6 +14,20 @@ def index(request):
         server_addr = (HOST, PORT)
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.sendto(config.command.encode(), server_addr)
-        indata, addr = s.recvfrom(1024)
-        print('recvfrom ' + str(addr) + ': ' + indata.decode())
+        info, addr = s.recvfrom(1024)
+        print('recvfrom ' + str(addr) + ': ' + info.decode())
+        info = literal_eval(info.decode())
+        config.disk = info["DISK"]
+        for disk in config.disk:
+            if disk["usage_percent"] >=70 and disk["usage_percent"] < 90:
+                disk["background"] = "bg-warning"
+            elif disk["usage_percent"] > 90:
+                disk["background"] = "bg-danger"
+            else:
+                disk["background"] = "bg-success"
+        print(config.disk)
+        config.cpu = max(info["CPU"]["cpu_percent"])
+        print(config.cpu)
+        config.memory = info["MEMORY"]
+        print(config.memory)
     return render(request, 'monitor/index.html', locals())
