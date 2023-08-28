@@ -98,9 +98,9 @@ document.onkeydown = hotkey; //當onkeydown 事件發生時調用hotkey函數
                     return false;
                 }
 
-                var init_good_qty = parseFloat(data.good_qty) - parseFloat(data.worked_good_qty) - parseFloat(data.worked_ng_qty);
-                var init_labor_time = parseFloat(data.labor_time) - parseFloat(data.worked_labor_time);
-                var init_mach_time = parseFloat(data.mach_time) - parseFloat(data.worked_mach_time);
+                var init_good_qty = Math.round(parseFloat(data.good_qty) - parseFloat(data.worked_good_qty) - parseFloat(data.worked_ng_qty));
+                var init_labor_time = Math.round(parseFloat(data.labor_time) - parseFloat(data.worked_labor_time));
+                var init_mach_time = Math.round(parseFloat(data.mach_time) - parseFloat(data.worked_mach_time));
 
                 $("#id_plant").val(data.plant);
                 $("#id_wo_no").val(data.wo_no);
