@@ -112,7 +112,7 @@ class RecordForm(forms.ModelForm):
     cfm_code = forms.CharField(required=True, label=_('confirm_code'))
     ctr_code = forms.CharField(required=True, label=_('control_code'))
     step_code = forms.CharField(required=False, label=_('step_code'))
-    step_name = forms.CharField(required=False, label=_('step_name'))
+    step_name = forms.CharField(required=False, label=_('step_name'), widget=forms.TextInput(attrs={'class': 'text-light bg-dark'}))
     labor_time = forms.CharField(required=True, label=_('labor_time'))
     mach_time = forms.CharField(required=False, label=_('mach_time'))
     good_qty = forms.IntegerField(required=True, label=_('good_qty'))
