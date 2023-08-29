@@ -54,10 +54,9 @@
             <tr>
                 <th>物品類別</th>
                 <th>品名</th>
-                <th>參考價格</th>
                 <th>數量</th>
                 <th>單位</th>
-                <th>參考總價</th>
+                <th>備註</th>
             </tr>
         </thead>
         <tbody>
@@ -67,6 +66,7 @@
                     <td style="text-align:center;color: blue;">{{ item.spec }}</td>
                     <td style="text-align:center;color: blue;">{{ item.qty }}</td>
                     <td style="text-align:center;color: blue;">{{ item.unit }}</td>
+                    <td>{{ item.comment|default:'' }}</td>
                 </tr>
             {% endfor %}
         </tbody>
