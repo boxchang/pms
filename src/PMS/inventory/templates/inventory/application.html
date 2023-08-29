@@ -22,7 +22,6 @@
     <div class="col">
         <div style="background: #ffffe7">
             <div id="cart_list"></div>
-            <div id="cart_total_price" class="p-3" style="text-align: right"></div>
         </div>
     </div>
 </div>
@@ -34,7 +33,6 @@
 <hr />
 <div style="text-align:center;height: 100px">
     <input type="hidden" id="hidCart_list" name="hidCart_list" />
-    <input type="hidden" id="hidTotal_price" name="hidTotal_price" />
     <input type="submit" value="確認送簽" class='btn btn-info' onclick="return validation()" />
 </div>
 </form>
@@ -62,7 +60,17 @@
         if(list.length == 0) {
             alert("請選擇請領品項");
             return false;
+        }else{
+            var tmp="";
+            for(var i=0;i<list.length;i++){
+                if(tmp=="") tmp = list[i].category;
+                if(list[i].category != tmp){
+                    alert("同單據物品類別必須相同");
+                    return false;
+                }
+            }
         }
+
         return confirm('確認資料是否正確')
     }
 
@@ -119,8 +127,8 @@
     var list = [];
 
     //新增品項
-    cart_add = function(category, item_code, spec, price, unit) {
-        var item = {"item_code": item_code, "spec": spec, "price": price, "qty": 1, "total": price*1, "unit": unit, "comment": "", "category": category};
+    cart_add = function(category, item_code, spec, unit) {
+        var item = {"item_code": item_code, "spec": spec, "qty": 1, "unit": unit, "comment": "", "category": category};
         var valid = true;
         list.forEach(function(list_item) {
             if(list_item.item_code == item_code){
@@ -136,8 +144,8 @@
     }
 
     //新增雜項
-    cart_misc_add = function(category, item_code, unit, spec, price) {
-        var item = {"item_code": item_code, "spec": spec, "price": price, "qty": 1, "total": price*1, "unit": unit, "comment": "", "category": category};
+    cart_misc_add = function(category, item_code, unit, spec) {
+        var item = {"item_code": item_code, "spec": spec, "qty": 1, "unit": unit, "comment": "", "category": category};
         list.push(item);
         cart_show(list);
     }
@@ -159,7 +167,6 @@
         list.forEach(function(item) {
             if(item.item_code == item_code){
                 item.qty = qty;
-                item.total = item.price*qty;
             }
         });
         cart_show(list);
@@ -177,9 +184,8 @@
 
     //顯示請購清單
     cart_show = function(data) {
-        var total_price = 0;
-        var tmp_table = "<table class=\"table\"><tr><th width='100px'>物品類別</th><th>品名&規格</th><th width='100px'>參考價格</th><th width='100px'>數量</th><th width='80px'>單位</th><th width='100px'>參考總價</th><th>備註</th><th></th></tr>{0}</table>";
-        var tmp_item = "<tr><td>{0}</td><td>{1}</td><td>{2} 元</td><td>{3}</td><td>{4}</td><td>{5} 元</td><td>{6}</td><td>{7}</td></tr>";
+        var tmp_table = "<table class=\"table\"><tr><th width='100px'>物品類別</th><th>品名&規格</th><th width='100px'>數量</th><th width='80px'>單位</th><th>備註</th><th></th></tr>{0}</table>";
+        var tmp_item = "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>";
         var tmp_qty = "<input type=\"text\" class=\"form-control\" value=\"{0}\" onchange=\"cart_qty('{1}', this.value)\">";
         var tmp_comment = "<input type=\"text\" class=\"form-control\" value=\"{0}\" onchange=\"cart_comment('{1}', this.value)\">";
         var tmp_btn = "<button type='button' class='btn btn-danger' onclick=\"cart_remove('{0}')\">移除</button>";
@@ -192,14 +198,11 @@
             remove_btn = String.format(tmp_btn, item.spec);
             add_qty = String.format(tmp_qty, item.qty, item.item_code);
             comment = String.format(tmp_comment, item.comment, item.item_code)
-            temp = String.format(tmp_item, item.category, item.spec, item.price, add_qty, item.unit, item.total, comment, remove_btn);
+            temp = String.format(tmp_item, item.category, item.spec, add_qty, item.unit, comment, remove_btn);
             items = items + temp;
-            total_price += item.price * item.qty;
         })
         $("#cart_list").append(String.format(tmp_table, items));
         $("#hidCart_list").val(JSON.stringify(list));
-        $("#hidTotal_price").val(total_price);
-        $("#cart_total_price").html("總金額："+total_price.toFixed(2)+" 元");
     }
 
     //Ready

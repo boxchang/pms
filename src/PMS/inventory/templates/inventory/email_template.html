@@ -65,15 +65,10 @@
                 <tr>
                     <td style="text-align:center;color: blue;">{{ item.category }}</td>
                     <td style="text-align:center;color: blue;">{{ item.spec }}</td>
-                    <td style="text-align:center;color: blue;">{{ item.price }}</td>
                     <td style="text-align:center;color: blue;">{{ item.qty }}</td>
                     <td style="text-align:center;color: blue;">{{ item.unit }}</td>
-                    <td style="text-align: right;color: blue;">{{ item.amount }}</td>
                 </tr>
             {% endfor %}
-            <tr>
-                <td colspan="6" style="text-align: right;color: blue;">總金額：{{ total_price }}</td>
-            </tr>
         </tbody>
     </table>
     <br />

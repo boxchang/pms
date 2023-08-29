@@ -66,15 +66,14 @@
         var list = [];
 
         //新增品項
-        cart_add = function(category, item_code, spec, price, unit) {
-            window.opener.cart_add(category, item_code, spec, price, unit);
+        cart_add = function(category, item_code, spec, unit) {
+            window.opener.cart_add(category, item_code, spec, unit);
         }
 
         //新增雜項
         cart_misc_add = function(category, item_code, unit) {
             spec = $("#spec").val();
-            price = $("#price").val();
-            window.opener.cart_misc_add(category, item_code, unit, spec, price);
+            window.opener.cart_misc_add(category, item_code, unit, spec);
         }
 
         
@@ -97,9 +96,9 @@
 
             //物品清單
             $("#button-id-search").click(function() {
-                var tmp_table = "<table class=\"table\"><tr><th>品名&規格</th><th width=\"100px\">參考價格</th><th>單位</th><th></th></tr>{0}</table>";
-                var tmp_item = "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>";
-                var tmp_btn = "<button type='button' class='btn btn-info' onclick=\"cart_add('{0}', '{1}', '{2}', '{3}', '{4}', '{5}')\">加入</button>";
+                var tmp_table = "<table class=\"table\"><tr><th width='70%'>品名&規格</th><th width='20%'>單位</th><th width='10%'></th></tr>{0}</table>";
+                var tmp_item = "<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>";
+                var tmp_btn = "<button type='button' class='btn btn-info' onclick=\"cart_add('{0}', '{1}', '{2}', '{3}', '{4}')\">加入</button>";
                 var temp="";
                 var items="";
                 var add_btn=""
@@ -123,14 +122,13 @@
                         $.each(data, function(index, item){
                             if(item.spec=="自行輸入"){
                                 txtSpec = "<input type=\"text\" name=\"spec\" id=\"spec\" style=\"width:100%;\">";
-                                txtPrice = "<input type=\"text\" name=\"price\" id=\"price\" value=\"0\">";
                                 tmp_btn = "<button type='button' class='btn btn-warn' onclick=\"cart_misc_add('{0}', '{1}', '{2}')\">加入</button>";
                                 add_btn = String.format(tmp_btn, item.category, item.item_code, item.unit);
-                                temp = String.format(tmp_item, txtSpec, txtPrice, item.unit, add_btn);
+                                temp = String.format(tmp_item, txtSpec, item.unit, add_btn);
                                 items = items + temp;
                             }else{
-                                add_btn = String.format(tmp_btn, item.category, item.item_code, item.spec, item.price, item.unit);
-                                temp = String.format(tmp_item, item.spec, item.price, item.unit, add_btn);
+                                add_btn = String.format(tmp_btn, item.category, item.item_code, item.spec, item.unit);
+                                temp = String.format(tmp_item, item.spec, item.unit, add_btn);
                                 items = items + temp;
                             }
                         })

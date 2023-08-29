@@ -47,38 +47,29 @@
         <table class="table table-bordered table-striped">
             <thead class="table-info">
                 <tr>
-                    <th style="width: 70px;text-align: center;">物品類別</th>
-                    <th style="width: 300px">品名</th>
-                    <th style="width: 70px;text-align: center;">參考價格</th>
-                    <th style="width: 70px;text-align: center;">數量</th>
-                    <th style="width: 50px;text-align: center;">單位</th>
-                    <th style="width: 70px;text-align: center;">參考總價</th>
-                    <th style="width: 70px;text-align: center;">已發放</th>
-                    <th style="width: 200px">備註</th>
+                    <th style="width: 10%;text-align: center;">物品類別</th>
+                    <th style="width: 45%">品名</th>
+                    <th style="width: 7%;text-align: center;">數量</th>
+                    <th style="width: 7%;text-align: center;">單位</th>
+                    <th style="width: 7%;text-align: center;">已發放</th>
+                    <th style="width: 24%">備註</th>
                 </tr>
             </thead>
             <tbody>
                 {% for item in items %}
                     <tr>
-                        <td>{{ item.category }}</td>
+                        <td style="text-align: center">{{ item.category }}</td>
                         {% if perms.users.perm_misc_apply %}
                             <td>{{ item.spec }}[<a href="{% url 'inv_recieved' item.pk %}">編輯</a>]</td>
                         {% else %}
                             <td>{{ item.spec }}</td>
                         {% endif %}
-                        <td style="text-align: right">{{ item.price }} 元</td>
                         <td style="text-align: center">{{ item.qty }}</td>
                         <td style="text-align: center">{{ item.unit }}</td>
-                        <td style="text-align: right">{{ item.amount }} 元</td>
                         <td style="text-align: center">{{ item.received_qty }}</td>
                         <td>{{ item.comment|default:'' }}</td>
                     </tr>
                 {% endfor %}
-                <tr>
-                    <td colspan="5" style="text-align: right">總金額：</td>
-                    <td style="text-align: right">{{ total_price }} 元</td>
-                    <td colspan="2"></td>
-                </tr>
             </tbody>
         </table>
         {% if files %}

@@ -79,7 +79,6 @@ class AppliedForm(models.Model):
     status = models.ForeignKey(FormStatus, related_name='form_status', on_delete=models.DO_NOTHING)
     ext_number = models.CharField(max_length=20, blank=True, null=True)
     reason = models.CharField(max_length=2000, blank=True, null=True)
-    total = models.IntegerField(default=0)
     admin_comment = models.CharField(max_length=200, blank=True, null=True)
     create_at = models.DateTimeField(auto_now_add=True, editable=True)  # 建立日期
     create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
@@ -97,10 +96,8 @@ class AppliedItem(models.Model):
     item_code = models.CharField(max_length=10)
     spec = models.CharField(max_length=200)
     model = models.CharField(max_length=200, blank=True, null=True)
-    price = models.FloatField(default=0)
     qty = models.IntegerField(default=0)
     unit = models.CharField(max_length=10)
-    amount = models.IntegerField(default=0)
     comment = models.CharField(max_length=2000, blank=True, null=True)
     received_qty = models.IntegerField(default=0)
 

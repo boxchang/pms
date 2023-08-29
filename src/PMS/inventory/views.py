@@ -170,12 +170,9 @@ def agree(request, key):
 
 def mail_agree(request, key):
     if request.method == 'GET':
-        total_price = 0
         apply_date, pk = unlock(key)
         form = AppliedForm.objects.get(pk=pk, apply_date=apply_date)
         items = form.applied_form_item.all().order_by('category')
-        for item in items:
-            total_price += item.amount
 
         if form.status.id in [2, 6]:
             action = "done"
@@ -201,12 +198,9 @@ def reject(request, key):
 
 def mail_reject(request, key):
     if request.method == 'GET':
-        total_price = 0
         apply_date, pk = unlock(key)
         form = AppliedForm.objects.get(pk=pk, apply_date=apply_date)
         items = form.applied_form_item.all().order_by('category')
-        for item in items:
-            total_price += item.amount
 
         if form.status.id in [2, 6]:
             action = "done"
@@ -273,20 +267,16 @@ def apply(request):
                 request_file.create_by = request.user
                 request_file.save()
 
-            total_price = 0
             for item in items:
                 obj = AppliedItem()
                 obj.category = item['category']
                 obj.item_code = item['item_code']
                 obj.spec = item['spec']
-                obj.price = item['price']
                 obj.qty = item['qty']
                 obj.unit = item['unit']
-                obj.amount = item['total']
                 obj.comment = item['comment']
                 obj.applied_form = apply
                 obj.save()
-                total_price += obj.amount
 
             action = "email"
             email = apply.requester.manager.email
@@ -326,11 +316,9 @@ def apply(request):
 @login_required
 def detail(request, pk):
     try:
-        total_price = 0
         form = AppliedForm.objects.get(pk=pk)
         items = form.applied_form_item.all().order_by('category')
-        for item in items:
-            total_price += item.amount
+
         status_html = get_invform_status_dropdown(form)
 
         if form.status.id == 1 and form.requester.manager == request.user:
@@ -358,7 +346,7 @@ def TypeAPI(request, category_id):
     type_data = ItemType.objects.filter(category_id=int(category_id)).values('id', 'type_name').order_by('type_code')
     type_list = []
     for data in type_data:
-        type_list.append({'id':data['id'], 'type_name':data['type_name']})
+        type_list.append({'id': data['id'], 'type_name': data['type_name']})
 
     return JsonResponse(type_list, safe = False)
 
@@ -372,22 +360,22 @@ def ItemAPI(request):
         keyword = request.POST.get('keyword')
 
         if type_id:
-            item_data = Item.objects.all().values('item_code', 'spec', 'price', 'unit')
+            item_data = Item.objects.all().values('item_code', 'spec', 'unit')
         else:
-            item_data = Item.objects.exclude(spec__contains="自行輸入").values('item_code', 'spec', 'price', 'unit')
+            item_data = Item.objects.exclude(spec__contains="自行輸入").values('item_code', 'spec', 'unit')
 
         if category_id:
             item_type = ItemType.objects.filter(category_id=category_id)
-            item_data = item_data.filter(item_type__in=item_type).values('item_code', 'spec', 'price', 'unit')
+            item_data = item_data.filter(item_type__in=item_type).values('item_code', 'spec', 'unit')
         if type_id:
-            item_data = item_data.filter(item_type_id=int(type_id)).values('item_code', 'spec', 'price', 'unit')
+            item_data = item_data.filter(item_type_id=int(type_id)).values('item_code', 'spec', 'unit')
         if keyword:
             query = Q(spec__icontains=keyword)
             item_data = item_data.filter(query).values('item_code', 'spec', 'price', 'unit')
 
         for data in item_data:
             category = ItemCategory.objects.get(id=category_id)
-            item_list.append({'item_code': data['item_code'], 'spec': data['spec'], 'price': round(data['price'], 2), 'unit': data['unit'], 'category': category.category_name})
+            item_list.append({'item_code': data['item_code'], 'spec': data['spec'], 'unit': data['unit'], 'category': category.category_name})
 
     return JsonResponse(item_list, safe=False)
 
@@ -403,22 +391,6 @@ def change_status(request):
         obj.save()
 
         return redirect(obj.get_absolute_url())
-
-
-def mail_test(request):
-    # 電子郵件內容樣板
-    email_template = render_to_string(
-        'inventory/email_template.html',
-        {'username': request.user.username}
-    )
-    email = EmailMessage(
-        '註冊成功通知信',  # 電子郵件標題
-        email_template,  # 電子郵件內容
-        settings.EMAIL_HOST_USER,  # 寄件者
-        ['hsiangchih.chang@tw.eagleburgmann.com']  # 收件者
-    )
-    email.fail_silently = False
-    email.send()
 
 
 def recieved(request, pk):
@@ -472,18 +444,14 @@ def pr_apply(request):
                 request_file.create_by = request.user
                 request_file.save()
 
-            total_price = 0
             for item in items:
                 obj = AppliedItem()
                 obj.item_code = item['item_code']
                 obj.spec = item['spec']
-                obj.price = item['price']
                 obj.qty = item['qty']
                 obj.unit = item['unit']
-                obj.amount = item['total']
                 obj.applied_form = apply
                 obj.save()
-                total_price += obj.amount
 
             action = "email"
             email = apply.requester.manager.email
