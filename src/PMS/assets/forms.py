@@ -147,7 +147,7 @@ class AssetModelForm(forms.ModelForm):
             options={
                 "format": "YYYY-MM",
                 "showClose": False,
-                "showClear": False,
+                "showClear": True,
                 "showTodayButton": False,
             }
         )
@@ -156,7 +156,7 @@ class AssetModelForm(forms.ModelForm):
             options={
                 "format": "YYYY-MM-DD",
                 "showClose": False,
-                "showClear": False,
+                "showClear": True,
                 "showTodayButton": False,
             }
         )
