@@ -121,5 +121,5 @@ class SeriesAdmin(admin.ModelAdmin):
     list_display = ('desc', 'key', 'series')
 
 @admin.register(UserType)
-class CarStatusAdmin(admin.ModelAdmin):
+class UserTypeAdmin(admin.ModelAdmin):
     list_display = ('type_name',)
