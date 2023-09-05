@@ -75,6 +75,7 @@ class AppliedForm(models.Model):
     unit = models.ForeignKey(Unit, related_name='applied_unit', on_delete=models.DO_NOTHING)
     requester = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='applied_form_requester')
     approver = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='applied_form_approver', blank=True, null=True)
+    approve_time = models.DateTimeField(null=True)
     apply_date = models.CharField(max_length=10, blank=False, null=False, default=datetime.strftime(datetime.now(), "%Y-%m-%d"))
     status = models.ForeignKey(FormStatus, related_name='form_status', on_delete=models.DO_NOTHING)
     ext_number = models.CharField(max_length=20, blank=True, null=True)

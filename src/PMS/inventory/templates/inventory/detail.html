@@ -104,7 +104,7 @@
         {% endif %}
         {% if isCreater or perms.users.perm_misc_apply %}
         <div style="text-align:center">
-            <a href="{% url 'inv_delete' pk %}" class="btn btn-danger" onclick="return confirm('確認要刪除?')">刪除</a>
+            <a href="{% url 'inv_delete' pk %}" class="btn btn-danger" onclick="return confirm('確認要取消?')">取消</a>
         </div>
         {% endif %}
     </div>

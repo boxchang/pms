@@ -15,7 +15,32 @@ from users.models import CustomUser, Unit
 from django.core.mail import EmailMessage
 from django.conf import settings
 from django.template.loader import render_to_string
+from datetime import datetime, timedelta
 
+
+# 郵件內容
+def send_template_email(action, pk, address):
+    address = apply.requester.manager.email
+    if address:
+        # 電子郵件內容樣板
+        pk = apply.pk
+        key = "{apply_date}{series}".format(apply_date=apply.apply_date.replace('-', ''), series=pk)
+        form = AppliedForm.objects.get(pk=pk)
+        files = Apply_attachment.objects.filter(apply=form)
+        for file in files:
+            file.files.filename = file.files.name[file.files.name.rindex('/') + 1:]
+        email_template = render_to_string('inventory/email_template.html', locals())
+
+        email = EmailMessage(
+            '總務用品請領單簽核通知',  # 電子郵件標題
+            email_template,  # 電子郵件內容
+            settings.EMAIL_HOST_USER,  # 寄件者
+            [address]  # 收件者
+        )
+        email.fail_silently = False
+        email.content_subtype = 'html'
+        email.send()
+        print("郵件成功寄出")
 
 # 滾序號
 def get_series_number(_key, _key_name):
@@ -116,12 +141,7 @@ def import_excel(request):
 
 @login_required
 def apply_list(request):
-    exclude_list = [4, 5, 6]
-    if request.user:
-        list = AppliedForm.objects.filter(Q(requester=request.user)|Q(approver=request.user))
-    if request.user.has_perm("perm_misc_apply"):
-        list = AppliedForm.objects.all()
-
+    list = AppliedForm.objects.all()
     if request.method == 'POST':
         _status = request.POST['status']
         _start_date = str(request.POST['start_date']).replace('/', '-')
@@ -134,21 +154,18 @@ def apply_list(request):
             list = list.filter(apply_date__gte=_start_date, apply_date__lte=_due_date)
         form = InvAppliedHistoryForm(request.POST)
     else:
-        list = list.exclude(status__in=exclude_list)
+        _start_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+        _due_date = datetime.now().strftime('%Y-%m-%d')
+        list = list.filter(apply_date__gte=_start_date, apply_date__lte=_due_date)
         form = InvAppliedHistoryForm()
-
-
+    list = list.filter(Q(requester=request.user) | Q(approver=request.user))
+    list = list.order_by('-apply_date')
     return render(request, 'inventory/list.html', locals())
 
 
 @login_required
 def approve(request):
-    tmp_list = AppliedForm.objects.filter(status_id=1)
-    list = []
-    for data in tmp_list:
-        if data.requester.manager == request.user:
-            list.append(data)
-
+    list = AppliedForm.objects.filter(status_id=1, approver=request.user)
     return render(request, 'inventory/approve.html', locals())
 
 
@@ -163,7 +180,7 @@ def agree(request, key):
         apply_date, pk = unlock(key)
         apply = AppliedForm.objects.get(pk=pk, apply_date=apply_date)
         apply.status = FormStatus.objects.get(pk=2)
-        apply.approver = request.user
+        apply.approve_time = datetime.now()
         apply.save()
     return redirect(reverse('inv_approve'))
 
@@ -178,7 +195,7 @@ def mail_agree(request, key):
             action = "done"
         else:
             form.status = FormStatus.objects.get(pk=2)
-            form.approver = request.user
+            apply.approve_time = datetime.now()
             form.save()
             action = "agree"
 
@@ -191,7 +208,11 @@ def reject(request, key):
         apply_date, pk = unlock(key)
         apply = AppliedForm.objects.get(pk=pk, apply_date=apply_date)
         apply.status = FormStatus.objects.get(pk=6)
+        apply.approve_time = datetime.now()
         apply.save()
+
+        address = apply.requester.email
+        send_template_email(action="reject", pk=apply.pk, address=address)
 
     return redirect(reverse('inv_approve'))
 
@@ -206,8 +227,12 @@ def mail_reject(request, key):
             action = "done"
         else:
             form.status = FormStatus.objects.get(pk=6)
+            form.approve_time = datetime.now()
             form.save()
+
             action = "reject"
+            address = form.requester.email
+            send_template_email(action, pk=form.pk, address=address)
 
         return render(request, 'inventory/email_template.html', locals())
 
@@ -249,6 +274,7 @@ def apply(request):
             apply.status = FormStatus.objects.get(pk=1)
             apply.create_by = request.user
             apply.update_by = request.user
+            apply.approver = request.user.manager
             apply.save()
 
             if request.FILES.get('file1'):
@@ -278,28 +304,8 @@ def apply(request):
                 obj.applied_form = apply
                 obj.save()
 
-            action = "email"
-            email = apply.requester.manager.email
-            if email:
-                # 電子郵件內容樣板
-                pk = apply.pk
-                key = "{apply_date}{series}".format(apply_date=apply.apply_date.replace('-', ''), series=apply.pk)
-                form = AppliedForm.objects.get(pk=pk)
-                files = Apply_attachment.objects.filter(apply=form)
-                for file in files:
-                    file.files.filename = file.files.name[file.files.name.rindex('/') + 1:]
-                email_template = render_to_string('inventory/email_template.html', locals())
-
-                email = EmailMessage(
-                    '總務用品請領單簽核通知',  # 電子郵件標題
-                    email_template,  # 電子郵件內容
-                    settings.EMAIL_HOST_USER,  # 寄件者
-                    [email]  # 收件者
-                )
-                email.fail_silently = False
-                email.content_subtype = 'html'
-                email.send()
-                print("郵件成功寄出")
+            address = apply.requester.manager.email
+            send_template_email(action="email", pk=apply.pk, address=address)
 
         except Exception as e:
             print(e)

@@ -32,7 +32,7 @@ class InvAppliedHistoryForm(forms.ModelForm):
         )
 
         self.fields['start_date'].widget = DatePickerInput(
-            attrs={'value': (datetime.now()-timedelta(days=45)).strftime('%Y-%m-%d')},
+            attrs={'value': (datetime.now()-timedelta(days=30)).strftime('%Y-%m-%d')},
             options={
                 "format": "YYYY-MM-DD",
                 "showClose": False,
