@@ -15,6 +15,7 @@ from PMS.database import database
 from bases.utils import get_invform_status_dropdown
 from bases.views import index
 from users.forms import CurrentCustomUserForm, CustomUser, UserInfoForm, Unit
+from users.models import UserType
 
 
 def add_permission(user, codename):
@@ -112,6 +113,8 @@ def create(request):
         form = CurrentCustomUserForm()
         form.fields['password1'].required = True
         form.fields['password2'].required = True
+        if not request.user.is_superuser:
+            form.fields["user_type"].queryset = UserType.objects.filter(type_name="一般使用者").all()
 
         return render(request, template, {'userForm': form})
 
@@ -145,7 +148,11 @@ def detail(request):
         perm_misc_apply = member.has_perm('users.perm_misc_apply')
         perm_svr_monitor = member.has_perm('users.perm_svr_monitor')
 
-        form = CurrentCustomUserForm(instance=member)
+        if not request.user.is_superuser:
+            form = CurrentCustomUserForm(instance=member, initial={'user_type': 2})
+            form.fields["user_type"].queryset = UserType.objects.filter(type_name="一般使用者").all()
+        else:
+            form = CurrentCustomUserForm(instance=member)
         form.fields['emp_no'].widget.attrs['readonly'] = True
 
         return render(request, template, locals())
