@@ -76,20 +76,40 @@ def statistic(request):
     # 統計數值
     for item_data in item_map:
         item = Item.objects.get(item_code=item_data)
-        sum_qty = 0
-        html_row += "<tr><td>"+item.item_type.category.category_name+"</td><td>"+item.spec+"</td>"
-        for unit_data in unit_map:
-            value = ""
+
+        if item.spec != "自行輸入":
+            html_row += "<tr><td>"+item.item_type.category.category_name+"</td><td>"+item.spec+"</td>"
+            sum_qty = 0
+            for unit_data in unit_map:
+                value = ""
+                for row in rows:  # 每種料號對應的部門數量
+                    if row["spec"]==item.spec and row["unitName"]==unit_data:
+                        value = row["sum_qty"]
+                        sum_qty += value
+                if value:
+                    html_row += "<td style='text-align:right;'>"+str(value)+"</td>"
+                else:
+                    html_row += "<td style='text-align:right;'>0</td>"
+            html_row += "<td style='text-align:right;color:blue;font-weight:bold;'>"+str(sum_qty)+"</td>"
+            html_row += "</tr>"
+        else:  # 自行輸入
             for row in rows:
-                if row["spec"]==item.spec and row["unitName"]==unit_data:
-                    value = row["sum_qty"]
-                    sum_qty += value
-            if value:
-                html_row += "<td style='text-align:right;'>"+str(value)+"</td>"
-            else:
-                html_row += "<td style='text-align:right;'>0</td>"
-        html_row += "<td style='text-align:right;color:blue;font-weight:bold;'>"+str(sum_qty)+"</td>"
-        html_row += "</tr>"
+                if item.item_code == row["item_code"]:
+                    html_row += "<tr><td>" + row['category'] + "</td><td>" + row['spec'] + "</td>"
+                    sum_qty = 0
+                    for unit_data in unit_map:
+                        value = ""
+                        for row2 in rows:
+                            if row["spec"] == row2["spec"] and row["unitName"] == unit_data:
+                                value = row["sum_qty"]
+                                sum_qty += value
+
+                        if value:
+                            html_row += "<td style='text-align:right;'>" + str(value) + "</td>"
+                        else:
+                            html_row += "<td style='text-align:right;'>0</td>"
+                    html_row += "<td style='text-align:right;color:blue;font-weight:bold;'>" + str(sum_qty) + "</td>"
+                    html_row += "</tr>"
     html_row += "</table>"
 
 
@@ -156,8 +176,11 @@ def apply_list(request):
         _due_date = datetime.now().strftime('%Y-%m-%d')
         list = list.filter(apply_date__gte=_start_date, apply_date__lte=_due_date)
         form = InvAppliedHistoryForm()
-    list = list.filter(Q(requester=request.user) | Q(approver=request.user))
-    list = list.order_by('-apply_date')
+
+    if not request.user.has_perm("perm_misc_apply"):  # 不是管理者只能看自己的單據
+        list = list.filter(Q(requester=request.user) | Q(approver=request.user))
+
+    list = list.order_by('-apply_date', '-form_no')
     return render(request, 'inventory/list.html', locals())
 
 
