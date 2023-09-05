@@ -30,7 +30,7 @@ def send_template_email(subject, action, pk, address):
         email_template = render_to_string('inventory/email_template.html', locals())
 
         email = EmailMessage(
-            '總務用品請領單簽核通知',  # 電子郵件標題
+            subject,  # 電子郵件標題
             email_template,  # 電子郵件內容
             settings.EMAIL_HOST_USER,  # 寄件者
             [address]  # 收件者
