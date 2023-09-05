@@ -19,7 +19,7 @@ from datetime import datetime, timedelta
 
 
 # 郵件內容
-def send_template_email(action, pk, address):
+def send_template_email(subject, action, pk, address):
     if address:
         # 電子郵件內容樣板
         form = AppliedForm.objects.get(pk=pk)
@@ -210,7 +210,8 @@ def reject(request, key):
         apply.save()
 
         address = apply.requester.email
-        send_template_email(action="reject", pk=apply.pk, address=address)
+        subject = '總務用品請領單，退單通知!!!!'
+        send_template_email(subject, action="reject", pk=apply.pk, address=address)
 
     return redirect(reverse('inv_approve'))
 
@@ -230,7 +231,8 @@ def mail_reject(request, key):
 
             action = "reject"
             address = form.requester.email
-            send_template_email(action, pk=form.pk, address=address)
+            subject = '總務用品請領單，退單通知!!!!'
+            send_template_email(subject, action, pk=form.pk, address=address)
 
         return render(request, 'inventory/email_template.html', locals())
 
@@ -303,7 +305,8 @@ def apply(request):
                 obj.save()
 
             address = apply.requester.manager.email
-            send_template_email(action="email", pk=apply.pk, address=address)
+            subject = '總務用品請領單簽核通知'
+            send_template_email(subject, action="email", pk=apply.pk, address=address)
 
         except Exception as e:
             print(e)
