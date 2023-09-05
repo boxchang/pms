@@ -20,12 +20,10 @@ from datetime import datetime, timedelta
 
 # 郵件內容
 def send_template_email(action, pk, address):
-    address = apply.requester.manager.email
     if address:
         # 電子郵件內容樣板
-        pk = apply.pk
-        key = "{apply_date}{series}".format(apply_date=apply.apply_date.replace('-', ''), series=pk)
         form = AppliedForm.objects.get(pk=pk)
+        key = "{apply_date}{series}".format(apply_date=form.apply_date.replace('-', ''), series=pk)
         files = Apply_attachment.objects.filter(apply=form)
         for file in files:
             file.files.filename = file.files.name[file.files.name.rindex('/') + 1:]
