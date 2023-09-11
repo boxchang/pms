@@ -295,6 +295,7 @@ def apply(request):
             apply.ext_number = ext_number
             apply.reason = reason
             apply.status = FormStatus.objects.get(pk=1)
+            apply.category = ItemCategory.objects.filter(category_name=items[0]['category']).first()
             apply.create_by = request.user
             apply.update_by = request.user
             apply.approver = request.user.manager

@@ -22,9 +22,10 @@
             <tr>
                 <th width="5%" style="text-align: center">單號</th>
                 <th width="10%" style="text-align: center">申請日期</th>
+                <th width="10%" style="text-align: center">類別</th>
                 <th width="15%" style="text-align: center">申請部門</th>
                 <th width="10%" style="text-align: center">申請人</th>
-                <th width="25%" style="text-align: center">原因</th>
+                <th width="15%" style="text-align: center">原因</th>
                 <th width="10%" style="text-align: center">狀態</th>
                 <th width="10%"></th>
             </tr>
@@ -35,6 +36,7 @@
                 <tr>
                     <td style="text-align: center">{{ data.form_no }}</td>
                     <td style="text-align: center">{{ data.apply_date }}</td>
+                    <td style="text-align: center">{{ data.category }}</td>
                     <td style="text-align: center">{{ data.unit }}</td>
                     <td style="text-align: center">{{ data.requester }}</td>
                     <td style="text-align: left">{{ data.reason }}</td>
