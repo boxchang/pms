@@ -675,7 +675,7 @@ def prod_sap_file(request):
         font_style.font.bold = True
 
         columns = ['afrud_pernr', 'afrud_budat', 'afvgd_arbpl', 'afrud_aufnr', 'afrud_rueck', 'caufvd_matnr',
-                   'afrud_ism01', 'afrud_ism02', 'afrud_ism03']
+                   'afrud_ism01', 'afrud_ism02', 'afrud_ism03', 'Yield to Confirm', 'Scrap to Confirm', 'ConfText']
 
         for col_num in range(len(columns)):
             ws.write(row_num, col_num, columns[col_num], font_style)
@@ -698,6 +698,9 @@ def prod_sap_file(request):
             ws.write(row_num, 6, "0", font_style)  # setting time
             ws.write(row_num, 7, record.mach_time, font_style)  # machine time
             ws.write(row_num, 8, record.labor_time, font_style)  # labor time
+            ws.write(row_num, 9, record.good_qty, font_style)  # Yield to Confirm
+            ws.write(row_num, 10, record.ng_qty, font_style)  # Scrap to Confirm
+            ws.write(row_num, 11, record.comment, font_style)  # ConfText
         wb.save(response)
         return response
     return render(request, 'production/export.html', locals())
