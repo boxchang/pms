@@ -117,7 +117,7 @@ class RecordForm(forms.ModelForm):
     mach_time = forms.CharField(required=False, label=_('mach_time'))
     good_qty = forms.IntegerField(required=True, label=_('good_qty'))
     ng_qty = forms.IntegerField(required=True, label=_('ng_qty'), initial=0)
-    comment = forms.CharField(required=False, label=_('comment'))
+    comment = forms.CharField(required=False, label=_('comment'), max_length=40)
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
