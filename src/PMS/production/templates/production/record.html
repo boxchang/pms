@@ -112,13 +112,12 @@ document.onkeydown = hotkey; //當onkeydown 事件發生時調用hotkey函數
                 $("#id_labor_time").val(init_labor_time);
                 $("#id_mach_time").val(init_mach_time);
                 $("#id_good_qty").val(init_good_qty);
+                $("#id_step_no").val(data.step_no);
+                $("#id_work_center").val(data.work_center);
                 $("#hid_std_labor_time").val(data.labor_time);
                 $("#hid_worked_labor_time").val(data.worked_labor_time);
                 $("#hid_worked_good_qty").val(data.worked_good_qty);
                 $("#hid_wo_qty").val(data.wo_qty);
-                $("#hid_step_no").val(data.step_no);
-                $("#hid_work_center").val(data.work_center);
-
             }
         });
     }
@@ -169,8 +168,6 @@ document.onkeydown = hotkey; //當onkeydown 事件發生時調用hotkey函數
                 <input type="hidden" name="hid_worked_labor_time" id="hid_worked_labor_time">
                 <input type="hidden" name="hid_worked_good_qty" id="hid_worked_good_qty">
                 <input type="hidden" name="hid_wo_qty" id="hid_wo_qty">
-                <input type="hidden" name="hid_step_no" id="hid_step_no">
-                <input type="hidden" name="hid_work_center" id="hid_work_center">
             </form>
         </div>
         <div class="col-1"></div>

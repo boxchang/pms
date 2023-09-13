@@ -64,7 +64,7 @@ def record(request):
         username = request.POST.get('username')
         sap_emp_no = request.POST.get('sap_emp_no')
         wo_no = request.POST.get('wo_no')
-        work_center = request.POST.get('hid_work_center')
+        work_center = request.POST.get('work_center')
         item_no = request.POST.get('item_no')
         spec = request.POST.get('spec')
         cfm_code = request.POST.get('cfm_code')
@@ -73,7 +73,7 @@ def record(request):
         mach_time = request.POST.get('mach_time')
         good_qty = request.POST.get('good_qty')
         ng_qty = request.POST.get('ng_qty')
-        step_no = request.POST.get('hid_step_no')
+        step_no = request.POST.get('step_no')
         step_code = request.POST.get('step_code')
         step_name = request.POST.get('step_name')
         plant = request.POST.get('plant')
@@ -184,12 +184,12 @@ def record_edit(request, pk):
         emp_no = request.POST.get('emp_no')
         username = request.POST.get('username')
         wo_no = request.POST.get('wo_no')
-        work_center = request.POST.get('hid_work_center')
+        work_center = request.POST.get('work_center')
         item_no = request.POST.get('item_no')
         spec = request.POST.get('spec')
         cfm_code = request.POST.get('cfm_code')
         ctr_code = request.POST.get('ctr_code')
-        step_no = request.POST.get('hid_step_no')
+        step_no = request.POST.get('step_no')
         step_code = request.POST.get('step_code')
         step_name = request.POST.get('step_name')
         comment = request.POST.get('comment')
@@ -667,6 +667,9 @@ def prod_sap_file(request):
         ws.col(6).width = 256 * 20
         ws.col(7).width = 256 * 20
         ws.col(8).width = 256 * 20
+        ws.col(9).width = 256 * 20
+        ws.col(10).width = 256 * 20
+        ws.col(11).width = 256 * 20
 
         # Sheet header, first row
         row_num = 0

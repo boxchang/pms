@@ -98,7 +98,7 @@ class RecordForm(forms.ModelForm):
     class Meta:
         model = Record
         fields = ('worked_labor_time', 'record_dt', 'plant', 'wo_no', 'item_no', 'spec', 'emp_no', 'username', 'sap_emp_no', 'step_code', 'step_name', 'cfm_code',
-                  'labor_time', 'mach_time', 'good_qty', 'ng_qty', 'ctr_code', 'comment')
+                  'labor_time', 'mach_time', 'good_qty', 'ng_qty', 'ctr_code', 'comment', 'step_no', 'work_center')
 
     record_dt = forms.DateField(label=_('record_date'))
     worked_labor_time = forms.DateField(required=False, label=_('worked_labor_time'))
@@ -118,6 +118,8 @@ class RecordForm(forms.ModelForm):
     good_qty = forms.IntegerField(required=True, label=_('good_qty'))
     ng_qty = forms.IntegerField(required=True, label=_('ng_qty'), initial=0)
     comment = forms.CharField(required=False, label=_('comment'), max_length=40)
+    step_no = forms.CharField(required=True)
+    work_center = forms.CharField(required=True)
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -131,6 +133,8 @@ class RecordForm(forms.ModelForm):
         self.fields['step_name'].widget.attrs['readonly'] = True
         self.fields['ctr_code'].widget.attrs['readonly'] = True
         self.fields['worked_labor_time'].widget.attrs['readonly'] = True
+        self.fields['step_no'].widget = forms.HiddenInput()
+        self.fields['work_center'].widget = forms.HiddenInput()
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.form_show_errors = True
@@ -167,6 +171,10 @@ class RecordForm(forms.ModelForm):
                 Div('labor_time', css_class='col-md-3'),
                 css_class='row'),
             Div(Submit('submit', _('save'), css_class='btn btn-info m-3'),
+                css_class='row'),
+            Div(
+                Div('step_no', css_class='col-md-2'),
+                Div('work_center', css_class='col-md-2'),
                 css_class='row'),
         )
 
