@@ -80,7 +80,7 @@ class Record(models.Model):
     mach_time = models.FloatField(default=0)
     good_qty = models.IntegerField(default=0)
     ng_qty = models.IntegerField(default=0)
-    comment = models.CharField(max_length=500, blank=True, null=True)
+    comment = models.CharField(max_length=40, blank=True, null=True)
     sap_flag = models.BooleanField(default=False)
     update_at = models.DateTimeField(auto_now=True, null=True)
     update_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='record_update_by')
