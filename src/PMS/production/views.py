@@ -718,12 +718,12 @@ def record_export(request):
         due_date = request.POST.get('due_date')
 
         with connection.cursor() as cursor:
-            sql = """select plant,wo_no,user.sap_emp_no,unit.unitName,user.username,step_code,step_name,record_dt,labor_time,mach_time,good_qty,ng_qty,comment,r.update_at 
+            sql = """select plant,wo_no,user.emp_no,unit.unitName,user.username,step_code,step_name,record_dt,labor_time,mach_time,good_qty,ng_qty,comment,r.update_at 
                         from production_record r,users_customuser user, users_unit unit 
                         where r.sap_emp_no = user.sap_emp_no and user.unit_id = unit.id
                         and record_dt between '{start_date}' and '{due_date}'
                         union
-                        select '','',user.sap_emp_no,unit.unitName,user.username,w.type_code,w.type_name,record_dt,labor_time,'','','',comment, r.create_at 
+                        select '','',user.emp_no,unit.unitName,user.username,w.type_code,w.type_name,record_dt,labor_time,'','','',comment, r.create_at 
                         from production_record2 r,users_customuser user, users_unit unit , production_worktype w
                         where r.sap_emp_no=user.sap_emp_no and user.unit_id = unit.id and r.work_type_id = w.type_code
                         and record_dt between '{start_date}' and '{due_date}'
@@ -757,7 +757,7 @@ def record_export(request):
         font_style = xlwt.XFStyle()
         font_style.font.bold = True
 
-        columns = ['廠別', '工單', 'SAP EMP NO', '部門', '姓名', '站點碼',
+        columns = ['廠別', '工單', 'EMP NO', '部門', '姓名', '站點碼',
                    '站點名稱', '報工日期', '人時', '機時', '良品數量', 'NG數量', 'Comment', '紀錄時間']
 
         for col_num in range(len(columns)):
@@ -771,7 +771,7 @@ def record_export(request):
 
             ws.write(row_num, 0, record['plant'], font_style)  # 廠別
             ws.write(row_num, 1, record['wo_no'], font_style)  # 工單
-            ws.write(row_num, 2, record['sap_emp_no'], font_style)  # SAP EMP NO
+            ws.write(row_num, 2, record['emp_no'], font_style)  # EMP NO
             ws.write(row_num, 3, record['unitName'], font_style)  # 部門
             ws.write(row_num, 4, record['username'], font_style)  # 姓名
             ws.write(row_num, 5, record['step_code'], font_style)  # 站點碼
