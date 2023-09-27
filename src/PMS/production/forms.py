@@ -220,3 +220,46 @@ class RecordManageForm(forms.ModelForm):
                 "showTodayButton": False,
             }
         )
+
+
+class RecordHistoryForm(forms.ModelForm):
+    class Meta:
+        model = Record
+        fields = ('start_date', 'due_date',)
+
+    start_date = forms.DateField(label="日期(起)")
+    due_date = forms.DateField(label="日期(迄)")
+
+    def __init__(self, *args, submit_title='Submit', **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.form_show_errors = True
+
+        self.helper.layout = Layout(
+            Div(Div('start_date', css_class='col-md-3'),
+                Div('due_date', css_class='col-md-3'),
+                Div(Submit('submit', _('export'), css_class='btn btn-info'), css_class='col-md-3 d-flex align-items-center mt-3'),
+                css_class='row'),
+        )
+
+        self.fields['start_date'].widget = DatePickerInput(
+            attrs={'value': (datetime.now()-timedelta(days=45)).strftime('%Y-%m-%d')},
+            options={
+                "format": "YYYY-MM-DD",
+                "showClose": False,
+                "showClear": False,
+                "showTodayButton": False,
+            }
+        )
+
+        self.fields['due_date'].widget = DatePickerInput(
+            attrs={'value': datetime.now().strftime('%Y-%m-%d')},
+            options={
+                "format": "YYYY-MM-DD",
+                "showClose": False,
+                "showClear": False,
+                "showTodayButton": False,
+            }
+        )

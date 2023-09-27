@@ -1,6 +1,7 @@
 import os
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import default_storage
+from django.db import connection
 from django.db.models import Sum, Max
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -12,7 +13,9 @@ from django.urls import reverse
 from django.utils.translation import get_language
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
-from production.forms import RecordForm, RecordSearchForm, WoSearchForm, RecordManageForm, ExportForm
+
+from bases.utils import django_go_sql
+from production.forms import RecordForm, RecordSearchForm, WoSearchForm, RecordManageForm, ExportForm, RecordHistoryForm
 from production.models import ExcelTemp, WODetail, Record, Record2, WorkType, COOIS_Record, WOMain
 from users.models import CustomUser
 from django.utils.translation import gettext_lazy as _
@@ -707,3 +710,80 @@ def prod_sap_file(request):
         wb.save(response)
         return response
     return render(request, 'production/export.html', locals())
+
+#Excel
+def record_export(request):
+    if request.method == 'POST':
+        start_date = request.POST.get('start_date')
+        due_date = request.POST.get('due_date')
+
+        with connection.cursor() as cursor:
+            sql = """select plant,wo_no,user.sap_emp_no,unit.unitName,user.username,step_code,step_name,record_dt,labor_time,mach_time,good_qty,ng_qty,comment,r.update_at 
+                        from production_record r,users_customuser user, users_unit unit 
+                        where r.sap_emp_no = user.sap_emp_no and user.unit_id = unit.id
+                        and record_dt between '{start_date}' and '{due_date}'
+                        union
+                        select '','',user.sap_emp_no,unit.unitName,user.username,w.type_code,w.type_name,record_dt,labor_time,'','','',comment, r.create_at 
+                        from production_record2 r,users_customuser user, users_unit unit , production_worktype w
+                        where r.sap_emp_no=user.sap_emp_no and user.unit_id = unit.id and r.work_type_id = w.type_code
+                        and record_dt between '{start_date}' and '{due_date}'
+                        order by unitName, username, record_dt""".format(start_date=start_date, due_date=due_date)
+            records = django_go_sql(sql)
+
+        file_name = "Record_{record_dt}.xls".format(record_dt=start_date)
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = "attachment; filename={file_name}".format(file_name=file_name)
+
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('record')
+        ws.col(0).width = 256 * 20
+        ws.col(1).width = 256 * 20
+        ws.col(2).width = 256 * 20
+        ws.col(3).width = 256 * 20
+        ws.col(4).width = 256 * 20
+        ws.col(5).width = 256 * 20
+        ws.col(6).width = 256 * 20
+        ws.col(7).width = 256 * 20
+        ws.col(8).width = 256 * 20
+        ws.col(9).width = 256 * 20
+        ws.col(10).width = 256 * 20
+        ws.col(11).width = 256 * 20
+        ws.col(12).width = 256 * 20
+        ws.col(13).width = 256 * 20
+
+        # Sheet header, first row
+        row_num = 0
+
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+
+        columns = ['廠別', '工單', 'SAP EMP NO', '部門', '姓名', '站點碼',
+                   '站點名稱', '報工日期', '人時', '機時', '良品數量', 'NG數量', 'Comment', '紀錄時間']
+
+        for col_num in range(len(columns)):
+            ws.write(row_num, col_num, columns[col_num], font_style)
+
+        # Sheet body, remaining rows
+        font_style = xlwt.XFStyle()
+
+        for record in records:
+            row_num += 1
+
+            ws.write(row_num, 0, record['plant'], font_style)  # 廠別
+            ws.write(row_num, 1, record['wo_no'], font_style)  # 工單
+            ws.write(row_num, 2, record['sap_emp_no'], font_style)  # SAP EMP NO
+            ws.write(row_num, 3, record['unitName'], font_style)  # 部門
+            ws.write(row_num, 4, record['username'], font_style)  # 姓名
+            ws.write(row_num, 5, record['step_code'], font_style)  # 站點碼
+            ws.write(row_num, 6, record['step_name'], font_style)  # 站點名稱
+            ws.write(row_num, 7, record['record_dt'], font_style)  # 報工日期
+            ws.write(row_num, 8, record['labor_time'], font_style)  # 人時
+            ws.write(row_num, 9, record['mach_time'], font_style)  # 機時
+            ws.write(row_num, 10, record['good_qty'], font_style)  # 良品數量
+            ws.write(row_num, 11, record['ng_qty'], font_style)  # NG數量
+            ws.write(row_num, 12, record['comment'], font_style)  # Comment
+            ws.write(row_num, 13, record['update_at'], font_style)  # 紀錄時間
+        wb.save(response)
+        return response
+    form = RecordHistoryForm()
+    return render(request, 'production/record_excel.html', locals())
