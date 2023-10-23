@@ -6,6 +6,8 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
 from django.db.models import Count
+
+from assets import encode
 from assets.encode import EncodeInterface, EncodeIT, EncodeGeneral, EncodeOffice
 from assets.forms import AssetModelForm, AssetSearchForm
 from assets.models import Asset, AssetArea, AssetCategory, AssetStatus, AssetType, Brand, Doc_attachment, Label_attachment, Pic_attachment, Series, Location, Unit
@@ -168,10 +170,10 @@ def get_assets_queryset(request):
     return results
 
 
-#查詢
+# 查詢
 def search(request):
     page_number = 1
-    _asset_no = ""
+    _label_no = ""
     _status = ""
     _category = ""
     _type = ""
@@ -192,7 +194,7 @@ def search(request):
     assets = Asset.objects.all()
     if request.method == "POST":
         clean_session(request)
-        _asset_no = request.POST.get('asset_no')
+        _label_no = request.POST.get('label_no')
         _status = request.POST.get('status')
         _category = request.POST.get('category')
         _type = request.POST.get('type')
@@ -212,8 +214,8 @@ def search(request):
 
     if request.method == "GET":
         page_number = request.GET.get('page')
-        if 'asset_no' in request.session:
-            _asset_no = request.session['asset_no']
+        if 'label_no' in request.session:
+            _label_no = request.session['label_no']
 
         if 'status' in request.session:
             _status = request.session['status']
@@ -264,9 +266,9 @@ def search(request):
             _condition5 = request.session['condition5']
 
 
-    if _asset_no:
-        request.session['asset_no'] = _asset_no
-        assets = assets.filter(Q(asset_no__icontains=_asset_no) | Q(sap_asset_no__icontains=_asset_no))
+    if _label_no:
+        request.session['label_no'] = _label_no
+        assets = assets.filter(Q(label_no__icontains=_label_no) | Q(sap_asset_no__icontains=_label_no))
 
     if _status:
         request.session['status'] = _status
@@ -361,7 +363,8 @@ def create(request):
 
             tmp_form = form.save(commit=False)
             if _auto_encode:
-                tmp_form.asset_no = get_series_number(_category, _type, _location)
+                tmp_form.label_no = get_series_number(_category, _type, _location)
+            tmp_form.asset_no = encode.get_series_number("asset_no", "資產編號")
             tmp_form.create_by = request.user
             tmp_form.update_by = request.user
             form.save()
