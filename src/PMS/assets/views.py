@@ -761,7 +761,7 @@ def print_label(request, pk):
         fieldnames = ['NUMBER']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
-        writer.writerow({'NUMBER': asset.asset_no})
+        writer.writerow({'NUMBER': asset.label_no})
     print_result = print_cmd(file_name, ASSET_BTW_FILE)
     delete_csv(file_name)
     result = {}
