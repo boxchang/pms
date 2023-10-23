@@ -116,7 +116,7 @@ def export_assets_xls(request):
     return response
 
 
-#分頁查詢
+# 匯出Excel查詢
 def get_assets_queryset(request):
     assets = Asset.objects.all()
     if 'asset_no' in request.session:
@@ -149,6 +149,7 @@ def get_assets_queryset(request):
 
     if 'scrap' in request.session:
         _scrap = request.session['scrap']
+    else:
         assets = assets.exclude(status=AssetStatus.objects.get(status_name="已報廢"))
 
     if 'keeper_unit' in request.session:
