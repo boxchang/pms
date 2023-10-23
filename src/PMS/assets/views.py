@@ -73,6 +73,7 @@ def export_assets_xls(request):
     ws.col(13).width = 256 *20
     ws.col(14).width = 256 *20
     ws.col(15).width = 256 * 20
+    ws.col(16).width = 256 * 20
 
     # Sheet header, first row
     row_num = 0
@@ -80,7 +81,7 @@ def export_assets_xls(request):
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
 
-    columns = ['標籤編號', '資產類別', '資產種類', '品牌', '型號', '地區', '負責單位', '保管單位', '保管人姓名', '放置地點', '放置地點描述', '採購日期', '採購金額', '狀態', '描述', 'SAP資產編號']
+    columns = ['資產編碼', '標籤編號', '資產類別', '資產種類', '品牌', '型號', '地區', '負責單位', '保管單位', '保管人姓名', '放置地點', '放置地點描述', '採購日期', '採購金額', '狀態', '描述', 'SAP資產編號']
 
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
@@ -97,22 +98,23 @@ def export_assets_xls(request):
         else:
             _keeper_unit = ""
 
-        ws.write(row_num, 0, data.label_no, font_style)
-        ws.write(row_num, 1, data.category.category_name, font_style)
-        ws.write(row_num, 2, data.type.type_name, font_style)
-        ws.write(row_num, 3, data.brand.brand_name, font_style)
-        ws.write(row_num, 4, data.model, font_style)
-        ws.write(row_num, 5, data.area.area_name, font_style)
-        ws.write(row_num, 6, data.owner_unit.unit_name, font_style)
-        ws.write(row_num, 7, _keeper_unit, font_style)
-        ws.write(row_num, 8, data.keeper_name, font_style)
-        ws.write(row_num, 9, data.location.location_name, font_style)
-        ws.write(row_num, 10, data.location_desc, font_style)
-        ws.write(row_num, 11, data.pur_date, font_style)
-        ws.write(row_num, 12, data.pur_price, font_style)
-        ws.write(row_num, 13, data.status.status_name, font_style)
-        ws.write(row_num, 14, data.desc, font_style)
-        ws.write(row_num, 15, data.sap_asset_no, font_style)
+        ws.write(row_num, 0, data.asset_no, font_style)
+        ws.write(row_num, 1, data.label_no, font_style)
+        ws.write(row_num, 2, data.category.category_name, font_style)
+        ws.write(row_num, 3, data.type.type_name, font_style)
+        ws.write(row_num, 4, data.brand.brand_name, font_style)
+        ws.write(row_num, 5, data.model, font_style)
+        ws.write(row_num, 6, data.area.area_name, font_style)
+        ws.write(row_num, 7, data.owner_unit.unit_name, font_style)
+        ws.write(row_num, 8, _keeper_unit, font_style)
+        ws.write(row_num, 9, data.keeper_name, font_style)
+        ws.write(row_num, 10, data.location.location_name, font_style)
+        ws.write(row_num, 11, data.location_desc, font_style)
+        ws.write(row_num, 12, data.pur_date, font_style)
+        ws.write(row_num, 13, data.pur_price, font_style)
+        ws.write(row_num, 14, data.status.status_name, font_style)
+        ws.write(row_num, 15, data.desc, font_style)
+        ws.write(row_num, 16, data.sap_asset_no, font_style)
 
     wb.save(response)
     return response
