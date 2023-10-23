@@ -27,7 +27,7 @@ class BorrowItem(models.Model):
     asset = models.ForeignKey(Asset, related_name='borrow_asset', on_delete=models.DO_NOTHING)
 
     def __str__(self):
-        return self.asset.asset_no + " " + self.asset.model + " " + self.asset.desc
+        return self.asset.label_no + " " + self.asset.model + " " + self.asset.desc
 
 
 class BPMDept(models.Model):

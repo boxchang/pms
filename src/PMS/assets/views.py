@@ -78,7 +78,7 @@ def export_assets_xls(request):
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
 
-    columns = ['資產編號', '資產類別', '資產種類', '品牌', '型號', '地區', '負責單位', '保管單位', '保管人姓名', '放置地點', '放置地點描述', '採購日期', '採購金額', '狀態', '描述', 'SAP資產編號']
+    columns = ['標籤編號', '資產類別', '資產種類', '品牌', '型號', '地區', '負責單位', '保管單位', '保管人姓名', '放置地點', '放置地點描述', '採購日期', '採購金額', '狀態', '描述', 'SAP資產編號']
 
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
@@ -95,7 +95,7 @@ def export_assets_xls(request):
         else:
             _keeper_unit = ""
 
-        ws.write(row_num, 0, data.asset_no, font_style)
+        ws.write(row_num, 0, data.label_no, font_style)
         ws.write(row_num, 1, data.category.category_name, font_style)
         ws.write(row_num, 2, data.type.type_name, font_style)
         ws.write(row_num, 3, data.brand.brand_name, font_style)
@@ -119,9 +119,9 @@ def export_assets_xls(request):
 # 匯出Excel查詢
 def get_assets_queryset(request):
     assets = Asset.objects.all()
-    if 'asset_no' in request.session:
-        _asset_no = request.session['asset_no']
-        assets = assets.filter(asset_no__icontains=_asset_no)
+    if 'label_no' in request.session:
+        _label_no = request.session['label_no']
+        assets = assets.filter(label_no__icontains=_label_no)
 
     if 'status' in request.session:
         _status = request.session['status']

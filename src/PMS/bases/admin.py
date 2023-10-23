@@ -104,7 +104,7 @@ class BrandAdmin(admin.ModelAdmin):
 
 @admin.register(Asset)
 class AssetAdmin(admin.ModelAdmin):
-    list_display = ('asset_no', 'category', 'type', 'brand', 'model', 'desc', 'area', 'owner_unit', 'keeper_unit', 'keeper_no', 'keeper_name', 'location', 'pur_date', 'pur_price')
+    list_display = ('label_no', 'category', 'type', 'brand', 'model', 'desc', 'area', 'owner_unit', 'keeper_unit', 'keeper_no', 'keeper_name', 'location', 'pur_date', 'pur_price')
 
 
 @admin.register(AssetStatus)

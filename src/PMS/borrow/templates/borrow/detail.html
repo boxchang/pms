@@ -56,7 +56,7 @@
                 <table class="table table-bordered table-striped">
                     <thead class="thead-dark">
                         <tr>
-                            <th>資產編號</th>
+                            <th>標籤編號</th>
                             <th>資產類別</th>
                             <th>品牌</th>
                             <th>物品</th>
@@ -67,7 +67,7 @@
                     <tbody>
                     {% for item in items %}
                         <tr>
-                            <td>{{ item.asset.asset_no }}</td>
+                            <td>{{ item.asset.label_no }}</td>
                             <td>{{ item.asset.type }}</td>
                             <td>{{ item.asset.brand }}</td>
                             <td>{{ item.asset.model }}</td>

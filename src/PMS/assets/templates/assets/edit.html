@@ -34,7 +34,7 @@ AMS - Asset Edit
         asset_type = $('#id_type');
         asset_brand = $('#id_brand');
         auto_encode = $('#id_auto_encode')
-        asset_no = $('#id_asset_no')
+        label_no = $('#id_label_no')
 
         changeSelect(0, asset_type, asset_brand);
 
@@ -46,9 +46,9 @@ AMS - Asset Edit
 
         auto_encode.change(function(){
             if(auto_encode[0].checked) {
-                asset_no.prop('readonly', true);
+                label_no.prop('readonly', true);
             } else {
-                asset_no.prop('readonly', false);
+                label_no.prop('readonly', false);
             }
         })
 
@@ -56,7 +56,7 @@ AMS - Asset Edit
             category.attr("disabled", true);
             asset_type.attr("disabled", true);
             auto_encode.attr("disabled", true);
-            asset_no.prop('readonly', true);
+            label_no.prop('readonly', true);
         }
 
         $("#edit_form").submit(function() {
@@ -65,7 +65,7 @@ AMS - Asset Edit
             asset_type.attr("disabled", false);
             asset_brand.attr("disabled", false);
             auto_encode.attr("disabled", false);
-            asset_no.prop('readonly', false);
+            label_no.prop('readonly', false);
         })
 
     })

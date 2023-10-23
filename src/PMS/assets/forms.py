@@ -11,9 +11,9 @@ class AssetSearchForm(forms.ModelForm):
     class Meta:
         model = Asset
         fields = (
-            'asset_no', 'status', 'category', 'type', 'brand', 'area', 'location')
+            'label_no', 'status', 'category', 'type', 'brand', 'area', 'location')
 
-    asset_no = forms.CharField(required=False, label="資產編號(包含SAP資產編號)")
+    label_no = forms.CharField(required=False, label="標籤編號(包含SAP資產編號)")
     category = forms.ModelChoiceField(required=False, label="資產類別", queryset=AssetCategory.objects.all())
     type = forms.ModelChoiceField(required=False, label="資產種類", queryset=AssetType.objects.all())
     brand = forms.ModelChoiceField(required=False, label="品牌", queryset=Brand.objects.all())
@@ -36,7 +36,7 @@ class AssetSearchForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset('Search Condition',
                 Div(
-                    Div('asset_no', css_class='col-md-4'),
+                    Div('label_no', css_class='col-md-4'),
                     Div('status', css_class='col-md-4'),
                     Div('scrap', css_class='col-md-4'),
                     css_class='row'),
@@ -62,11 +62,11 @@ class AssetSearchForm(forms.ModelForm):
 class AssetModelForm(forms.ModelForm):
     class Meta:
         model = Asset
-        fields = ('asset_no', 'auto_encode', 'category', 'type', 'brand', 'model', 'desc', 'owner_unit', 'keeper_unit',
+        fields = ('label_no', 'auto_encode', 'category', 'type', 'brand', 'model', 'desc', 'owner_unit', 'keeper_unit',
             'keeper_name', 'location', 'location_desc', 'pur_date', 'pur_price', 'area', 'status', 'comment',
                   'scrap_date', 'scrap_reason', 'sap_asset_no')
 
-    asset_no = forms.CharField(required=False, label="資產編號")
+    label_no = forms.CharField(required=False, label="標籤編號")
     auto_encode = forms.BooleanField(required=False, initial=True, label="自動編碼")
     pur_price = forms.IntegerField(required=True, label="採購金額", widget=forms.NumberInput(), initial=0)
     pur_date = forms.CharField(required=False, label="採購年月")
@@ -89,7 +89,7 @@ class AssetModelForm(forms.ModelForm):
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['asset_no'].widget.attrs['readonly'] = True
+        self.fields['label_no'].widget.attrs['readonly'] = True
 
         self.helper = FormHelper()
         self.helper.form_tag = False
@@ -98,7 +98,7 @@ class AssetModelForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset('Main Data',
                 Div(
-                    Div('asset_no', css_class='col-md-4'),
+                    Div('label_no', css_class='col-md-4'),
                     Div('auto_encode', css_class='col-md-4'),
                     Div('status', css_class='col-md-4'),
                     css_class='row'),

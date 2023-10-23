@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 {% endblock %}
 {% block title %}
-AMS - {{ asset.asset_no }} Asset Detail
+AMS - {{ asset.label_no }} Asset Detail
 {% endblock %}
 {% block breadcrumb %}
 
@@ -34,7 +34,7 @@ AMS - {{ asset.asset_no }} Asset Detail
         asset_type = $('#id_type');
         asset_brand = $('#id_brand');
         auto_encode = $('#id_auto_encode')
-        asset_no = $('#id_asset_no')
+        label_no = $('#id_label_no')
 
         changeSelect(0, asset_type, asset_brand);
 
@@ -46,9 +46,9 @@ AMS - {{ asset.asset_no }} Asset Detail
 
         auto_encode.change(function(){
             if(auto_encode[0].checked) {
-                asset_no.prop('readonly', true);
+                label_no.prop('readonly', true);
             } else {
-                asset_no.prop('readonly', false);
+                label_no.prop('readonly', false);
             }
         })
 
@@ -57,7 +57,7 @@ AMS - {{ asset.asset_no }} Asset Detail
             asset_type.attr("disabled", true);
             asset_brand.attr("disabled", true);
             auto_encode.attr("disabled", true);
-            asset_no.prop('readonly', true);
+            label_no.prop('readonly', true);
         }
 
         $("#edit_form").submit(function() {
@@ -66,7 +66,7 @@ AMS - {{ asset.asset_no }} Asset Detail
             asset_type.attr("disabled", false);
             asset_brand.attr("disabled", false);
             auto_encode.attr("disabled", false);
-            asset_no.prop('readonly', false);
+            label_no.prop('readonly', false);
         })
 
         $("#print_label").click(function(){
@@ -115,8 +115,8 @@ AMS - {{ asset.asset_no }} Asset Detail
                     <div class="row">
                         <div class="col-2 p-2" style="text-align:right;">資產類別：</div>
                         <div class="col-2 p-2 content">{{ asset.category }}</div>
-                        <div class="col-2 p-2" style="text-align:right;">資產編號：</div>
-                        <div class="col-2 p-2 content">{{ asset.asset_no }}</div>
+                        <div class="col-2 p-2" style="text-align:right;">標籤編號：</div>
+                        <div class="col-2 p-2 content">{{ asset.label_no }}</div>
                         <div class="col-2 p-2" style="text-align:right;">自動編碼：</div>
                         <div class="col-2 p-2 content">{{ asset.auto_encode }}</div>
                     </div>

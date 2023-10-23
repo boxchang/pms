@@ -114,6 +114,7 @@ class AssetStatus(models.Model):
 
 class Asset(models.Model):
     asset_no = models.CharField(max_length=50, blank=False, null=False, unique=True)
+    label_no = models.CharField(max_length=50, blank=True, null=True)
     auto_encode = models.BooleanField(default=True)
     category = models.ForeignKey(
         AssetCategory, related_name='asset_category', on_delete=models.DO_NOTHING)
@@ -149,7 +150,7 @@ class Asset(models.Model):
     comment = models.CharField(max_length=5000, blank=True, null=True)
 
     def __str__(self):
-        return self.asset_no
+        return self.label_no
 
     def get_absolute_url(self):
         return reverse('assets_detail', kwargs={'pk': self.pk})
