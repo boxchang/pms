@@ -89,7 +89,7 @@ class AssetModelForm(forms.ModelForm):
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
-
+        self.fields['label_no'].widget.attrs['readonly'] = True
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.form_show_errors = True
