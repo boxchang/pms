@@ -66,7 +66,7 @@ class AssetModelForm(forms.ModelForm):
             'keeper_name', 'location', 'location_desc', 'pur_date', 'pur_price', 'area', 'status', 'comment',
                   'scrap_date', 'scrap_reason', 'sap_asset_no')
 
-    label_no = forms.CharField(required=True, label="標籤編號")
+    label_no = forms.CharField(required=False, label="標籤編號")
     auto_encode = forms.BooleanField(required=False, initial=True, label="自動編碼")
     pur_price = forms.IntegerField(required=True, label="採購金額", widget=forms.NumberInput(), initial=0)
     pur_date = forms.CharField(required=False, label="採購年月")
