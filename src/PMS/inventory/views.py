@@ -148,9 +148,8 @@ def import_excel(request):
                     _key_name = type.type_name
                     series = get_series_number(_key, _key_name)
                     item_code = type.category.catogory_code+type.type_code+str(series).zfill(5)
-                    item = Item.objects.update_or_create(item_type=type, vendor_code=vendor_code, spec=spec, unit=unit,
-                                                         price=price, create_by=request.user, update_by=request.user,
-                                                             defaults={'item_code': item_code,})
+                    item = Item.objects.update_or_create(item_code=item_code, defaults={'item_type': type, 'vendor_code': vendor_code, 'spec': spec, 'unit': unit,
+                                                         'price': price, 'create_by': request.user, 'update_by': request.user})
         except Exception as e:
             print(e)
 
