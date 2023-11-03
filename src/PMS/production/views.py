@@ -718,7 +718,7 @@ def record_export(request):
         due_date = request.POST.get('due_date')
 
         with connection.cursor() as cursor:
-            sql = """select plant,wo_no,user.emp_no,unit.unitName,user.username,step_code,step_name,record_dt,labor_time,mach_time,good_qty,ng_qty,comment,r.update_at 
+            sql = """select plant,wo_no,user.emp_no,unit.unitName,user.username,step_code,step_name,record_dt,labor_time,mach_time,good_qty,ng_qty,comment,r.update_at,r.work_center 
                         from production_record r,users_customuser user, users_unit unit 
                         where r.sap_emp_no = user.sap_emp_no and user.unit_id = unit.id
                         and record_dt between '{start_date}' and '{due_date}'
@@ -750,6 +750,7 @@ def record_export(request):
         ws.col(11).width = 256 * 20
         ws.col(12).width = 256 * 20
         ws.col(13).width = 256 * 20
+        ws.col(14).width = 256 * 20
 
         # Sheet header, first row
         row_num = 0
@@ -783,6 +784,7 @@ def record_export(request):
             ws.write(row_num, 11, record['ng_qty'], font_style)  # NG數量
             ws.write(row_num, 12, record['comment'], font_style)  # Comment
             ws.write(row_num, 13, record['update_at'], font_style)  # 紀錄時間
+            ws.write(row_num, 14, record['work_center'], font_style)  # Work Center
         wb.save(response)
         return response
     form = RecordHistoryForm()
