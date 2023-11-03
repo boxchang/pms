@@ -371,7 +371,8 @@ def user_sync(request):
                         user.manager = CustomUser.objects.get(emp_no=row.managerId)
                     user.update_by = request.user
                     user.save()
-            except:
+            except Exception as e:
+                print(e)
                 if not row.leaveDate:
                     user = CustomUser(is_staff=1, is_active=1, user_type_id=2)
                     user.username = row.userName

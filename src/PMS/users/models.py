@@ -139,8 +139,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 
 
-@receiver(models.signals.post_delete, sender=CustomUser)
-def auto_delete_file_on_delete(sender, instance, **kwargs):
-    if instance.files:
-        if os.path.isfile(instance.files.path):
-            os.remove(instance.files.path)
+# @receiver(models.signals.post_delete, sender=CustomUser)
+# def auto_delete_file_on_delete(sender, instance, **kwargs):
+#     if instance.files:
+#         if os.path.isfile(instance.files.path):
+#             os.remove(instance.files.path)
