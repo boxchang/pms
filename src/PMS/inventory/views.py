@@ -132,7 +132,7 @@ def import_excel(request):
                 wb = openpyxl.load_workbook(excel_file)
                 sheet = wb.worksheets[0]
                 for iRow in range(2, sheet.max_row+1):
-                    if not sheet.cell(row=iRow, column=1).value:
+                    if not sheet.cell(row=iRow, column=2).value:
                         break
                     category = sheet.cell(row=iRow, column=2).value
                     category = ItemCategory.objects.get(category_name=category)
