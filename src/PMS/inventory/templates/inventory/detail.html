@@ -33,7 +33,12 @@
                         <div class="col-2 p-2" style="text-align:right;">申請部門：</div>
                         <div class="col-2 p-2 content">{{ form.unit }}</div>
                         <div class="col-2 p-2" style="text-align:right;">申請者：</div>
-                        <div class="col-2 p-2 content">{{ form.requester }} 送單人：{{ form.create_by }}</div>
+                        <div class="col-2 p-2 content">
+                            {{ form.requester }}
+                            {% if form.requester != form.create_by %}
+                                (送單人：{{ form.create_by }})
+                            {% endif %}
+                        </div>
                         <div class="col-2 p-2" style="text-align:right;">分機：</div>
                         <div class="col-2 p-2 content">{{ form.ext_number }}</div>
                     </div>
