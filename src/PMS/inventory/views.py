@@ -177,7 +177,7 @@ def apply_list(request):
         form = InvAppliedHistoryForm()
 
     if not request.user.has_perm("perm_misc_apply"):  # 不是管理者只能看自己的單據
-        list = list.filter(Q(requester=request.user) | Q(approver=request.user))
+        list = list.filter(Q(requester=request.user) | Q(approver=request.user) | Q(create_by=request.user))
 
     list = list.order_by('-apply_date', '-form_no')
     return render(request, 'inventory/list.html', locals())
