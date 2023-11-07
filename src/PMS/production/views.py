@@ -285,7 +285,7 @@ def record_detail_sap_empno(request, sap_emp_no):
                             <td rowspan='2'>{spec}</td>
                             <td height='60px'>{step_code}</td><td>{step_name}</td>
                             <td style='text-align:right'>{labor_time}</td>
-                            <td style='text-align:right'>{mach_time}</td>
+                            <td style='text-align:right'>{mach_time}{mach_name}</td>
                             <td style='text-align:right'>{good_qty}</td>
                             <td style='text-align:right'>{ng_qty}</td><td>{edit_btn}{del_btn}</td></tr>"""
             body_tmp += """<tr>
@@ -301,10 +301,11 @@ def record_detail_sap_empno(request, sap_emp_no):
                 edit_btn = ""
                 del_btn = ""
             comment = "" if record.comment is None else record.comment
+            mach_name = "" if record.mach is None else "<br><br>"+record.mach.mach_name
             body += body_tmp.format(wo_no=record.wo_no, step_code=record.step_code, step_name=record.step_name,
                                     labor_time=record.labor_time, mach_time=record.mach_time, good_qty=record.good_qty,
                                     ng_qty=record.ng_qty, edit_btn=edit_btn, del_btn=del_btn,
-                                    item_no=record.item_no, spec=record.spec, comment=comment)
+                                    item_no=record.item_no, spec=record.spec, comment=comment, mach_name=mach_name)
 
         for record2 in record2s:
             total_labor_time += record2.labor_time
