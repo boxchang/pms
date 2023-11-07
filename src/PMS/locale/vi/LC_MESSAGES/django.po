@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-14 17:05+0800\n"
-"PO-Revision-Date: 2023-08-14 17:06+0800\n"
+"POT-Creation-Date: 2023-11-07 14:28+0800\n"
+"PO-Revision-Date: 2023-11-07 14:30+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: vi_VN\n"
@@ -31,7 +31,8 @@ msgstr ""
 #: .\helpdesk\templates\helpdesk\helpdesk_base.html:13
 #: .\helpdesk\templates\helpdesk\search.html:21
 #: .\inventory\templates\inventory\base.html:33
-#: .\production\templates\production\base.html:35
+#: .\monitor\templates\monitor\base.html:24
+#: .\production\templates\production\base.html:36
 msgid "logout"
 msgstr "Đăng xuất"
 
@@ -74,7 +75,7 @@ msgid "file"
 msgstr ""
 
 #: .\bases\templates\bases\attach_form.html:33
-#: .\bases\templates\bases\form.html:10 .\production\forms.py:167
+#: .\bases\templates\bases\form.html:10 .\production\forms.py:176
 #: .\requests\templates\requests\request_receive.html:25 .\users\forms.py:61
 msgid "save"
 msgstr "lưu trữ"
@@ -95,15 +96,15 @@ msgstr "Ứng dụng mượn thiết bị CNTT"
 msgid "General Supply Application"
 msgstr "Ứng dụng cung cấp chung"
 
-#: .\bases\templates\bases\base.html:141
+#: .\bases\templates\bases\base.html:146
 msgid "Production Record"
 msgstr "Kỷ lục sản xuất"
 
-#: .\bases\templates\bases\base.html:145
+#: .\bases\templates\bases\base.html:150
 msgid "Personal Setting"
 msgstr "Cài đặt cá nhân"
 
-#: .\bases\templates\bases\base.html:149
+#: .\bases\templates\bases\base.html:154
 msgid "Authority Management"
 msgstr "Quản lý cơ quan"
 
@@ -304,19 +305,19 @@ msgid "reply_num"
 msgstr ""
 
 #: .\production\forms.py:15 .\production\forms.py:69 .\production\forms.py:103
-#: .\production\forms.py:188 .\production\views.py:330
+#: .\production\forms.py:201 .\production\views.py:348
 msgid "record_date"
 msgstr "ngày làm việc"
 
-#: .\production\forms.py:26
+#: .\production\forms.py:26 .\production\forms.py:246
 msgid "export"
 msgstr "xuất khẩu"
 
-#: .\production\forms.py:47 .\production\forms.py:106 .\production\views.py:256
+#: .\production\forms.py:47 .\production\forms.py:106 .\production\views.py:269
 msgid "prod_order"
 msgstr "trình tự công việc"
 
-#: .\production\forms.py:58 .\production\forms.py:81 .\production\forms.py:199
+#: .\production\forms.py:58 .\production\forms.py:81 .\production\forms.py:212
 msgid "search"
 msgstr "Hỏi thăm"
 
@@ -333,11 +334,11 @@ msgstr "Số giờ làm việc tích lũy"
 msgid "plant"
 msgstr "địa điểm"
 
-#: .\production\forms.py:107 .\production\views.py:258
+#: .\production\forms.py:107 .\production\views.py:271
 msgid "item_no"
 msgstr "Phần Không"
 
-#: .\production\forms.py:108 .\production\views.py:258
+#: .\production\forms.py:108 .\production\views.py:271
 msgid "spec"
 msgstr "mô tả vật liệu"
 
@@ -358,29 +359,37 @@ msgstr "mã xác nhận"
 msgid "control_code"
 msgstr "mã kiểm soát"
 
-#: .\production\forms.py:114 .\production\views.py:256
+#: .\production\forms.py:114 .\production\views.py:269
 msgid "step_code"
 msgstr "mã trang web"
 
-#: .\production\forms.py:115 .\production\views.py:256
+#: .\production\forms.py:115 .\production\views.py:269
 msgid "step_name"
 msgstr "Tên trang web"
 
-#: .\production\forms.py:116 .\production\views.py:257
+#: .\production\forms.py:116 .\production\views.py:270
 msgid "labor_time"
 msgstr "giờ làm việc"
 
-#: .\production\forms.py:117 .\production\views.py:257
+#: .\production\forms.py:117 .\production\views.py:270
 msgid "mach_time"
 msgstr "giờ máy"
 
-#: .\production\forms.py:118 .\production\views.py:257
+#: .\production\forms.py:118 .\production\views.py:270
 msgid "good_qty"
 msgstr "Sản phẩm tốt"
 
 #: .\production\forms.py:119
 msgid "ng_qty"
 msgstr "sản phẩm xấu"
+
+#: .\production\forms.py:120 .\production\views.py:336
+msgid "comment"
+msgstr "bình luận"
+
+#: .\production\forms.py:123
+msgid "mach_name"
+msgstr "Tên may moc"
 
 #: .\production\templates\production\base.html:19
 msgid "Record Add"
@@ -399,11 +408,19 @@ msgid "The first step has been not finished yet"
 msgstr "Bước đầu tiên vẫn chưa kết thúc"
 
 #: .\production\templates\production\record.html:96
-#: .\production\templates\production\record.html:136
+#: .\production\templates\production\record.html:155
 msgid "There is no this confirmation code information."
 msgstr "Không có thông tin mã xác nhận này"
 
-#: .\production\templates\production\record.html:142
+#: .\production\templates\production\record.html:161
+msgid "Please select the working machine."
+msgstr "vui lòng chọn máy làm việc"
+
+#: .\production\templates\production\record.html:170
+msgid "The operation quantity cannot over the production order quantity."
+msgstr "Số lượng hoạt động không thể vượt quá số lượng đặt hàng sản xuất."
+
+#: .\production\templates\production\record.html:178
 #, python-format, python-brace-format
 msgid ""
 "Remind that total recorded time {labor_time} already over 10%% of the "
@@ -412,29 +429,21 @@ msgstr ""
 "Nhắc rằng tổng thời gian ghi lại {labor_time} đã vượt quá 10%% so với thời "
 "gian tiêu chuẩn({standard_time})."
 
-#: .\production\templates\production\record.html:152
-msgid "The operation quantity cannot over the production order quantity."
-msgstr "Số lượng hoạt động không thể vượt quá số lượng đặt hàng sản xuất."
-
-#: .\production\views.py:88
+#: .\production\views.py:93
 msgid "This record is existed"
 msgstr "dữ liệu đã tồn tại"
 
-#: .\production\views.py:318
-msgid "comment"
-msgstr "bình luận"
-
-#: .\production\views.py:323
+#: .\production\views.py:341
 #: .\requests\templates\requests\request_base.html:172
 #: .\requests\templates\requests\request_base.html:193
 msgid "New"
 msgstr "Thêm vào"
 
-#: .\production\views.py:328
+#: .\production\views.py:346
 msgid "total_labor_time"
 msgstr "tổng thời gian làm việc"
 
-#: .\production\views.py:328
+#: .\production\views.py:346
 msgid "remain_labor_time"
 msgstr "thời gian chưa hoàn thành"
 

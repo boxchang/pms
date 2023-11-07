@@ -16,7 +16,7 @@ from django.http import HttpResponse
 
 from bases.utils import django_go_sql
 from production.forms import RecordForm, RecordSearchForm, WoSearchForm, RecordManageForm, ExportForm, RecordHistoryForm
-from production.models import ExcelTemp, WODetail, Record, Record2, WorkType, COOIS_Record, WOMain
+from production.models import ExcelTemp, WODetail, Record, Record2, WorkType, COOIS_Record, WOMain, Machine
 from users.models import CustomUser
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
@@ -83,6 +83,8 @@ def record(request):
         comment = request.POST.get('comment')
         request.session['record_dt'] = record_dt
         key_user = CustomUser.objects.get(sap_emp_no=sap_emp_no)
+        mach_code = request.POST.get('mach_code')
+        mach = None
         # record = Record.objects.update_or_create(record_dt=record_dt, emp_no=emp_no, wo_no=wo_no, cfm_code=cfm_code,
         #                                 defaults={'labor_time': labor_time, 'mach_time': mach_time, 'ctr_code': ctr_code,
         #                                           'good_qty': good_qty, 'ng_qty': ng_qty, 'spec':spec, 'username': username,
@@ -92,11 +94,13 @@ def record(request):
         if record:
             error_msg = _('This record is existed')
         else:
+            if mach_code:
+                mach = Machine.objects.get(mach_code=mach_code)
             record = Record.objects.create(record_dt=record_dt, emp_no=emp_no, wo_no=wo_no, cfm_code=cfm_code,
                                             labor_time=labor_time, mach_time=mach_time, ctr_code=ctr_code,
                                             good_qty=good_qty, ng_qty=ng_qty, item_no=item_no, spec=spec, username=username,
                                             step_no=step_no, step_code=step_code, step_name=step_name, sap_emp_no=sap_emp_no,
-                                            update_by=key_user, plant=plant, work_center=work_center, comment=comment)
+                                            update_by=key_user, plant=plant, work_center=work_center, comment=comment, mach=mach)
 
             return redirect(record.get_absolute_url())
 
@@ -179,6 +183,8 @@ def record_edit(request, pk):
     record = Record.objects.filter(pk=pk)
     record_dt = record[0].record_dt
     sap_emp_no = record[0].sap_emp_no
+    step_code = record[0].step_code
+    mach_code = record[0].mach
     if request.method == 'POST':
         labor_time = request.POST.get('labor_time')
         mach_time = request.POST.get('mach_time')
@@ -215,7 +221,8 @@ def record_edit(request, pk):
         worked_labor_time = records['labor_time__sum']
 
 
-    form = RecordForm(instance=record[0], initial={'worked_labor_time': worked_labor_time})
+    form = RecordForm(instance=record[0], initial={'worked_labor_time': worked_labor_time, 'mach_code': mach_code})
+    form.fields["mach_code"].queryset = Machine.objects.filter(step_code=step_code).all()
 
     return render(request, 'production/record.html', locals())
 
@@ -426,6 +433,26 @@ def get_user_info(request):
             else:
                 value['worked_labor_time'] = 0
 
+        except Exception as e:
+            print(e)
+
+    return JsonResponse(value, safe=False)
+
+
+def get_mach_info(request):
+    value = {}
+    html = ""
+    if request.method == 'POST':
+        try:
+            step_code = request.POST.get('step_code')
+            machs = Machine.objects.filter(step_code=step_code)
+            if machs:
+                html = "<option value='' selected=''>---------</option>"
+
+            for mach in machs:
+                html += "<option value='{mach_code}'>{mach_name}</option>".format(mach_code=mach.mach_code, mach_name=mach.mach_name)
+
+            value["html"] = html
         except Exception as e:
             print(e)
 

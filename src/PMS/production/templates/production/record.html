@@ -118,6 +118,24 @@ document.onkeydown = hotkey; //當onkeydown 事件發生時調用hotkey函數
                 $("#hid_worked_labor_time").val(data.worked_labor_time);
                 $("#hid_worked_good_qty").val(data.worked_good_qty);
                 $("#hid_wo_qty").val(data.wo_qty);
+
+                get_mach_info(data.step_code);
+
+            }
+        });
+    }
+
+    function get_mach_info(step_code){
+        $.ajax({
+            url: '{% url 'get_mach_info_api' %}', type: 'post',
+            dataType: 'json',
+            data: {"csrfmiddlewaretoken": "{{ csrf_token }}", "step_code": $("#id_step_code").val()},
+            success: function(data) {
+                if(data['html'] != ""){
+                    $("#id_mach_code").html(data['html']);
+                    $("#id_mach_code").attr("required", "");
+                }
+
             }
         });
     }
@@ -130,9 +148,17 @@ document.onkeydown = hotkey; //當onkeydown 事件發生時調用hotkey函數
         var worked_labor_time = parseFloat($("#hid_worked_labor_time").val());
         var worked_good_qty = parseFloat($("#hid_worked_good_qty").val());
         var step_name = $("#id_step_name").val();
+        var step_code = $("#id_step_code").val();
+        var mach_code = $("#id_mach_code").val();
 
         if(step_name=="") {
             msg = "{% trans 'There is no this confirmation code information.' %}";
+            alert(msg);
+            return false;
+        }
+
+        if(step_code=="TWA027" && mach_code==""){
+            msg = "{% trans 'Please select the working machine.' %}";
             alert(msg);
             return false;
         }

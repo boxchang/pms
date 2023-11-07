@@ -61,6 +61,16 @@ class WODetail(models.Model):
     std_qty = models.IntegerField(default=0)
 
 
+class Machine(models.Model):
+    step_code = models.CharField(max_length=20, blank=True, null=True)
+    step_name = models.CharField(max_length=20, blank=True, null=True)
+    mach_code = models.CharField(max_length=20, primary_key=True)
+    mach_name = models.CharField(max_length=20, blank=True, null=True)
+
+    def __str__(self):
+        return self.mach_name
+
+
 class Record(models.Model):
     work_center = models.CharField(max_length=20, blank=False, null=False)
     plant = models.CharField(max_length=10, blank=False, null=False)
@@ -75,6 +85,7 @@ class Record(models.Model):
     step_no = models.CharField(max_length=20, blank=True, null=True)
     step_code = models.CharField(max_length=20, blank=True, null=True)
     step_name = models.CharField(max_length=20, blank=True, null=True)
+    mach = models.ForeignKey(Machine, related_name='record_mach', on_delete=models.DO_NOTHING, blank=True, null=True)
     record_dt = models.CharField(max_length=10, blank=False, null=False)
     labor_time = models.FloatField(default=0)
     mach_time = models.FloatField(default=0)
@@ -111,3 +122,5 @@ class Record2(models.Model):
 
     def get_absolute_url(self):
         return reverse('prod_record_detail_sap_empno', kwargs={'sap_emp_no': self.sap_emp_no})
+
+

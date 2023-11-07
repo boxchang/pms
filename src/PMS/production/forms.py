@@ -4,7 +4,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
 from bootstrap_datepicker_plus.widgets import DatePickerInput
 from django.utils.translation import gettext_lazy as _
-from production.models import Record
+from production.models import Record, Machine
 
 
 class ExportForm(forms.ModelForm):
@@ -120,6 +120,7 @@ class RecordForm(forms.ModelForm):
     comment = forms.CharField(required=False, label=_('comment'), max_length=40)
     step_no = forms.CharField(required=True)
     work_center = forms.CharField(required=True)
+    mach_code = forms.ModelChoiceField(required=False, label=_('mach_name'), queryset=Machine.objects.none())
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -135,6 +136,7 @@ class RecordForm(forms.ModelForm):
         self.fields['worked_labor_time'].widget.attrs['readonly'] = True
         self.fields['step_no'].widget = forms.HiddenInput()
         self.fields['work_center'].widget = forms.HiddenInput()
+
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.form_show_errors = True
@@ -169,6 +171,7 @@ class RecordForm(forms.ModelForm):
             Div(
                 Div('mach_time', css_class='col-md-3'),
                 Div('labor_time', css_class='col-md-3'),
+                Div('mach_code', css_class='col-md-3'),
                 css_class='row'),
             Div(Submit('submit', _('save'), css_class='btn btn-info m-3'),
                 css_class='row'),
