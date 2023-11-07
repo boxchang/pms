@@ -786,7 +786,7 @@ def record_export(request):
         font_style = xlwt.XFStyle()
         font_style.font.bold = True
 
-        columns = ['廠別', '工單', 'EMP NO', '部門', '姓名', '站點碼',
+        columns = ['廠別', '工單', '部門', 'EMP NO', '姓名', '站點碼',
                    '站點名稱', '報工日期', '人時', '機時', '良品數量', 'NG數量', 'Comment', '紀錄時間']
 
         for col_num in range(len(columns)):
@@ -800,8 +800,8 @@ def record_export(request):
 
             ws.write(row_num, 0, record['plant'], font_style)  # 廠別
             ws.write(row_num, 1, record['wo_no'], font_style)  # 工單
-            ws.write(row_num, 2, record['emp_no'], font_style)  # EMP NO
-            ws.write(row_num, 3, record['unitName'], font_style)  # 部門
+            ws.write(row_num, 2, record['unitName'], font_style)  # 部門
+            ws.write(row_num, 3, record['emp_no'], font_style)  # EMP NO
             ws.write(row_num, 4, record['username'], font_style)  # 姓名
             ws.write(row_num, 5, record['step_code'], font_style)  # 站點碼
             ws.write(row_num, 6, record['step_name'], font_style)  # 站點名稱
