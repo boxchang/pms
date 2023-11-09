@@ -341,22 +341,24 @@ def unit_sync(request):
 def user_sync(request):
     template = 'users/user_list.html'
     if request.method == 'POST':
-        sql = """SELECT Occupant.id AS userId
-                    ,Occupant.userName AS userName
-                    ,Occupant.leaveDate AS leaveDate
-                    ,Occupant.mailAddress
-                    ,OrganizationUnit.id AS unitId
-                    ,Organization.id AS orgId
-                    ,FunctionDefinition.functionDefinitionName AS functionName
-                    ,Functions.isMain AS isMain
-                    ,Manager.id AS managerId
-                    ,FunctionLevel.functionLevelName AS levelName
-                FROM Functions
-                INNER JOIN Users Occupant ON Functions.occupantOID = Occupant.OID
-                INNER JOIN OrganizationUnit
-                INNER JOIN Organization ON OrganizationUnit.organizationOID = Organization.OID ON Functions.organizationUnitOID = OrganizationUnit.OID INNER JOIN FunctionDefinition ON Functions.definitionOID = FunctionDefinition.OID LEFT JOIN FunctionLevel ON Functions.approvalLevelOID = FunctionLevel.OID LEFT JOIN Users Manager ON Functions.specifiedManagerOID = Manager.OID
-                where isMain = 1 and OrganizationUnit.validType=1
-                ORDER BY userId"""
+        sql = """SELECT userId,main.userName,main.leaveDate,main.mailAddress,unitId,orgId,functionName,isMain,isnull(managerId,boss.id) managerId,levelName,boss.userName from (
+                    SELECT Occupant.id AS userId
+                        ,Occupant.userName AS userName
+                        ,Occupant.leaveDate AS leaveDate
+                        ,Occupant.mailAddress
+                        ,OrganizationUnit.id AS unitId
+                        ,Organization.id AS orgId
+                        ,FunctionDefinition.functionDefinitionName AS functionName
+                        ,Functions.isMain AS isMain
+                        ,Manager.id AS managerId
+                        ,FunctionLevel.functionLevelName AS levelName
+                    FROM Functions
+                    INNER JOIN Users Occupant ON Functions.occupantOID = Occupant.OID
+                    INNER JOIN OrganizationUnit
+                    INNER JOIN Organization ON OrganizationUnit.organizationOID = Organization.OID ON Functions.organizationUnitOID = OrganizationUnit.OID INNER JOIN FunctionDefinition ON Functions.definitionOID = FunctionDefinition.OID LEFT JOIN FunctionLevel ON Functions.approvalLevelOID = FunctionLevel.OID LEFT JOIN Users Manager ON Functions.specifiedManagerOID = Manager.OID
+                    where isMain = 1 and OrganizationUnit.validType=1) main, OrganizationUnit unit, Users boss
+                    where main.unitId = unit.id and unit.managerOID = boss.OID
+                    order by userId"""
         db = database()
         rows = db.select_sql(sql)
 
