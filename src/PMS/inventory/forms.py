@@ -85,7 +85,7 @@ class OfficeInvForm(forms.ModelForm):
     unit = forms.ModelChoiceField(required=True, label="申請部門", queryset=Unit.objects.all(), widget=forms.Select(attrs={"onChange": "dept_change()"}))
     requester = forms.ModelChoiceField(required=True, label="申請人", queryset=CustomUser.objects.none())
     apply_date = forms.CharField(required=True, label="申請日期")
-    ext_number = forms.CharField(required=False, label="分機")
+    ext_number = forms.CharField(required=True, label="分機")
     category = forms.ModelChoiceField(required=False, label="物品類別", queryset=ItemCategory.objects.all())
     type = forms.ModelChoiceField(required=False, label="物品種類", queryset=ItemType.objects.all())
     item = forms.ModelChoiceField(required=False, label="物品", queryset=Item.objects.all())
