@@ -33,7 +33,8 @@
                 <th scope="col" class="text-center text-nowrap">序列</th>
                 <th scope="col" class="text-center text-nowrap" style="" data-column="unit.orgId" data-order="desc">組織</th>
                 <th scope="col" class="text-center text-nowrap" style="width: 15%;" data-column="unit.unitId" data-order="desc">部門編號</th>
-                <th scope="col" class="text-center text-nowrap" style="width: 25%;" data-column="unit.unitName" data-order="desc">部門名稱</th>
+                <th scope="col" class="text-center text-nowrap" style="width: 15%;" data-column="unit.unitName" data-order="desc">部門名稱</th>
+                <th scope="col" class="text-center text-nowrap" style="width: 15%;" data-column="unit.unitName" data-order="desc">部門主管</th>
                 <th scope="col" class="text-center text-nowrap" style="" data-column="unit.isValid" data-order="">有效</th>
                 <th scope="col" class="text-center text-nowrap" style="width: 17%;" data-column="unit.cost_center" data-order="desc">成本中心</th>
                 <th scope="col" class="text-center text-nowrap" style="width: 17%;" data-column="unit.update_at" data-order="desc">最後更新日期</th>
@@ -58,6 +59,7 @@
                 <td class="text-center text-nowrap">{{ unit.orgId }}</td>
                 <td class="text-center text-nowrap">{{ unit.unitId }}</td>
                 <td class="text-center text-nowrap">{{ unit.unitName }}</td>
+                <td class="text-center text-nowrap">{{ unit.manager.username }}</td>
                 <td class="text-center text-nowrap">{{ unit.isValid }}</td>
                 <td class="text-center text-nowrap">{{ unit.cost_center|default:'' }}</td>
                 <td class="text-center text-nowrap">{{ unit.update_at }}</td>

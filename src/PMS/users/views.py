@@ -387,6 +387,14 @@ def user_sync(request):
                     user.create_by = request.user
                     user.update_by = request.user
                     user.save()
+
+        users = CustomUser.objects.filter(manager_id__isnull=True)
+        for user in users:
+            unit = Unit.objects.get(unitId=user.unit.unitId)
+            user.manager = unit.manager
+            user.create_by = request.user
+            user.update_by = request.user
+            user.save()
     return redirect('user_list')
 
 
