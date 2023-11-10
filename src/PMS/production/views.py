@@ -794,6 +794,8 @@ def record_export(request):
 
         # Sheet body, remaining rows
         font_style = xlwt.XFStyle()
+        date_format = xlwt.XFStyle()
+        date_format.num_format_str = 'yyyy/mm/dd'
 
         for record in records:
             row_num += 1
@@ -811,7 +813,7 @@ def record_export(request):
             ws.write(row_num, 10, record['good_qty'], font_style)  # 良品數量
             ws.write(row_num, 11, record['ng_qty'], font_style)  # NG數量
             ws.write(row_num, 12, record['comment'], font_style)  # Comment
-            ws.write(row_num, 13, record['update_at'], font_style)  # 紀錄時間
+            ws.write(row_num, 13, record['update_at'], date_format)  # 紀錄時間
             ws.write(row_num, 14, record['work_center'], font_style)  # Work Center
         wb.save(response)
         return response
