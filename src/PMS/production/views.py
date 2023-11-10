@@ -746,12 +746,12 @@ def record_export(request):
         due_date = request.POST.get('due_date')
 
         with connection.cursor() as cursor:
-            sql = """select plant,wo_no,user.emp_no,unit.unitName,user.username,step_code,step_name,record_dt,labor_time,mach_time,good_qty,ng_qty,comment,r.update_at,r.work_center 
-                        from production_record r,users_customuser user, users_unit unit 
-                        where r.sap_emp_no = user.sap_emp_no and user.unit_id = unit.id
+            sql = """select plant,wo_no,user.emp_no,unit.unitName,user.username,r.step_code,r.step_name,record_dt,labor_time,m.mach_name,mach_time,good_qty,ng_qty,comment,r.update_at,r.work_center 
+                        from production_record r,users_customuser user, users_unit unit, production_machine m  
+                        where r.sap_emp_no = user.sap_emp_no and user.unit_id = unit.id and r.mach_id = m.mach_code 
                         and record_dt between '{start_date}' and '{due_date}'
                         union
-                        select '','',user.emp_no,unit.unitName,user.username,w.type_code,w.type_name,record_dt,labor_time,'','','',comment, r.create_at,'' 
+                        select '','',user.emp_no,unit.unitName,user.username,w.type_code,w.type_name,record_dt,labor_time,'','','','',comment, r.create_at,'' 
                         from production_record2 r,users_customuser user, users_unit unit , production_worktype w
                         where r.sap_emp_no=user.sap_emp_no and user.unit_id = unit.id and r.work_type_id = w.type_code
                         and record_dt between '{start_date}' and '{due_date}'
@@ -779,6 +779,7 @@ def record_export(request):
         ws.col(12).width = 256 * 20
         ws.col(13).width = 256 * 20
         ws.col(14).width = 256 * 20
+        ws.col(15).width = 256 * 20
 
         # Sheet header, first row
         row_num = 0
@@ -787,7 +788,7 @@ def record_export(request):
         font_style.font.bold = True
 
         columns = ['廠別', '工單', '部門', 'EMP NO', '姓名', '站點碼',
-                   '站點名稱', '報工日期', '人時', '機時', '良品數量', 'NG數量', 'Comment', '紀錄時間']
+                   '站點名稱', '報工日期', '人時', '機台', '機時', '良品數量', 'NG數量', 'Comment', '紀錄時間', 'Work Center']
 
         for col_num in range(len(columns)):
             ws.write(row_num, col_num, columns[col_num], font_style)
@@ -809,12 +810,14 @@ def record_export(request):
             ws.write(row_num, 6, record['step_name'], font_style)  # 站點名稱
             ws.write(row_num, 7, record['record_dt'], font_style)  # 報工日期
             ws.write(row_num, 8, record['labor_time'], font_style)  # 人時
-            ws.write(row_num, 9, record['mach_time'], font_style)  # 機時
-            ws.write(row_num, 10, record['good_qty'], font_style)  # 良品數量
-            ws.write(row_num, 11, record['ng_qty'], font_style)  # NG數量
-            ws.write(row_num, 12, record['comment'], font_style)  # Comment
-            ws.write(row_num, 13, record['update_at'], date_format)  # 紀錄時間
-            ws.write(row_num, 14, record['work_center'], font_style)  # Work Center
+            ws.write(row_num, 9, record['mach_name'], font_style)  # 機台
+            ws.write(row_num, 10, record['mach_time'], font_style)  # 機時
+            ws.write(row_num, 11, record['good_qty'], font_style)  # 良品數量
+            ws.write(row_num, 12, record['ng_qty'], font_style)  # NG數量
+            ws.write(row_num, 13, record['comment'], font_style)  # Comment
+            ws.write(row_num, 14, record['update_at'], date_format)  # 紀錄時間
+            ws.write(row_num, 15, record['work_center'], font_style)  # Work Center
+
         wb.save(response)
         return response
     form = RecordHistoryForm()
