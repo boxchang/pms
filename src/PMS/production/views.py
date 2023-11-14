@@ -755,6 +755,13 @@ def record_export(request):
                         from production_record2 r,users_customuser user, users_unit unit , production_worktype w
                         where r.sap_emp_no=user.sap_emp_no and user.unit_id = unit.id and r.work_type_id = w.type_code
                         and record_dt between '{start_date}' and '{due_date}'
+                        union
+                        select plant,'',emp_no,unitName,username,'','橡膠成型機時計算' step_name,record_dt,max(mach_time) mach_time,'','','','','','','' from (
+                        select r.plant,r.record_dt,r.emp_no,unit.unitName,user.username,mach_name,sum(mach_time) mach_time from production_record r,users_customuser user, users_unit unit, production_machine m  
+                        where r.sap_emp_no = user.sap_emp_no and user.unit_id = unit.id and r.mach_id = m.mach_code and r.step_code = 'TWA027'
+						and record_dt between '{start_date}' and '{due_date}'
+						group by r.plant,r.record_dt,r.emp_no,unit.unitName,user.username,mach_name
+						) A group by plant,record_dt,emp_no,username
                         order by unitName, username, record_dt""".format(start_date=start_date, due_date=due_date)
             records = django_go_sql(sql)
 
@@ -817,35 +824,6 @@ def record_export(request):
             ws.write(row_num, 13, record['comment'], font_style)  # Comment
             ws.write(row_num, 14, record['update_at'], date_format)  # 紀錄時間
             ws.write(row_num, 15, record['work_center'], font_style)  # Work Center
-
-        # 機時 Sheet
-        row_num = 0
-        columns = ['報工日期', '員工編號', '姓名', '機時']
-
-        ws = wb.add_sheet('橡膠成型最高機時')
-        ws.col(0).width = 256 * 20
-        ws.col(1).width = 256 * 20
-        ws.col(2).width = 256 * 20
-        ws.col(3).width = 256 * 20
-
-        for col_num in range(len(columns)):
-            ws.write(row_num, col_num, columns[col_num], font_style)
-
-        with connection.cursor() as cursor:
-            sql = """select record_dt,emp_no,username,max(mach_time) mach_time from (
-                        select r.record_dt,r.emp_no,user.username,mach_name,sum(mach_time) mach_time from production_record r,users_customuser user, users_unit unit, production_machine m  
-                        where r.sap_emp_no = user.sap_emp_no and user.unit_id = unit.id and r.mach_id = m.mach_code and r.step_code = 'TWA027'
-						and record_dt between '{start_date}' and '{due_date}'
-						group by r.record_dt,r.emp_no,user.username,mach_name ) A group by record_dt,emp_no,username
-						""".format(start_date=start_date, due_date=due_date)
-            records = django_go_sql(sql)
-
-        for record in records:
-            row_num += 1
-            ws.write(row_num, 0, record['record_dt'], font_style)  # 廠別
-            ws.write(row_num, 1, record['emp_no'], font_style)  # 工號
-            ws.write(row_num, 2, record['username'], font_style)  # 姓名
-            ws.write(row_num, 3, record['mach_time'], font_style)  # 機時
 
         wb.save(response)
         return response
