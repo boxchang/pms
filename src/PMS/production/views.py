@@ -747,8 +747,8 @@ def record_export(request):
 
         with connection.cursor() as cursor:
             sql = """select plant,wo_no,user.emp_no,unit.unitName,user.username,r.step_code,r.step_name,record_dt,labor_time,m.mach_name,mach_time,good_qty,ng_qty,comment,r.update_at,r.work_center 
-                        from production_record r,users_customuser user, users_unit unit, production_machine m  
-                        where r.sap_emp_no = user.sap_emp_no and user.unit_id = unit.id and r.mach_id = m.mach_code 
+                        from production_record r,users_customuser user, users_unit unit left outer join production_machine m on  r.mach_id = m.mach_code 
+                        where r.sap_emp_no = user.sap_emp_no and user.unit_id = unit.id 
                         and record_dt between '{start_date}' and '{due_date}'
                         union
                         select '','',user.emp_no,unit.unitName,user.username,w.type_code,w.type_name,record_dt,labor_time,'','','','',comment, r.create_at,'' 
