@@ -215,8 +215,8 @@ def user_list(request):
     members = CustomUser.objects.filter(query)
 
     member_all = members.count()
-    admin_count = members.filter(user_type=1).count()
-    member_count = members.filter(user_type=2).count()
+    admin_count = members.filter(user_type=1, is_active=True).count()
+    member_count = members.filter(user_type=2, is_active=True).count()
 
     if request.method == 'POST':
         user_keyword = request.POST.get('user_keyword')
