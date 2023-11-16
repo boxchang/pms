@@ -401,7 +401,7 @@ def user_sync(request):
 def get_deptuser_api(request):
     if request.method == 'POST':
         unit = request.POST.get('unit')
-        employees = CustomUser.objects.filter(unit=unit)
+        employees = CustomUser.objects.filter(unit=unit, is_active=True)
         html = "<option value="" selected>---------</option>"
 
         for employee in employees:
