@@ -337,7 +337,7 @@ def apply(request):
         return redirect(apply.get_absolute_url())
 
     form = OfficeInvForm(initial={"unit": request.user.unit, "requester": request.user})
-    form.fields["requester"].queryset = CustomUser.objects.filter(unit=request.user.unit).all()
+    form.fields["requester"].queryset = CustomUser.objects.filter(unit=request.user.unit, is_active=True).all()
     search_form = SearchForm()
     attach_form = AttachmentForm()
     return render(request, 'inventory/application.html', locals())
