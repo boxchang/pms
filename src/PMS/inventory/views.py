@@ -23,6 +23,11 @@ def send_template_email(subject, action, pk, address):
     if address:
         # 電子郵件內容樣板
         form = AppliedForm.objects.get(pk=pk)
+
+        # 查過去請領的資料
+        hists = AppliedForm.objects.filter(requester=form.requester, status=FormStatus.objects.get(status_name="已發放"),
+                                           category=form.category).order_by('-apply_date')
+
         key = "{apply_date}{series}".format(apply_date=form.apply_date.replace('-', ''), series=pk)
         files = Apply_attachment.objects.filter(apply=form)
         for file in files:
@@ -365,6 +370,8 @@ def detail(request, pk):
         key = "{apply_date}{series}".format(apply_date=form.apply_date.replace('-', ''),
                                            series=form.pk)
 
+        # 查過去請領的資料
+        hists = AppliedForm.objects.filter(requester=form.requester, status=FormStatus.objects.get(status_name="已發放"), category=form.category).order_by('-apply_date')
 
     except AppliedForm.DoesNotExist:
         raise Http404('Form does not exist')
