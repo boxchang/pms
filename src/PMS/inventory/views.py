@@ -157,8 +157,9 @@ def import_excel(request):
 
 @login_required
 def apply_list(request):
-    list = AppliedForm.objects.all()
+    list = AppliedForm.objects.exclude(status=FormStatus.objects.get(status_name="已發放"))
     if request.method == 'POST':
+        list = AppliedForm.objects.all()
         _status = request.POST['status']
         _start_date = str(request.POST['start_date']).replace('/', '-')
         _due_date = str(request.POST['due_date']).replace('/', '-')
