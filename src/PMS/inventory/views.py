@@ -112,7 +112,6 @@ def statistic(request):
                     html_row += "</tr>"
     html_row += "</table>"
 
-
     return render(request, 'inventory/statistic.html', locals())
 
 
@@ -158,7 +157,7 @@ def import_excel(request):
 
 @login_required
 def apply_list(request):
-    list = AppliedForm.objects.all()
+    list = AppliedForm.objects.exclude(status=FormStatus.objects.get(status_name="已發放"))
     if request.method == 'POST':
         _status = request.POST['status']
         _start_date = str(request.POST['start_date']).replace('/', '-')
