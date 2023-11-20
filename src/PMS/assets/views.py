@@ -404,6 +404,7 @@ def update(request, pk):
         form = AssetModelForm(request.POST, instance=asset)
         if form.is_valid():
             tmp_form = form.save(commit=False)
+            tmp_form.update_by = request.user
             tmp_form.save()
 
             if request.FILES.get('pic1'):
