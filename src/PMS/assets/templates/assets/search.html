@@ -61,7 +61,7 @@ AMS Search
                 <td>{{ asset.keeper_name }}</td>
                 <td>{{ asset.location }}</td>
                 <td>{{ asset.desc }}</td>
-                <td>{{ asset.sap_asset_no }}</td>
+                <td>{{ asset.sap_asset_no|default:"" }}</td>
                 <td>{{ asset.status }}</td>
             </tr>
         {% endfor %}
