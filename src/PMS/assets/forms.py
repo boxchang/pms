@@ -21,6 +21,7 @@ class AssetSearchForm(forms.ModelForm):
     location = forms.ModelChoiceField(required=False, label="放置地點", queryset=Location.objects.all())
     status = forms.ModelChoiceField(required=False, label="狀態", queryset=AssetStatus.objects.all())
     scrap = forms.BooleanField(required=False, initial=False, label="包含報廢")
+    show_sap_no = forms.BooleanField(required=False, initial=False, label="顯示SAP產編")
     location_desc = forms.CharField(required=False, label="放置地點描述")
     keeper_unit = forms.ModelChoiceField(required=False, label="保管單位", queryset=Unit.objects.all())
     keeper_name = forms.CharField(required=False, label="保管人姓名")
@@ -38,7 +39,8 @@ class AssetSearchForm(forms.ModelForm):
                 Div(
                     Div('label_no', css_class='col-md-4'),
                     Div('status', css_class='col-md-4'),
-                    Div('scrap', css_class='col-md-4'),
+                    Div('scrap', css_class='col-md-2'),
+                    Div('show_sap_no', css_class='col-md-2'),
                     css_class='row'),
                 Div(
                     Div('category', css_class='col-md-4'),

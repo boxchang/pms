@@ -184,6 +184,7 @@ def search(request):
     _location = ""
     _location_desc = ""
     _scrap = ""
+    show_sap_no = ""
     _keeper_unit = ""
     _keeper_name = ""
     _desc = ""
@@ -205,6 +206,7 @@ def search(request):
         _location = request.POST.get('location')
         _location_desc = request.POST.get('location_desc')
         _scrap = request.POST.get('scrap')
+        show_sap_no = request.POST.get('show_sap_no')
         _keeper_unit = request.POST.get('keeper_unit')
         _keeper_name = request.POST.get('keeper_name')
         _desc = request.POST.get('desc')

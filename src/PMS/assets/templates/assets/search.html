@@ -32,19 +32,21 @@ AMS Search
 <table class="table table-bordered table-striped">
     <thead class="thead-dark">
         <tr>
-            <th>標籤編號</th>
-            <th>資產類別</th>
-            <th>資產種類</th>
-            <th>品牌</th>
-            <th>型號</th>
-            <th>地區</th>
-            <th>負責單位</th>
-            <th>保管單位</th>
-            <th>保管人姓名</th>
-            <th>放置地點</th>
-            <th>描述</th>
-            <th>SAP編號</th>
-            <th>狀態</th>
+            <th style="width:9%;">標籤編號</th>
+            <th style="width:6%;">資產類別</th>
+            <th style="width:7%;">資產種類</th>
+            <th style="width:5%;">品牌</th>
+            <th style="width:4%;">型號</th>
+            <th style="width:4%;">地區</th>
+            <th style="width:8%;">負責單位</th>
+            <th style="width:8%;">保管單位</th>
+            <th style="width:7%;">保管人姓名</th>
+            <th style="width:8%;">放置地點</th>
+            <th style="width:7%;">描述</th>
+            {% if show_sap_no %}
+            <th style="width:7%;">SAP編號</th>
+            {% endif %}
+            <th style="width:5%;">狀態</th>
         </tr>
     </thead>
     <tbody>
@@ -61,7 +63,9 @@ AMS Search
                 <td>{{ asset.keeper_name }}</td>
                 <td>{{ asset.location }}</td>
                 <td>{{ asset.desc }}</td>
+                {% if show_sap_no %}
                 <td>{{ asset.sap_asset_no|default:"" }}</td>
+                {% endif %}
                 <td>{{ asset.status }}</td>
             </tr>
         {% endfor %}
