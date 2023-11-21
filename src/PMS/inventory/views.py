@@ -162,7 +162,8 @@ def import_excel(request):
 
 @login_required
 def apply_list(request):
-    list = AppliedForm.objects.exclude(status=FormStatus.objects.filter(status_name__in=["已發放", "取消"]))
+    # ["已發放", "取消"])
+    list = AppliedForm.objects.exclude(status__in=[4, 5])
     if request.method == 'POST':
         list = AppliedForm.objects.all()
         _status = request.POST['status']
