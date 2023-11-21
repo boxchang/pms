@@ -372,6 +372,7 @@ def user_sync(request):
                     if CustomUser.objects.filter(emp_no=row.managerId).exists():
                         user.manager = CustomUser.objects.get(emp_no=row.managerId)
                     user.update_by = request.user
+                    user.email = row.mailAddress
                     user.save()
             except Exception as e:
                 print(e)

@@ -38,7 +38,7 @@ def send_template_email(subject, action, pk, address):
             subject,  # 電子郵件標題
             email_template,  # 電子郵件內容
             settings.EMAIL_HOST_USER,  # 寄件者
-            [address]  # 收件者
+            address  # 收件者
         )
         email.fail_silently = False
         email.content_subtype = 'html'
@@ -231,6 +231,7 @@ def mail_agree(request, key):
 
 @login_required
 def reject(request, key):
+    address = []
     if request.method == 'GET':
         apply_date, pk = unlock(key)
         apply = AppliedForm.objects.get(pk=pk, apply_date=apply_date)
@@ -238,7 +239,9 @@ def reject(request, key):
         apply.approve_time = datetime.now()
         apply.save()
 
-        address = apply.requester.email
+        if apply.requester.email:
+            address.append(apply.requester.email)
+
         subject = '總務用品請領單，退單通知!!!!'
         send_template_email(subject, action="reject", pk=apply.pk, address=address)
 
@@ -246,6 +249,7 @@ def reject(request, key):
 
 
 def mail_reject(request, key):
+    address = []
     if request.method == 'GET':
         apply_date, pk = unlock(key)
         form = AppliedForm.objects.get(pk=pk, apply_date=apply_date)
@@ -259,7 +263,12 @@ def mail_reject(request, key):
             form.save()
 
             action = "reject"
-            address = form.requester.email
+            if form.requester.email:
+                address.append(form.requester.email)
+
+            if form.create_by.email:
+                address.append(form.create_by.email)
+
             subject = '總務用品請領單，退單通知!!!!'
             send_template_email(subject, action, pk=form.pk, address=address)
 
@@ -279,6 +288,7 @@ def delete(request, pk):
 
 @login_required
 def apply(request):
+    address = []
     if request.method == 'POST':
         hidCart_list = request.POST.get('hidCart_list')
         if hidCart_list:
@@ -334,7 +344,9 @@ def apply(request):
                 obj.applied_form = apply
                 obj.save()
 
-            address = apply.requester.manager.email
+            if apply.requester.manager.email:
+                address.append(apply.requester.manager.email)
+
             subject = '總務用品請領單簽核通知'
             send_template_email(subject, action="email", pk=apply.pk, address=address)
 
