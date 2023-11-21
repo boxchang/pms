@@ -43,6 +43,7 @@ AMS Search
             <th>保管人姓名</th>
             <th>放置地點</th>
             <th>描述</th>
+            <th>SAP編號</th>
             <th>狀態</th>
         </tr>
     </thead>
@@ -60,6 +61,7 @@ AMS Search
                 <td>{{ asset.keeper_name }}</td>
                 <td>{{ asset.location }}</td>
                 <td>{{ asset.desc }}</td>
+                <td>{{ asset.sap_asset_no }}</td>
                 <td>{{ asset.status }}</td>
             </tr>
         {% endfor %}
