@@ -36,6 +36,10 @@ def history_add(asset_no, attr_code, comment, before, after, update_by):
 def history_record(asset, form, request, column, attr_name):
     before = eval("asset."+column)
     after = eval("form."+column)
+    if before == None:
+        before = ""
+    if after == None:
+        after = ""
     if before != after:
         history_add(asset.asset_no, column, attr_name, before=before, after=after, update_by=request.user)
 
