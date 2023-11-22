@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # coding=utf-8
+import copy
+
 from django.contrib.auth.models import AnonymousUser
 from django.core import serializers
 from django.shortcuts import render
@@ -10,7 +12,8 @@ from django.db.models import Count
 from assets import encode
 from assets.encode import EncodeInterface, EncodeIT, EncodeGeneral, EncodeOffice
 from assets.forms import AssetModelForm, AssetSearchForm
-from assets.models import Asset, AssetArea, AssetCategory, AssetStatus, AssetType, Brand, Doc_attachment, Label_attachment, Pic_attachment, Series, Location, Unit
+from assets.models import Asset, AssetArea, AssetCategory, AssetStatus, AssetType, Brand, Doc_attachment, \
+    Label_attachment, Pic_attachment, Series, Location, Unit, History
 import openpyxl
 from django.http import JsonResponse
 import os
@@ -19,13 +22,22 @@ import csv
 from datetime import datetime
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.conf import settings
-from django.http import HttpResponse, HttpResponseNotFound, Http404
+from django.http import HttpResponse, Http404
 from django.core.paginator import Paginator
 import xlwt
 from django.db.models import Q
 
-from users.models import CustomUser
+
+def history_add(asset_no, attr_code, comment, before, after, update_by):
+    asset = Asset.objects.get(asset_no=asset_no)
+    History.objects.create(asset=asset, attr_code=attr_code, comment=comment, before=before, after=after, update_by=update_by)
+
+
+def history_record(asset, form, request, column, attr_name):
+    before = eval("asset."+column)
+    after = eval("form."+column)
+    if before != after:
+        history_add(asset.asset_no, column, attr_name, before=before, after=after, update_by=request.user)
 
 
 def print_cmd(EXCEL_FILE, BTW_FILE):
@@ -355,7 +367,8 @@ def search(request):
 
     return render(request, 'assets/search.html', locals())
 
-#新增
+
+# 新增
 def create(request):
     if request.method == "POST":
         form = AssetModelForm(request.POST)
@@ -398,11 +411,13 @@ def create(request):
 
     return render(request, 'assets/edit.html', locals())
 
-#修改
+
+# 修改
 def update(request, pk):
     mode = "UPDATE"
     asset = Asset.objects.get(id=pk)
     if request.method == "POST":
+        old = copy.deepcopy(asset)
         form = AssetModelForm(request.POST, instance=asset)
         if form.is_valid():
             tmp_form = form.save(commit=False)
@@ -423,6 +438,15 @@ def update(request, pk):
                 request_file.asset = tmp_form
                 request_file.create_by = request.user
                 request_file.save()
+
+            # Record
+            log_attrs = {"label_no": "標籤編號", "status": "狀態", "brand": "品牌", "model": "型號", "desc": "描述",
+                         "area": "地區", "owner_unit": "負責單位", "location": "放置地點", "keeper_unit": "保管單位",
+                         "keeper_name": "保管人姓名", "location_desc": "放置地點描述",
+                         "pur_date": "採購年月", "scrap_date": "報廢日期", "pur_price": "採購金額",
+                         "scrap_reason": "報廢原因", "sap_asset_no": "SAP資產編號"}
+            for attr in log_attrs:
+                history_record(old, tmp_form, request, attr, log_attrs[attr])
 
             return redirect(tmp_form.get_absolute_url())
     else:

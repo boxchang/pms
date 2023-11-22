@@ -155,7 +155,18 @@ class Asset(models.Model):
     def get_absolute_url(self):
         return reverse('assets_detail', kwargs={'pk': self.pk})
 
+
 class Series(models.Model):
     key = models.CharField(max_length=50, blank=False, null=False)
     series = models.IntegerField()
     desc = models.CharField(max_length=50, blank=True, null=True)
+
+
+class History(models.Model):
+    asset = models.ForeignKey(Asset, related_name='asset_history', on_delete=models.DO_NOTHING)
+    attr_code = models.CharField(max_length=20, blank=True, null=True)
+    comment = models.CharField(max_length=200, blank=True, null=True)
+    before = models.CharField(max_length=20, blank=True, null=True)
+    after = models.CharField(max_length=20, blank=True, null=True)
+    update_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='hist_update_by')
+    update_at = models.DateTimeField(auto_now=True, null=True)
