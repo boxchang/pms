@@ -5,10 +5,10 @@ import os
 import datetime
 now = datetime.datetime.now()
 file_name = datetime.datetime.strftime(now,'%Y%m%d %H%M%S')
-delete_keyword = datetime.datetime.strftime((now - datetime.timedelta(days = 3)), '%Y%m%d')
+delete_keyword = datetime.datetime.strftime((now - datetime.timedelta(days=14)), '%Y%m%d')
 src = os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(__file__))), 'db.sqlite3')
 
-dst_path = 'S:\\管理部\\資訊管理課\\110_資產管理系統資料庫備份\\'
+dst_path = 'D:\\Noah_db_backup\\'
 dst = dst_path + file_name + ".sqlite3"
 
 for dirpath, dirName, filenames in os.walk(dst_path):

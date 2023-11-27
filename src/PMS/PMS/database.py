@@ -16,6 +16,17 @@ class database:
         self.cur.execute(sql)
         return self.cur.fetchall()
 
+    def select_sql_dict(self, sql):
+        self.conn = self.create_connection()
+        self.cur = self.conn.cursor()
+        self.cur.execute(sql)
+
+        desc = self.cur.description
+        column_names = [col[0] for col in desc]
+        data = [dict(zip(column_names, row))
+                for row in self.cur.fetchall()]
+        return data
+
 
     def create_sqlite_connection(self, db_file):
         """ create a database connection to the SQLite database

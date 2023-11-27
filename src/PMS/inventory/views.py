@@ -244,7 +244,10 @@ def reject(request, key):
             address.append(apply.requester.email)
 
         subject = '總務用品請領單，退單通知!!!!'
-        send_template_email(subject, action="reject", pk=apply.pk, address=address)
+        try:
+            send_template_email(subject, action="reject", pk=apply.pk, address=address)
+        except Exception as e:
+            print(e)
 
     return redirect(reverse('inv_approve'))
 
@@ -271,7 +274,10 @@ def mail_reject(request, key):
                 address.append(form.create_by.email)
 
             subject = '總務用品請領單，退單通知!!!!'
-            send_template_email(subject, action, pk=form.pk, address=address)
+            try:
+                send_template_email(subject, action, pk=form.pk, address=address)
+            except Exception as e:
+                print(e)
 
         return render(request, 'inventory/email_template.html', locals())
 
@@ -349,7 +355,10 @@ def apply(request):
                 address.append(apply.requester.manager.email)
 
             subject = '總務用品請領單簽核通知'
-            send_template_email(subject, action="email", pk=apply.pk, address=address)
+            try:
+                send_template_email(subject, action="email", pk=apply.pk, address=address)
+            except Exception as e:
+                print(e)
 
         except Exception as e:
             print(e)

@@ -321,14 +321,14 @@ def unit_sync(request):
         rows = db.select_sql(sql)
 
         for row in rows:
-            try:  # 新增
+            try:  # 更新
                 unit = Unit.objects.get(unitId=row.unitId)
                 unit.unitName = row.unitName
                 unit.manager = CustomUser.objects.get(emp_no=row.managerId)
                 unit.isValid = row.isValid
                 unit.update_by = request.user
                 unit.save()
-            except:  # 更新
+            except:  # 新增
                 unit = Unit(orgId=row.orgId, unitId=row.unitId, unitName=row.unitName, isValid=row.isValid)
                 unit.manager = CustomUser.objects.get(emp_no=row.managerId)
                 unit.create_by = request.user
