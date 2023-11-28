@@ -367,6 +367,7 @@ def user_sync(request):
                 user = CustomUser.objects.get(emp_no=row.userId)
                 if row.leaveDate:
                     user.is_active = False
+                    user.save()
                 else:
                     user.unit = Unit.objects.get(unitId=row.unitId)
                     if CustomUser.objects.filter(emp_no=row.managerId).exists():
