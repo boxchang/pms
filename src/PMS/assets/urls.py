@@ -1,7 +1,7 @@
 from django.urls import re_path as url
 from assets.views import TypeAPI, BrandAPI, asset_doc_delete, asset_pic_delete, export_assets_xls, index, label, \
     main, delete, print_label, update, create, search, import_excel, detail, import_assets_preview, label_preview, \
-    chart, chart_api
+    chart, chart_api, asset_history
 
 urlpatterns = [
     url(r'^print_label/(?P<pk>\d+)/$', print_label, name='print_label'),
@@ -22,5 +22,6 @@ urlpatterns = [
     url(r'^chart_api/', chart_api, name='chart_api'),
     url(r'^dpic/(?P<pk>\d+)', asset_pic_delete, name="asset_pic_delete"),
     url(r'^ddoc/(?P<pk>\d+)', asset_doc_delete, name="asset_doc_delete"),
+    url(r'^history/(?P<pk>\d+)', asset_history, name="asset_history"),
     url(r'^', index, name='assets_index'),
 ]

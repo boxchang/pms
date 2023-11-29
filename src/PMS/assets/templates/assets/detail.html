@@ -29,6 +29,10 @@ AMS - {{ asset.label_no }} Asset Detail
         })
     }
 
+    var asset_history = function() {
+        window.open('{% url 'asset_history' asset.id %}', 'Asset History', config='height=800,width=1000');
+    }
+
     $(function (){
         category = $('#id_category');
         asset_type = $('#id_type');
@@ -108,7 +112,10 @@ AMS - {{ asset.label_no }} Asset Detail
                 <li class="list-group-item">
                     <div class="row">
                         <div class="col-2 p-2" style="text-align:right;">狀態：</div>
-                        <div class="col-10 p-2 content">{{ asset.status }}</div>
+                        <div class="col-2 p-2 content">{{ asset.status }}</div>
+                        <div class="col-4 p-2"></div>
+                        <div class="col-2 p-2"></div>
+                        <div class="col-2 p-2"><input type="button" onclick="asset_history();" class='btn btn-outline-dark' value="資產履歷"></div>
                     </div>
                 </li>
                 <li class="list-group-item">

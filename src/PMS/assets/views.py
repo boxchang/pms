@@ -957,3 +957,9 @@ def chart_api(request):
     _json = {"types": types, "qty": qty}
 
     return JsonResponse(_json, safe=False)
+
+
+# History
+def asset_history(request, pk):
+    records = History.objects.filter(asset=pk).order_by('-update_at')
+    return render(request, 'assets/history.html', locals())
