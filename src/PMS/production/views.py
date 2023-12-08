@@ -203,11 +203,15 @@ def record_edit(request, pk):
         step_name = request.POST.get('step_name')
         comment = request.POST.get('comment')
         plant = request.POST.get('plant')
+        mach_code = request.POST.get('mach_code')
+        mach = None
+        if mach_code:
+            mach = Machine.objects.get(mach_code=mach_code)
 
         record.update(labor_time=labor_time, mach_time=mach_time, good_qty=good_qty, ng_qty=ng_qty, item_no=item_no,
                                             spec=spec, username=username, wo_no=wo_no,
                                             step_no=step_no, step_code=step_code, step_name=step_name, sap_emp_no=sap_emp_no,
-                                            update_by=request.user, plant=plant, work_center=work_center, comment=comment)
+                                            update_by=request.user, plant=plant, work_center=work_center, comment=comment, mach=mach)
 
         form = RecordSearchForm(initial={'record_dt': record_dt})
 
