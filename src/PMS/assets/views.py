@@ -293,52 +293,86 @@ def search(request):
     if _label_no:
         request.session['label_no'] = _label_no
         assets = assets.filter(Q(label_no__icontains=_label_no) | Q(sap_asset_no__icontains=_label_no))
+    else:
+        if 'label_no' in request.session:
+            del request.session['label_no']
 
     if _status:
         request.session['status'] = _status
         assets = assets.filter(status=_status)
+    else:
+        if 'status' in request.session:
+            del request.session['status']
 
     if _category:
         request.session['category'] = _category
         assets = assets.filter(category=_category)
+    else:
+        if 'category' in request.session:
+            del request.session['category']
 
     if _type:
         request.session['type'] = _type
         assets = assets.filter(type=_type)
+    else:
+        if 'type' in request.session:
+            del request.session['type']
 
     if _brand:
         request.session['brand'] = _brand
         assets = assets.filter(brand=_brand)
+    else:
+        if 'brand' in request.session:
+            del request.session['brand']
 
     if _area:
         request.session['area'] = _area
         assets = assets.filter(area=_area)
+    else:
+        if 'area' in request.session:
+            del request.session['area']
 
     if _location:
         request.session['location'] = _location
         assets = assets.filter(location=_location)
+    else:
+        if 'location' in request.session:
+            del request.session['location']
 
     if _location_desc:
         request.session['location_desc'] = _location_desc
         assets = assets.filter(location_desc__icontains=_location)
+    else:
+        if 'location_desc' in request.session:
+            del request.session['location_desc']
 
     if _keeper_unit:
         request.session['keeper_unit'] = _keeper_unit
         assets = assets.filter(keeper_unit=_keeper_unit)
+    else:
+        if 'keeper_unit' in request.session:
+            del request.session['keeper_unit']
 
     if _keeper_name:
         request.session['keeper_name'] = _keeper_name
         assets = assets.filter(keeper_name__icontains=_keeper_name)
+    else:
+        if 'keeper_name' in request.session:
+            del request.session['keeper_name']
 
     if _desc:
         request.session['desc'] = _desc
         assets = assets.filter(Q(desc__icontains=_desc) | Q(comment__icontains=_desc) | Q(model__icontains=_desc))
+    else:
+        if 'desc' in request.session:
+            del request.session['desc']
 
     if _scrap:
         request.session['scrap'] = _scrap
     else:
         assets = assets.exclude(status=AssetStatus.objects.get(status_name="已報廢"))
-
+        if 'scrap' in request.session:
+            del request.session['scrap']
 
     _orderby = []
     if _condition1:
