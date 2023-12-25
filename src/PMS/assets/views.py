@@ -141,7 +141,7 @@ def get_assets_queryset(request):
     assets = Asset.objects.all()
     if 'label_no' in request.session:
         _label_no = request.session['label_no']
-        assets = assets.filter(label_no__icontains=_label_no | Q(sap_asset_no__icontains=_label_no))
+        assets = assets.filter(Q(label_no__icontains=_label_no) | Q(sap_asset_no__icontains=_label_no))
 
     if 'status' in request.session:
         _status = request.session['status']
