@@ -163,7 +163,7 @@ class Series(models.Model):
 
 
 class History(models.Model):
-    asset = models.ForeignKey(Asset, related_name='asset_history', on_delete=models.DO_NOTHING)
+    asset = models.ForeignKey(Asset, related_name='asset_history', on_delete=models.CASCADE)
     attr_code = models.CharField(max_length=20, blank=True, null=True)
     comment = models.CharField(max_length=200, blank=True, null=True)
     before = models.CharField(max_length=20, blank=True, null=True)
