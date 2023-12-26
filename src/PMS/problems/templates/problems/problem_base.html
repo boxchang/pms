@@ -97,6 +97,9 @@
                                 <div class="col-5 text-right">
                                     {{ reply.create_by }}
                                 </div>
+                                <div class="col-2 text-right">
+                                    <a class="btn btn-warning btn-sm" href="{% url 'reply_delete' reply.pk %}" role="button" onclick="return confirm('Are you sure?')"><i class="fas fa-times"></i>刪除回覆</a>
+                                </div>
                             </div>
                         </div>
                         <div class="card-body">
