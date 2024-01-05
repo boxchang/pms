@@ -173,7 +173,7 @@ def apply_list(request):
         if _status:
             list = list.filter(status=_status)
         else:
-            list = list.exclude(status=FormStatus.objects.get(status_name="已發放"))
+            list = list.exclude(status=FormStatus.objects.filter(status_name__in=["已發放", "退單"]))
 
         if _start_date and _due_date:
             list = list.filter(apply_date__gte=_start_date, apply_date__lte=_due_date)
