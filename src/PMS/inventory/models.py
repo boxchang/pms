@@ -63,7 +63,7 @@ class Item(models.Model):
         return self.spec
 
 class Pic_attachment(models.Model):
-    asset = models.ForeignKey('Item', related_name='item_pics', on_delete=models.CASCADE)
+    item = models.ForeignKey('Item', related_name='item_pics', on_delete=models.CASCADE)
     files = models.FileField(upload_to='uploads/picture/item/')
     description = models.CharField(max_length=50, blank=True)
     create_at = models.DateTimeField(auto_now_add=True, editable=True)  # 建立日期
