@@ -2,15 +2,17 @@ import json
 from datetime import datetime
 import openpyxl
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db import connection
 from django.db.models import Q
 from django.http import JsonResponse, Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from bases.utils import django_go_sql, get_invform_status_dropdown
-from inventory.forms import OfficeInvForm, InvAppliedHistoryForm, OfficeItemForm, SearchForm, AttachmentForm
+from inventory.forms import OfficeInvForm, InvAppliedHistoryForm, OfficeItemForm, SearchForm, AttachmentForm, \
+    ItemSearchForm, ItemModelForm
 from inventory.models import ItemType, Item, AppliedForm, FormStatus, AppliedItem, Series, Apply_attachment, \
-    ItemCategory
+    ItemCategory, Pic_attachment
 from users.models import CustomUser, Unit
 from django.core.mail import EmailMessage
 from django.conf import settings
@@ -392,6 +394,8 @@ def detail(request, pk):
             file.files.filename = file.files.name[file.files.name.rindex('/')+1:]
         key = "{apply_date}{series}".format(apply_date=form.apply_date.replace('-', ''),
                                            series=form.pk)
+        for form_item in items:
+            form_item.x = Item.objects.get(item_code=form_item.item_code)
 
         # 查過去請領的資料
         hists = AppliedForm.objects.filter(requester=form.requester, status=FormStatus.objects.get(status_name="已發放"), category=form.category).order_by('-apply_date')
@@ -551,3 +555,108 @@ def pr_apply(request):
 def search(request):
     search_form = SearchForm()
     return render(request, 'inventory/search.html', locals())
+
+
+@login_required
+def item_list(request):
+    page_number = 1
+    items = Item.objects.all()
+    search_form = ItemSearchForm()
+    if request.method == 'GET':
+        if request.GET.get('page'):
+            page_number = int(request.GET.get('page'))
+
+    if request.method == 'POST':
+        category_id = request.POST.get('category')
+        type_id = request.POST.get('type')
+        keyword = request.POST.get('keyword')
+        pic = request.POST.get('pic')
+
+        if pic == "True":
+            items = items.filter(item_pics__isnull=False)
+
+        if category_id:
+            item_type = ItemType.objects.filter(category_id=category_id)
+            items = items.filter(item_type__in=item_type)
+
+        if type_id:
+            items = items.filter(item_type_id=int(type_id))
+
+        if keyword:
+            items = items.filter(Q(item_code__contains=keyword) | Q(spec__icontains=keyword))
+
+        search_form = ItemSearchForm(initial={'type': type_id, 'category': category_id, 'keyword': keyword})
+        if category_id:
+            search_form.fields['type'].queryset = ItemType.objects.filter(category_id=category_id)
+
+    results = list(items)
+    page_obj = Paginator(results, 15)
+
+    if page_number:
+        page_results = page_obj.page(page_number)
+    else:
+        page_results = page_obj.page(1)
+
+    return render(request, 'inventory/item_list.html', locals())
+
+
+@login_required
+def item_detail(request, pk):
+    try:
+        item = Item.objects.get(pk=pk)
+        pics = Pic_attachment.objects.filter(item=item).all()
+    except Item.DoesNotExist:
+        raise Http404('Item does not exist')
+
+    return render(request, 'inventory/item_detail.html', locals())
+
+
+@login_required
+def item_update(request, pk):
+    mode = "UPDATE"
+    item = Item.objects.get(id=pk)
+    if request.method == "POST":
+        form = ItemModelForm(request.POST, instance=item)
+        if form.is_valid():
+            tmp_form = form.save(commit=False)
+            tmp_form.update_by = request.user
+            tmp_form.save()
+
+            if request.FILES.get('pic1'):
+                Pic_attachment.objects.update_or_create(item=tmp_form, defaults={'files': request.FILES['pic1'], 'create_by': request.user})
+            return redirect(tmp_form.get_absolute_url())
+    else:
+        form = ItemModelForm(instance=item)
+
+    return render(request, 'inventory/item_edit.html', locals())
+
+
+@login_required
+def item_create(request):
+    if request.method == "POST":
+        form = ItemModelForm(request.POST)
+        if form.is_valid():
+            tmp_form = form.save(commit=False)
+            _key = tmp_form.item_type.category.catogory_code + tmp_form.item_type.type_code
+            _key_name = tmp_form.item_type.type_name
+            series = get_series_number(_key, _key_name)
+            item_code = tmp_form.item_type.category.catogory_code + tmp_form.item_type.type_code + str(series).zfill(5)
+            tmp_form.item_code = item_code
+            tmp_form.create_by = request.user
+            tmp_form.update_by = request.user
+            form.save()
+
+            if request.FILES.get('pic1'):
+                request_file = Pic_attachment(
+                    files=request.FILES['pic1'])
+                request_file.item = tmp_form
+                request_file.create_by = request.user
+                request_file.save()
+
+            return redirect(tmp_form.get_absolute_url())
+    else:
+        form = ItemModelForm()
+
+    return render(request, 'inventory/item_edit.html', locals())
+
+

@@ -51,6 +51,7 @@ class InvAppliedHistoryForm(forms.ModelForm):
             }
         )
 
+
 class SearchForm(forms.Form):
     category = forms.ModelChoiceField(required=False, label="物品類別", queryset=ItemCategory.objects.all(), to_field_name="catogory_code")
     type = forms.ModelChoiceField(required=False, label="物品種類", queryset=ItemType.objects.none())
@@ -189,3 +190,72 @@ class OfficeItemForm(forms.ModelForm):
                 css_class='row'),
         )
 
+
+class ItemSearchForm(forms.Form):
+    category = forms.ModelChoiceField(required=False, label="物品類別", queryset=ItemCategory.objects.all(),
+                                      to_field_name="catogory_code")
+    type = forms.ModelChoiceField(required=False, label="物品種類", queryset=ItemType.objects.none())
+    keyword = forms.CharField(required=False, label="關鍵字")
+    pic = forms.ChoiceField(label="圖片", choices=(
+        ('', '---'), (True, '有'), (False, '無'),), required=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.form_show_errors = True
+
+        self.helper.layout = Layout(
+            Div(
+                Div('category', css_class='col-md-2'),
+                Div('type', css_class='col-md-2'),
+                Div('pic', css_class='col-md-2'),
+                Div('keyword', css_class='col-md-2'),
+                Div(Submit('search', '查詢', css_class='btn btn-info'),
+                    css_class='col-md-2 d-flex align-items-center search_btn_fix pt-3'),
+                css_class='row'),
+        )
+
+
+class ItemModelForm(forms.ModelForm):
+    class Meta:
+        model = Item
+        fields = ('item_code', 'sap_code', 'vendor_code', 'unit', 'item_type', 'spec', 'price', 'enabled',)
+
+    item_code = forms.CharField(required=False, label="Item Code")
+    sap_code = forms.CharField(required=False, label="SAP Code")
+    vendor_code = forms.CharField(required=False, label="Vendor Code")
+    unit = forms.CharField(required=True, label="Unit")
+    item_type = forms.ModelChoiceField(required=True, label="Item Type", queryset=ItemType.objects.all())
+    spec = forms.CharField(required=True, label="SPEC")
+    price = forms.FloatField(required=False, label="Price", initial=0)
+    enabled = forms.ChoiceField(label="Enable", choices=(
+            (True, 'True'), (False, 'False'),), required=True)
+
+
+    def __init__(self, *args, submit_title='Submit', **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['item_code'].widget.attrs['readonly'] = True
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.form_show_errors = True
+
+        self.helper.layout = Layout(
+            Div(
+                Div('item_code', css_class='col-md-4'),
+                Div('sap_code', css_class='col-md-4'),
+                Div('vendor_code', css_class='col-md-4'),
+                css_class='row'),
+            Div(
+                Div('item_type', css_class='col-md-4'),
+                Div('spec', css_class='col-md-8'),
+                css_class='row'),
+            Div(
+                Div('price', css_class='col-md-4'),
+                Div('unit', css_class='col-md-4'),
+                css_class='row'),
+            Div(
+                Div('enabled', css_class='col-md-4'),
+                css_class='row'),
+        )

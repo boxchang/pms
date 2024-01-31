@@ -21,7 +21,8 @@ Inventory
             <a href="{% url 'inv_approve' %}" class="btn btn-info">待簽核</a>
             {% if perms.users.perm_misc_apply %}
             <a href="{% url 'inv_statistic' %}" class="btn btn-info">待請購</a>
-            <a href="/admin/inventory/item/" class="btn btn-info">料號編輯</a>
+            <a href="{% url 'item_create' %}" class="btn btn-info">料號新增</a>
+            <a href="{% url 'item_list' %}" class="btn btn-info">料號編輯</a>
             <a href="/admin/inventory/itemcategory/" class="btn btn-info" target="_blank">編輯類別</a>
             <a href="/admin/inventory/itemtype/" class="btn btn-info" target="_blank">編輯種類</a>
             <a href="{% url 'inv_import' %}" class="btn btn-info">匯入料號</a>

@@ -62,6 +62,9 @@ class Item(models.Model):
     def __str__(self):
         return self.spec
 
+    def get_absolute_url(self):
+        return reverse('item_detail', kwargs={'pk': self.pk})
+
 class Pic_attachment(models.Model):
     item = models.ForeignKey('Item', related_name='item_pics', on_delete=models.CASCADE)
     files = models.FileField(upload_to='uploads/picture/item/')
