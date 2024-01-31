@@ -72,7 +72,7 @@
                                     <a href="#" onclick="open_window('{{ pic.files.url }}')">{{ item.spec }}</a>
                                 {% endfor %}
                             {% else %}
-                                {{ item.spec }}xxx
+                                {{ item.spec }}
                             {% endif %}
                             {% if perms.users.perm_misc_apply %}
                                 [<a href="{% url 'inv_recieved' item.pk %}">編輯</a>]
