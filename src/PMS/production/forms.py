@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from django import forms
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Submit
+from crispy_forms.layout import Layout, Div, Submit, Button
 from bootstrap_datepicker_plus.widgets import DatePickerInput
 from django.utils.translation import gettext_lazy as _
 from production.models import Record, Machine
@@ -150,6 +150,7 @@ class RecordForm(forms.ModelForm):
             Div(
                 Div('record_dt', css_class='col-md-3'),
                 Div('worked_labor_time', css_class='col-md-3'),
+                Button('mtr_change', '物料異動', css_class='btn btn-info m-3', onclick='popup()'),
                 css_class='row'),
             Div(
                 Div('plant', css_class='col-md-3'),

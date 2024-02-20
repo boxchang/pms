@@ -38,7 +38,10 @@ function hotkey()
 
 document.onkeydown = hotkey; //當onkeydown 事件發生時調用hotkey函數
 
-
+//物料異動=================
+$("#button-id-mtr_change").css({"visibility":"hidden"});
+$("#consumption").css({"visibility":"hidden"});
+//=================物料異動
 
 {% endblock ready %}
 {% block js %}
@@ -86,6 +89,15 @@ document.onkeydown = hotkey; //當onkeydown 事件發生時調用hotkey函數
             dataType: 'json',
             data: {"csrfmiddlewaretoken": "{{ csrf_token }}", "cfm_code": $("#id_cfm_code").val(), "wo_no": $("#id_wo_no").val()},
             success: function(data) {
+                //第一站可以更改物料用量, Ex 0010, 0015(重工)
+                if(data.step_no != undefined && data.step_no.substring(0,3) == "001" && data.plant == "302B"){
+                    $("#button-id-mtr_change").css({"visibility": ""});
+                    $("#consumption").css({"visibility": ""});
+                } else {
+                    $("#button-id-mtr_change").css({"visibility":"hidden"});
+                    $("#consumption").css({"visibility":"hidden"});
+                }
+
                 if(data.first_step_done=="N") {
                     alert("{% trans 'The first step has been not finished yet' %}");
                     //$("#id_cfm_code").val('');
@@ -120,7 +132,7 @@ document.onkeydown = hotkey; //當onkeydown 事件發生時調用hotkey函數
                 $("#hid_wo_qty").val(data.wo_qty);
 
                 get_mach_info(data.step_code);
-
+                get_mtr_info($("#id_cfm_code").val());
             }
         });
     }
@@ -136,6 +148,21 @@ document.onkeydown = hotkey; //當onkeydown 事件發生時調用hotkey函數
                     $("#id_mach_code").attr("required", "");
                 }
 
+            }
+        });
+    }
+
+    function get_mtr_info(cfm_code){
+        $.ajax({
+            url: '{% url 'get_mtr_info_api' %}', type: 'post',
+            dataType: 'json',
+            data: {"csrfmiddlewaretoken": "{{ csrf_token }}", "cfm_code": cfm_code},
+            success: function(data) {
+                $('#consumption tbody').html(''); //初始化清空表格內容
+                data = eval(data);
+                for(var j=0;j<data.length;j++){
+                    $('#consumption').append("<tr><td>" + data[j].mtr_no + "</td><td>" + data[j].qty + "</td><td></td></tr>");
+                }
             }
         });
     }
@@ -182,9 +209,113 @@ document.onkeydown = hotkey; //當onkeydown 事件發生時調用hotkey函數
         }
 
     }
+
+    //物料耗用==================================================
+    function popup() {
+        $('#exampleModal').modal('show');
+    }
+
+    function del_mtr(obj, mtr_item_no) {
+        var temp_mtr_list = [];
+        $(obj).closest("tr").remove();
+
+        for(var j=0;j<mtr_list.length;j++){
+            if(mtr_list[j].mtr_no!=mtr_item_no){
+                temp_mtr_list.push(mtr_list[j])
+            }
+        }
+        mtr_list = temp_mtr_list;
+        $("#hid_mtr_info").val(JSON.stringify(mtr_list));
+    }
+
+    var mtr_list = [];
+    function save() {
+        var mtr_item_no = $('#id_mtr_item_no').val();
+        var mtr_qty = $('#id_mtr_qty').val();
+        let obj = {};
+        obj['mtr_no'] = mtr_item_no;
+        obj['qty'] = mtr_qty;
+
+        var del = "<a class=\"del_btn\" href=\"#\" onclick=\"del_mtr(this, " + mtr_item_no + ")\"><i class=\"fas fa-times fa-2x text-info\"></i></a>";
+
+        //欄位必填驗證
+        if(mtr_item_no.length==0||mtr_qty.length==0) {
+            alert("料號或數量沒有填寫");
+            return false;
+        }
+
+        //料號驗證，開頭數字1 or 2，10碼
+        if((mtr_item_no.startsWith('1')||mtr_item_no.startsWith('2')) && mtr_item_no.length == 10) {
+
+        } else {
+            alert("料號格式不正確");
+            return false;
+        }
+
+        //若料號已存在就false==================
+        var valid = true;
+        for(var j=0;j<mtr_list.length;j++) {
+            if(mtr_list[j].mtr_no==mtr_item_no) {
+                valid = false;
+                break;
+            }
+        }
+
+        if(valid) {
+            $('#consumption').append("<tr><td>" + mtr_item_no + "</td><td>" + mtr_qty + "</td><td style='text-align:center'>" + del + "</td></tr>");
+            mtr_list.push(obj);
+            $("#hid_mtr_info").val(JSON.stringify(mtr_list));
+        }else{
+            alert('該料號耗用已經輸入過');
+        }
+        //===================================
+        //按下儲存後，將所有的畫面進行初始化
+        $('#id_mtr_item_no').val('');
+        $('#id_mtr_qty').val('');
+        $('#exampleModal').modal('hide');
+        //===================================
+    }
+    //物料耗用==================================================
 </script>
 {% endblock js %}
 {% block content %}
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">物料異動</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <div class="row">
+                  <div class="col-8">
+                      <div id="div_id_mtr_item_no" class="form-group">
+                          <label for="id_mtr_item_no" class="">料號</label>
+                          <div>
+                              <input type="text" name="mtr_item_no" class="textinput textInput form-control" id="id_mtr_item_no">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-4">
+                      <div id="div_id_mtr_qty" class="form-group">
+                          <label for="id_mtr_qty" class="">用量</label>
+                          <div>
+                              <input type="text" name="mtr_qty" class="textinput textInput form-control" id="id_mtr_qty">
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+            <button type="button" class="btn btn-primary" onclick="save()">新增用料</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="row pt-3">
         <div class="col-1"></div>
         <div class="col-10">
@@ -194,9 +325,25 @@ document.onkeydown = hotkey; //當onkeydown 事件發生時調用hotkey函數
                 <input type="hidden" name="hid_worked_labor_time" id="hid_worked_labor_time">
                 <input type="hidden" name="hid_worked_good_qty" id="hid_worked_good_qty">
                 <input type="hidden" name="hid_wo_qty" id="hid_wo_qty">
+                <input type="hidden" name="hid_mtr_info" id="hid_mtr_info">
             </form>
         </div>
         <div class="col-1"></div>
     </div>
-
+    <div class="row pt-3">
+        <div class="col-1"></div>
+        <div class="col-10">
+            <table id="consumption" class="table table-bordered table-striped table-hover mb-3">
+                <thead class="thead-dark">
+                    <tr>
+                        <td>料號</td>
+                        <td>用量</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="col-1"></div>
+    </div>
 {% endblock %}

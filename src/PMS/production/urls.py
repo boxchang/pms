@@ -2,7 +2,7 @@ from django.urls import re_path as url
 
 from production.views import excel_import, excel_import_preview, record, get_step_info, record_detail, record_edit, \
     record_del, wo_detail, record2, record2_del, get_user_info, record_detail_sap_empno, record_manage, prod_sap_file, \
-    prod_sap_export, record_export, get_mach_info
+    prod_sap_export, record_export, get_mach_info, get_mtr_info
 
 urlpatterns = [
     url(r'^import/', excel_import, name='prod_import'),
@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'^get_step_info/', get_step_info, name='get_step_info_api'),
     url(r'^get_user_info/', get_user_info, name='get_user_info_api'),
     url(r'^get_mach_info/', get_mach_info, name='get_mach_info_api'),
+    url(r'^get_mtr_info/', get_mtr_info, name='get_mtr_info_api'),
     url(r'^prod_sap_file/', prod_sap_file, name='prod_sap_file'),
     url(r'^prod_sap_export/', prod_sap_export, name='prod_sap_export'),
     url(r'^record_export/', record_export, name='record_export'),

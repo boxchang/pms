@@ -1,3 +1,4 @@
+import json
 import os
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import default_storage
@@ -16,7 +17,7 @@ from django.http import HttpResponse
 
 from bases.utils import django_go_sql
 from production.forms import RecordForm, RecordSearchForm, WoSearchForm, RecordManageForm, ExportForm, RecordHistoryForm
-from production.models import ExcelTemp, WODetail, Record, Record2, WorkType, COOIS_Record, WOMain, Machine
+from production.models import ExcelTemp, WODetail, Record, Record2, WorkType, COOIS_Record, WOMain, Machine, Consumption
 from users.models import CustomUser
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
@@ -62,6 +63,7 @@ def COOIS2Table(items):
 def record(request):
     error_msg = ""
     if request.method == 'POST':
+        mtr_info = request.POST.get('hid_mtr_info')
         record_dt = request.POST.get('record_dt')
         emp_no = request.POST.get('emp_no')
         username = request.POST.get('username')
@@ -98,6 +100,12 @@ def record(request):
                                         good_qty=good_qty, ng_qty=ng_qty, item_no=item_no, spec=spec, username=username,
                                         step_no=step_no, step_code=step_code, step_name=step_name, sap_emp_no=sap_emp_no,
                                         update_by=key_user, plant=plant, work_center=work_center, comment=comment, mach=mach)
+
+        # 302B 物料耗用資料
+        if mtr_info:
+            mtr_info = json.loads(mtr_info)
+            for mtr in mtr_info:
+                Consumption.objects.create(cfm_code=cfm_code, wo_no=wo_no, item_no=mtr['mtr_no'], qty=mtr['qty'], create_by=key_user)
 
         return redirect(record.get_absolute_url())
 
@@ -455,6 +463,24 @@ def get_mach_info(request):
                 html += "<option value='{mach_code}'>{mach_name}</option>".format(mach_code=mach.mach_code, mach_name=mach.mach_name)
 
             value["html"] = html
+        except Exception as e:
+            print(e)
+
+    return JsonResponse(value, safe=False)
+
+
+def get_mtr_info(request):
+    value_list = []
+    if request.method == 'POST':
+        try:
+            cfm_code = request.POST.get('cfm_code')
+            records = Consumption.objects.filter(cfm_code=cfm_code)
+            for record in records:
+                value = {}
+                value['mtr_no'] = record.item_no
+                value['qty'] = record.qty
+                value_list.append(value)
+            value = json.dumps(value_list)
         except Exception as e:
             print(e)
 

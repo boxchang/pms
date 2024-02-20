@@ -124,3 +124,11 @@ class Record2(models.Model):
         return reverse('prod_record_detail_sap_empno', kwargs={'sap_emp_no': self.sap_emp_no})
 
 
+class Consumption(models.Model):
+    cfm_code = models.CharField(max_length=20, blank=False, null=False)
+    wo_no = models.CharField(max_length=20, blank=False, null=False)
+    item_no = models.CharField(max_length=20, blank=False, null=False)
+    qty = models.FloatField(default=0)
+    create_at = models.DateTimeField(auto_now=True, null=True)
+    create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
+                                  related_name='consumption_create_by')
