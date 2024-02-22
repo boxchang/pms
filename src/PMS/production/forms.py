@@ -60,6 +60,27 @@ class WoSearchForm(forms.ModelForm):
         )
 
 
+class ItemSearchForm(forms.ModelForm):
+    class Meta:
+        model = Record
+        fields = ('item_no',)
+
+    item_no = forms.CharField(label=_('item_no'))
+
+    def __init__(self, *args, submit_title='Submit', **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.form_show_errors = True
+
+        self.helper.layout = Layout(
+            Div(
+                Div('item_no', css_class='col-md-3'),
+                Div(Submit('submit', _('search'), css_class='btn btn-info'), css_class='col-md-3 d-flex align-items-center mt-3'),
+                css_class='row'),
+        )
+
+
 class RecordSearchForm(forms.ModelForm):
     class Meta:
         model = Record

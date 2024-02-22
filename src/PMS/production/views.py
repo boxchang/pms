@@ -16,7 +16,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 
 from bases.utils import django_go_sql
-from production.forms import RecordForm, RecordSearchForm, WoSearchForm, RecordManageForm, ExportForm, RecordHistoryForm
+from production.forms import RecordForm, RecordSearchForm, WoSearchForm, RecordManageForm, ExportForm, \
+    RecordHistoryForm, ItemSearchForm
 from production.models import ExcelTemp, WODetail, Record, Record2, WorkType, COOIS_Record, WOMain, Machine, Consumption
 from users.models import CustomUser
 from django.utils.translation import gettext_lazy as _
@@ -165,6 +166,18 @@ def wo_detail(request):
 
     form = WoSearchForm()
     return render(request, 'production/wo_detail.html', locals())
+
+
+# 料號查詢工單報工資料
+def item_search(request):
+    if request.method == 'POST':
+        item_no = request.POST.get('item_no')
+        if item_no:
+            item_no = str(item_no).strip()
+        wos = WOMain.objects.filter(item_no=item_no, enable=True).order_by('-create_at')
+
+    form = ItemSearchForm()
+    return render(request, 'production/item_search.html', locals())
 
 
 # 報工刪除
