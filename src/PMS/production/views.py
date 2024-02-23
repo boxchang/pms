@@ -171,10 +171,12 @@ def wo_detail(request):
 # 料號查詢工單報工資料
 def item_search(request):
     if request.method == 'POST':
+        start_date = request.POST.get('start_date')
+        due_date = request.POST.get('due_date')
         item_no = request.POST.get('item_no')
         if item_no:
             item_no = str(item_no).strip()
-        wos = WOMain.objects.filter(item_no=item_no, enable=True).order_by('-create_at')
+        wos = WOMain.objects.filter(item_no=item_no, enable=True, create_at__gte=start_date, create_at__lte=due_date).order_by('-create_at')
 
     form = ItemSearchForm()
     return render(request, 'production/item_search.html', locals())

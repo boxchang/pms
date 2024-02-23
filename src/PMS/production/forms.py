@@ -63,9 +63,11 @@ class WoSearchForm(forms.ModelForm):
 class ItemSearchForm(forms.ModelForm):
     class Meta:
         model = Record
-        fields = ('item_no',)
+        fields = ('item_no', 'start_date', 'due_date')
 
     item_no = forms.CharField(label=_('item_no'))
+    start_date = forms.DateField(label="日期(起)")
+    due_date = forms.DateField(label="日期(迄)")
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -74,10 +76,31 @@ class ItemSearchForm(forms.ModelForm):
         self.helper.form_show_errors = True
 
         self.helper.layout = Layout(
-            Div(
+            Div(Div('start_date', css_class='col-md-3'),
+                Div('due_date', css_class='col-md-3'),
                 Div('item_no', css_class='col-md-3'),
                 Div(Submit('submit', _('search'), css_class='btn btn-info'), css_class='col-md-3 d-flex align-items-center mt-3'),
                 css_class='row'),
+        )
+
+        self.fields['start_date'].widget = DatePickerInput(
+            attrs={'value': (datetime.now() - timedelta(days=45)).strftime('%Y-%m-%d')},
+            options={
+                "format": "YYYY-MM-DD",
+                "showClose": False,
+                "showClear": False,
+                "showTodayButton": False,
+            }
+        )
+
+        self.fields['due_date'].widget = DatePickerInput(
+            attrs={'value': datetime.now().strftime('%Y-%m-%d')},
+            options={
+                "format": "YYYY-MM-DD",
+                "showClose": False,
+                "showClear": False,
+                "showTodayButton": False,
+            }
         )
 
 
