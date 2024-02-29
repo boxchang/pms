@@ -148,5 +148,5 @@ class Sync_SAP_Log(models.Model):
     batch_no = models.CharField(max_length=20, blank=False, null=False)
     from_series_no = models.IntegerField(blank=False, null=False)
     to_series_no = models.IntegerField(blank=False, null=False)
-    update_at = models.DateTimeField(auto_now=True, null=True)
-    update_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='sap_log_update_by')
+    create_at = models.DateTimeField(auto_now=True, null=True)
+    create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='sap_log_update_by')
