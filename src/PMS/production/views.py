@@ -87,6 +87,7 @@ def record(request):
         request.session['record_dt'] = record_dt
         key_user = CustomUser.objects.get(sap_emp_no=sap_emp_no)
         mach_code = request.POST.get('mach_code')
+        status = request.POST.get('status')
         mach = None
         # record = Record.objects.update_or_create(record_dt=record_dt, emp_no=emp_no, wo_no=wo_no, cfm_code=cfm_code,
         #                                 defaults={'labor_time': labor_time, 'mach_time': mach_time, 'ctr_code': ctr_code,
@@ -100,7 +101,8 @@ def record(request):
                                         labor_time=labor_time, mach_time=mach_time, ctr_code=ctr_code,
                                         good_qty=good_qty, ng_qty=ng_qty, item_no=item_no, spec=spec, username=username,
                                         step_no=step_no, step_code=step_code, step_name=step_name, sap_emp_no=sap_emp_no,
-                                        update_by=key_user, plant=plant, work_center=work_center, comment=comment, mach=mach)
+                                        update_by=key_user, plant=plant, work_center=work_center, comment=comment,
+                                        status=status, mach=mach)
         
         # 302B 物料耗用資料
         if mtr_info:

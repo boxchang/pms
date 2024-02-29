@@ -93,6 +93,7 @@ class Record(models.Model):
     ng_qty = models.IntegerField(default=0)
     comment = models.CharField(max_length=40, blank=True, null=True)
     sap_flag = models.BooleanField(default=False)
+    status = models.CharField(max_length=10, blank=True, null=True)
     update_at = models.DateTimeField(auto_now=True, null=True)
     update_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='record_update_by')
 
@@ -132,3 +133,20 @@ class Consumption(models.Model):
     create_at = models.DateTimeField(auto_now=True, null=True)
     create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
                                   related_name='consumption_create_by')
+
+
+class Sync_SAP_Series(models.Model):
+    function = models.CharField(max_length=20)
+    series_no = models.IntegerField()
+
+    class Meta:
+        unique_together = (("function", "series_no"),)
+
+
+class Sync_SAP_Log(models.Model):
+    function = models.CharField(max_length=20, blank=False, null=False)
+    batch_no = models.CharField(max_length=20, blank=False, null=False)
+    from_series_no = models.IntegerField(blank=False, null=False)
+    to_series_no = models.IntegerField(blank=False, null=False)
+    update_at = models.DateTimeField(auto_now=True, null=True)
+    update_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='sap_log_update_by')

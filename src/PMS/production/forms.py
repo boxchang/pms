@@ -165,6 +165,7 @@ class RecordForm(forms.ModelForm):
     step_no = forms.CharField(required=True)
     work_center = forms.CharField(required=True)
     mach_code = forms.ModelChoiceField(required=False, label=_('mach_name'), queryset=Machine.objects.none())
+    status = forms.ChoiceField(label="確認類型", choices=(('X', '最後確認'), ('', '部分確認'),), required=True)
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -180,6 +181,7 @@ class RecordForm(forms.ModelForm):
         self.fields['worked_labor_time'].widget.attrs['readonly'] = True
         self.fields['step_no'].widget = forms.HiddenInput()
         self.fields['work_center'].widget = forms.HiddenInput()
+        self.fields['status'].initial = 'X'
 
         self.helper = FormHelper()
         self.helper.form_tag = False
@@ -194,7 +196,8 @@ class RecordForm(forms.ModelForm):
             Div(
                 Div('record_dt', css_class='col-md-3'),
                 Div('worked_labor_time', css_class='col-md-3'),
-                Button('mtr_change', '物料異動', css_class='btn btn-info m-3', onclick='popup()'),
+                Div(Button('mtr_change', '物料異動', onclick='popup()', css_class='btn btn-info m-3'), css_class='col-md-3'),
+                Div('status', css_class='col-md-3'),
                 css_class='row'),
             Div(
                 Div('plant', css_class='col-md-3'),
