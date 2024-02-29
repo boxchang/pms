@@ -24,3 +24,7 @@ class SYN_Noah_WorkHour(object):
             self.DC_SCHEMA = "DC_Dev.dbo"
             self.WMS_SCHEMA = "WMS2_Dev.dbo"
         self.db = database()
+
+
+    def get_latest_series(self):
+        sql = "select series_no from production_sync_sap_series where function = 'record'"

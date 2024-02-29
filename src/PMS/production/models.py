@@ -138,6 +138,8 @@ class Consumption(models.Model):
 class Sync_SAP_Series(models.Model):
     function = models.CharField(max_length=20)
     series_no = models.IntegerField()
+    update_at = models.DateTimeField(auto_now=True, null=True)
+    update_by = models.CharField(max_length=20)
 
     class Meta:
         unique_together = (("function", "series_no"),)
@@ -149,4 +151,4 @@ class Sync_SAP_Log(models.Model):
     from_series_no = models.IntegerField(blank=False, null=False)
     to_series_no = models.IntegerField(blank=False, null=False)
     create_at = models.DateTimeField(auto_now=True, null=True)
-    create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='sap_log_update_by')
+    create_by = models.CharField(max_length=20)
