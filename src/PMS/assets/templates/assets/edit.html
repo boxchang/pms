@@ -53,16 +53,12 @@ AMS - Asset Edit
         })
 
         if("{{ mode }}" == "UPDATE") {
-            category.attr("disabled", true);
-            asset_type.attr("disabled", true);
             auto_encode.attr("disabled", true);
             label_no.prop('readonly', false);
         }
 
         $("#edit_form").submit(function() {
             //唯讀狀態後端無法取值，送出時去掉唯讀
-            category.attr("disabled", false);
-            asset_type.attr("disabled", false);
             asset_brand.attr("disabled", false);
             auto_encode.attr("disabled", false);
             label_no.prop('readonly', false);
