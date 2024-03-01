@@ -426,22 +426,23 @@ def ItemAPI(request):
         keyword = request.POST.get('keyword')
 
         if type_id:
-            item_data = Item.objects.all().values('item_code', 'spec', 'unit')
+            item_data = Item.objects.all().values('item_code', 'spec', 'unit', 'item_pics__files')
         else:
-            item_data = Item.objects.exclude(spec__contains="自行輸入").values('item_code', 'spec', 'unit')
+            item_data = Item.objects.exclude(spec__contains="自行輸入").values('item_code', 'spec', 'unit', 'item_pics__files')
 
         if category_id:
             item_type = ItemType.objects.filter(category_id=category_id)
-            item_data = item_data.filter(item_type__in=item_type).values('item_code', 'spec', 'unit')
+            item_data = item_data.filter(item_type__in=item_type).values('item_code', 'spec', 'unit', 'item_pics__files')
         if type_id:
-            item_data = item_data.filter(item_type_id=int(type_id)).values('item_code', 'spec', 'unit')
+            item_data = item_data.filter(item_type_id=int(type_id)).values('item_code', 'spec', 'unit', 'item_pics__files')
         if keyword:
             query = Q(spec__icontains=keyword)
-            item_data = item_data.filter(query).values('item_code', 'spec', 'price', 'unit')
+            item_data = item_data.filter(query).values('item_code', 'spec', 'price', 'unit', 'item_pics__files')
 
         for data in item_data:
             category = ItemCategory.objects.get(id=category_id)
-            item_list.append({'item_code': data['item_code'], 'spec': data['spec'], 'unit': data['unit'], 'category': category.category_name})
+            item_list.append({'item_code': data['item_code'], 'spec': data['spec'], 'unit': data['unit'],
+                              'category': category.category_name, 'pic': data['item_pics__files']})
 
     return JsonResponse(item_list, safe=False)
 
