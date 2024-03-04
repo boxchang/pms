@@ -149,7 +149,7 @@
                     {{ reply.create_at|date:"Y-m-d H:i" }} {{ reply.create_by }}
                     {% if reply.create_by == user %}
                     <a href="{% url "reply_edit" reply.pk %}" role="button"><span style="color:#000;padding-left:5px;"><i class="fa fa-edit fa-3"></i></span></a>
-                    <a href="{% url "reply_delete" reply.pk %}" role="button" onclick="return confirm('Are you sure?')"><span style="color:#000;padding-left:5px;"><i class="fa fa-times fa-3"></i></span></a>
+                    <a href="{% url "request_reply_delete" reply.pk %}" role="button" onclick="return confirm('Are you sure?')"><span style="color:#000;padding-left:5px;"><i class="fa fa-times fa-3"></i></span></a>
                     {% endif %}
                 </td>
             </tr>
