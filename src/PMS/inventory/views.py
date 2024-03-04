@@ -563,9 +563,10 @@ def item_list(request):
     page_number = 1
     items = Item.objects.all()
     search_form = ItemSearchForm()
-    if request.method == 'GET':
-        if request.GET.get('page'):
-            page_number = int(request.GET.get('page'))
+    pic = ""
+    category_id = ""
+    type_id = ""
+    keyword = ""
 
     if request.method == 'POST':
         category_id = request.POST.get('category')
@@ -573,22 +574,57 @@ def item_list(request):
         keyword = request.POST.get('keyword')
         pic = request.POST.get('pic')
 
-        if pic == "True":
-            items = items.filter(item_pics__isnull=False)
+    if request.method == 'GET':
+        if request.GET.get('page'):
+            page_number = int(request.GET.get('page'))
 
-        if category_id:
-            item_type = ItemType.objects.filter(category_id=category_id)
-            items = items.filter(item_type__in=item_type)
+        if 'pic' in request.session:
+            pic = request.session['pic']
 
-        if type_id:
-            items = items.filter(item_type_id=int(type_id))
+        if 'category_id' in request.session:
+            category_id = request.session['category_id']
 
-        if keyword:
-            items = items.filter(Q(item_code__contains=keyword) | Q(spec__icontains=keyword))
+        if 'type_id' in request.session:
+            type_id = request.session['type_id']
 
-        search_form = ItemSearchForm(initial={'type': type_id, 'category': category_id, 'keyword': keyword})
-        if category_id:
-            search_form.fields['type'].queryset = ItemType.objects.filter(category_id=category_id)
+        if 'keyword' in request.session:
+            keyword = request.session['keyword']
+
+    if pic == "True":
+        request.session['pic'] = pic
+        items = items.filter(item_pics__isnull=False)
+    elif pic == "False":
+        request.session['pic'] = pic
+        items = items.filter(item_pics__isnull=True)
+    else:
+        if 'pic' in request.session:
+            del request.session['pic']
+
+    if category_id:
+        request.session['category_id'] = category_id
+        item_type = ItemType.objects.filter(category_id=category_id)
+        items = items.filter(item_type__in=item_type)
+    else:
+        if 'category_id' in request.session:
+            del request.session['category_id']
+
+    if type_id:
+        request.session['type_id'] = type_id
+        items = items.filter(item_type_id=int(type_id))
+    else:
+        if 'type_id' in request.session:
+            del request.session['type_id']
+
+    if keyword:
+        request.session['keyword'] = keyword
+        items = items.filter(Q(item_code__contains=keyword) | Q(spec__icontains=keyword))
+    else:
+        if 'keyword' in request.session:
+            del request.session['keyword']
+
+    search_form = ItemSearchForm(initial={'type': type_id, 'category': category_id, 'keyword': keyword})
+    if category_id:
+        search_form.fields['type'].queryset = ItemType.objects.filter(category_id=category_id)
 
     results = list(items)
     page_obj = Paginator(results, 15)
