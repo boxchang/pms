@@ -182,7 +182,7 @@ def apply_list(request):
             list = list.filter(apply_date__gte=_start_date, apply_date__lte=_due_date)
         form = InvAppliedHistoryForm(request.POST)
     else:
-        _start_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+        _start_date = (datetime.now() - timedelta(days=60)).strftime('%Y-%m-%d')
         _due_date = datetime.now().strftime('%Y-%m-%d')
         list = list.filter(apply_date__gte=_start_date, apply_date__lte=_due_date)
         form = InvAppliedHistoryForm()
