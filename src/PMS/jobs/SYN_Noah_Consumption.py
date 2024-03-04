@@ -45,7 +45,7 @@ class SYN_Noah_Consumption(object):
 
     def export_records(self, last_s):
         db = sqlite_database()
-        sql = "select * from production_record where id > {last_s}".format(last_s=last_s)
+        sql = "select * from production_consumption where id > {last_s}".format(last_s=last_s)
         records = db.select_sqlite_dict(sql)
         return records
 
@@ -61,7 +61,7 @@ class SYN_Noah_Consumption(object):
         for record in records:
             sql = """insert into {dc_schema}.SYN_Noah_Consumption(wo_no, cfm_code, item_no, record_id, 
                      qty, batch_no, create_by, create_at) 
-                     values('{wo_no}', '{cfm_code}', '{item_no}', {record_id}, {qty}, 
+                     values('{wo_no}', '{cfm_code}', '{item_no}', {record_id}, {qty}, {batch_no},
                      '{create_by}', GETDATE())"""\
                 .format(wo_no=record['wo_no'], cfm_code=record['cfm_code'], item_no=record['item_no'],
                         record_id=record['id'], qty=record['qty'],
