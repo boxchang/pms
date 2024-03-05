@@ -486,7 +486,7 @@ def update(request, pk):
                          "area": "地區", "owner_unit": "負責單位", "location": "放置地點", "keeper_unit": "保管單位",
                          "keeper_name": "保管人姓名", "location_desc": "放置地點描述",
                          "pur_date": "採購年月", "scrap_date": "報廢日期", "pur_price": "採購金額",
-                         "scrap_reason": "報廢原因", "sap_asset_no": "SAP資產編號"}
+                         "scrap_reason": "報廢原因", "sap_asset_no": "SAP資產編號", "category": "資產類別", "type": "資產種類"}
             for attr in log_attrs:
                 history_record(old, tmp_form, request, attr, log_attrs[attr])
 
