@@ -125,6 +125,7 @@ def record2(request):
         sap_emp_no = request.POST.get('hid_sap_emp_no')
         record_dt = request.POST.get('hid_record_dt2')
         work_type = request.POST.get('work_type')
+        qty = request.POST.get('qty')
         key_user = CustomUser.objects.get(sap_emp_no=sap_emp_no)
         if work_type:
             work_type = WorkType.objects.get(type_code=work_type)
@@ -137,7 +138,7 @@ def record2(request):
         #                                                    'create_by': key_user})
         series_no = get_series_number("record2")
         record2 = Record2.objects.create(record_dt=record_dt, sap_emp_no=sap_emp_no, work_type=work_type,
-                                         labor_time=labor_time, comment=comment, create_by=key_user, id=series_no)
+                                         labor_time=labor_time, comment=comment, create_by=key_user, id=series_no, qty=qty)
         return redirect(record2.get_absolute_url())
     return render(request, 'production/record.html', locals())
 
@@ -338,10 +339,14 @@ def record_detail_sap_empno(request, sap_emp_no):
                                     item_no=record.item_no, spec=record.spec, comment=comment, mach_name=mach_name)
 
         for record2 in record2s:
+            if record2.qty == None:
+                record2.qty = ""
             total_labor_time += record2.labor_time
-            body_tmp = """<tr><td colspan='3'></td><td>{type_code}</td><td>{type_name}</td>
+            body_tmp = """<tr><td style='text-align:center' colspan='3'>{comment}</td><td>{type_code}</td><td>{type_name}</td>
                                         <td style='text-align:right'>{labor_time}</td>
-                                        <td style='text-align:center' colspan='3'>{comment}</td>
+                                        <td></td>
+                                        <td style='text-align:right'>{qty}</td>
+                                        <td></td>
                                         <td>{del_btn}</td></tr>"""
             if not request.user.is_anonymous:
                 del_btn = """<a class="btn btn-danger m-1" href="/production/record2_delete/{record_pk}" role="button" onclick="return confirm('Are you sure?')">刪除</a>""".format(
@@ -349,7 +354,7 @@ def record_detail_sap_empno(request, sap_emp_no):
             else:
                 del_btn = ""
             body += body_tmp.format(type_code=record2.work_type.type_code, type_name=record2.work_type.type_name,
-                                    labor_time=record2.labor_time, del_btn=del_btn, comment=record2.comment)
+                                    labor_time=record2.labor_time, del_btn=del_btn, comment=record2.comment, qty=record2.qty)
 
         total_labor_time = round(total_labor_time, 1)
         rest_time = round(480 - total_labor_time, 1)
@@ -373,9 +378,9 @@ def record_detail_sap_empno(request, sap_emp_no):
                             </select></td>""".format(options=option_tmp)
         body += """<td colspan='3'><input type="text" name="comment" placeholder="{comment}" class="textinput textInput form-control" id="id_comment"></td>""".format(comment=_('comment'))
         body += """<td><input type="text" name="labor_time" class="textinput textInput form-control" id="id_labor_time" required></td>"""
-        body += """<td><input type="hidden" id="hid_record_dt2" name="hid_record_dt2" value='{record_dt2}'></td>""".format(
-            record_dt2=record_dt)
-        body += """<td><input type="hidden" id="hid_sap_emp_no" name="hid_sap_emp_no" value=""></td><td></td>"""
+        body += """<td><input type="hidden" id="hid_record_dt2" name="hid_record_dt2" value='{record_dt2}'>
+                <input type="hidden" id="hid_sap_emp_no" name="hid_sap_emp_no" value=""></td>""".format(record_dt2=record_dt)
+        body += """<td><input type="text" name="qty" class="textinput textInput form-control" id="id_qty"></td><td></td>"""
         body += """<td><input type="submit" class="btn btn-success m-1" value="{new}" onclick="record2_submit()"></td></tr>""".format(new=_('New'))
         # 總人時計算
         body += """<tr><td colspan='5' style='text-align:right'>{trans_total_labor_time}</td><td style='text-align:right'>{total_labor_time}</td>

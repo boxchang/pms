@@ -122,6 +122,7 @@ class Record2(models.Model):
     labor_time = models.FloatField(default=0)
     create_at = models.DateTimeField(auto_now=True, null=True)
     create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='record2_create_by')
+    qty = models.IntegerField(blank=True, null=True)
 
     def get_absolute_url(self):
         return reverse('prod_record_detail_sap_empno', kwargs={'sap_emp_no': self.sap_emp_no})
