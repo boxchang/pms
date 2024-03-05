@@ -130,6 +130,9 @@ def record2(request):
         if work_type:
             work_type = WorkType.objects.get(type_code=work_type)
 
+        if not qty:
+            qty = 0
+
         comment = request.POST.get('comment')
         labor_time = request.POST.get('labor_time')
         # record2 = Record2.objects.update_or_create(record_dt=record_dt, sap_emp_no=sap_emp_no, work_type=work_type,
