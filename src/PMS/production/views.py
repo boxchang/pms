@@ -340,7 +340,7 @@ def record_detail_sap_empno(request, sap_emp_no):
 
         for record2 in record2s:
             if record2.qty == None:
-                record2.qty = ""
+                record2.qty = 0
             total_labor_time += record2.labor_time
             body_tmp = """<tr><td style='text-align:center' colspan='3'>{comment}</td><td>{type_code}</td><td>{type_name}</td>
                                         <td style='text-align:right'>{labor_time}</td>
