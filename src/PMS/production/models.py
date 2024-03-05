@@ -72,6 +72,7 @@ class Machine(models.Model):
 
 
 class Record(models.Model):
+    id = models.CharField(max_length=15, primary_key=True)
     work_center = models.CharField(max_length=20, blank=False, null=False)
     plant = models.CharField(max_length=10, blank=False, null=False)
     wo_no = models.CharField(max_length=20, blank=False, null=False)
@@ -112,6 +113,7 @@ class WorkType(models.Model):
 
 
 class Record2(models.Model):
+    id = models.CharField(max_length=15, primary_key=True)
     emp_no = models.CharField(max_length=30, blank=False, null=False)
     sap_emp_no = models.CharField(max_length=30, blank=False, null=False)
     record_dt = models.CharField(max_length=10, blank=False, null=False)
@@ -126,6 +128,7 @@ class Record2(models.Model):
 
 
 class Consumption(models.Model):
+    id = models.CharField(max_length=15, primary_key=True)
     cfm_code = models.CharField(max_length=20, blank=False, null=False)
     wo_no = models.CharField(max_length=20, blank=False, null=False)
     item_no = models.CharField(max_length=20, blank=False, null=False)
@@ -152,3 +155,9 @@ class Sync_SAP_Log(models.Model):
     to_series_no = models.IntegerField(blank=False, null=False)
     create_at = models.DateTimeField(auto_now=True, null=True)
     create_by = models.CharField(max_length=20)
+
+
+class Series(models.Model):
+    function = models.CharField(max_length=20, primary_key=True)
+    key = models.CharField(max_length=20)
+    series = models.IntegerField()

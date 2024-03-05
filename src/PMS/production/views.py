@@ -16,6 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 
 from bases.utils import django_go_sql
+from production.encode import get_series_number
 from production.forms import RecordForm, RecordSearchForm, WoSearchForm, RecordManageForm, ExportForm, \
     RecordHistoryForm, ItemSearchForm
 from production.models import ExcelTemp, WODetail, Record, Record2, WorkType, COOIS_Record, WOMain, Machine, Consumption
@@ -97,18 +98,20 @@ def record(request):
 
         if mach_code:
             mach = Machine.objects.get(mach_code=mach_code)
+        series_no = get_series_number("record")
         record = Record.objects.create(record_dt=record_dt, emp_no=emp_no, wo_no=wo_no, cfm_code=cfm_code,
                                         labor_time=labor_time, mach_time=mach_time, ctr_code=ctr_code,
                                         good_qty=good_qty, ng_qty=ng_qty, item_no=item_no, spec=spec, username=username,
                                         step_no=step_no, step_code=step_code, step_name=step_name, sap_emp_no=sap_emp_no,
                                         update_by=key_user, plant=plant, work_center=work_center, comment=comment,
-                                        status=status, mach=mach)
+                                        status=status, mach=mach, id=series_no)
         
         # 302B 物料耗用資料
         if mtr_info:
             mtr_info = json.loads(mtr_info)
             for mtr in mtr_info:
-                Consumption.objects.create(cfm_code=cfm_code, wo_no=wo_no, item_no=mtr['mtr_no'], qty=mtr['qty'], create_by=key_user)
+                series_no = get_series_number("consumption")
+                Consumption.objects.create(cfm_code=cfm_code, wo_no=wo_no, item_no=mtr['mtr_no'], qty=mtr['qty'], create_by=key_user, id=series_no)
 
         return redirect(record.get_absolute_url())
 
@@ -132,8 +135,9 @@ def record2(request):
         #                                          defaults={'labor_time': labor_time,
         #                                                    'comment': comment,
         #                                                    'create_by': key_user})
+        series_no = get_series_number("record2")
         record2 = Record2.objects.create(record_dt=record_dt, sap_emp_no=sap_emp_no, work_type=work_type,
-                                         labor_time=labor_time, comment=comment, create_by=key_user)
+                                         labor_time=labor_time, comment=comment, create_by=key_user, id=series_no)
         return redirect(record2.get_absolute_url())
     return render(request, 'production/record.html', locals())
 
