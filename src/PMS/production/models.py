@@ -159,6 +159,9 @@ class Sync_SAP_Log(models.Model):
 
 
 class Series(models.Model):
-    function = models.CharField(max_length=20, primary_key=True)
+    function = models.CharField(max_length=20)
     key = models.CharField(max_length=20)
     series = models.IntegerField()
+
+    class Meta:
+        unique_together = (("function", "key"),)
