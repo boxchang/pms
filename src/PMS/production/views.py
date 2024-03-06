@@ -807,7 +807,7 @@ def record_export(request):
                         where r.sap_emp_no = user.sap_emp_no and user.unit_id = unit.id 
                         and record_dt between '{start_date}' and '{due_date}'
                         union
-                        select '','',user.emp_no,unit.unitName,user.username,w.type_code,w.type_name,record_dt,labor_time,'',qty,'','',comment, r.create_at,'' 
+                        select '','',user.emp_no,unit.unitName,user.username,w.type_code,w.type_name,record_dt,labor_time,'','',qty,'',comment, r.create_at,'' 
                         from production_record2 r,users_customuser user, users_unit unit , production_worktype w
                         where r.sap_emp_no=user.sap_emp_no and user.unit_id = unit.id and r.work_type_id = w.type_code
                         and record_dt between '{start_date}' and '{due_date}'
