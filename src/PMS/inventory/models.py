@@ -119,3 +119,8 @@ class Series(models.Model):
     key = models.CharField(max_length=50, blank=False, null=False)
     series = models.IntegerField()
     desc = models.CharField(max_length=50, blank=True, null=True)
+
+
+class Setting(models.Model):
+    attr = models.CharField(max_length=50, blank=False, null=False)
+    values = models.CharField(max_length=500, blank=False, null=False)

@@ -12,7 +12,7 @@ from bases.utils import django_go_sql, get_invform_status_dropdown
 from inventory.forms import OfficeInvForm, InvAppliedHistoryForm, OfficeItemForm, SearchForm, AttachmentForm, \
     ItemSearchForm, ItemModelForm
 from inventory.models import ItemType, Item, AppliedForm, FormStatus, AppliedItem, Series, Apply_attachment, \
-    ItemCategory, Pic_attachment
+    ItemCategory, Pic_attachment, Setting
 from users.models import CustomUser, Unit
 from django.core.mail import EmailMessage
 from django.conf import settings
@@ -246,6 +246,12 @@ def reject(request, key):
         if apply.requester.email:
             address.append(apply.requester.email)
 
+        attr = Setting.objects.get(attr="reject_mail")
+        if attr:
+            emails = attr.values.split(';')
+            for email in emails:
+                address.append(email)
+
         subject = '總務用品請領單，退單通知!!!!'
         try:
             send_template_email(subject, action="reject", pk=apply.pk, address=address)
@@ -275,6 +281,12 @@ def mail_reject(request, key):
 
             if form.create_by.email:
                 address.append(form.create_by.email)
+
+            attr = Setting.objects.get(attr="reject_mail")
+            if attr:
+                emails = attr.values.split(';')
+                for email in emails:
+                    address.append(email)
 
             subject = '總務用品請領單，退單通知!!!!'
             try:
@@ -697,3 +709,16 @@ def item_create(request):
     return render(request, 'inventory/item_edit.html', locals())
 
 
+@login_required
+def setting(request):
+    if request.method == 'POST':
+        reject_mail = request.POST.get('reject_mail')
+        attrs = Setting.objects.update_or_create(attr="reject_mail", defaults={"values": reject_mail})
+        result = "DONE"
+        print(reject_mail)
+
+    attr = Setting.objects.get(attr="reject_mail")
+    if attr:
+        reject_mail = attr.values
+
+    return render(request, 'inventory/setting.html', locals())

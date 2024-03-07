@@ -113,7 +113,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         permissions = (
             ('perm_pms', '專案管理系統權限'),
             ('perm_ams', '資產管理系統權限'),
-            ('perm_misc_apply', '總務用品請領申請單權限'),
+            ('perm_misc_apply', '總務用品請領管理者權限'),
             ('perm_workhour', '產線報工'),
             ('perm_user_manage', '使用者管理'),
             ('perm_svr_monitor', '伺服器監控'),
