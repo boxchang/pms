@@ -717,8 +717,11 @@ def setting(request):
         result = "DONE"
         print(reject_mail)
 
-    attr = Setting.objects.get(attr="reject_mail")
-    if attr:
-        reject_mail = attr.values
+    try:
+        attr = Setting.objects.get(attr="reject_mail")
+        if attr:
+            reject_mail = attr.values
+    except Exception as e:
+        print(e)
 
     return render(request, 'inventory/setting.html', locals())
