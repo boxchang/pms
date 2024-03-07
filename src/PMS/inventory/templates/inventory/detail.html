@@ -134,6 +134,7 @@
                     <th style="width: 45%">品名</th>
                     <th style="width: 7%;text-align: center;">數量</th>
                     <th style="width: 7%;text-align: center;">發放數量</th>
+                    <th style="width: 30%;text-align: center;">備註</th>
                 </tr>
             </thead>
             <tbody>
@@ -144,6 +145,7 @@
                         <td style="text-align: center">{{ item.spec }}</td>
                         <td style="text-align: center">{{ item.qty }}</td>
                         <td style="text-align: center">{{ item.received_qty }}</td>
+                        <td style="text-align: center">{{ item.comment|default:"" }}</td>
                     </tr>
                     {% endfor %}
                 {% endfor %}
