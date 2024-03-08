@@ -254,7 +254,11 @@ def mail_agree(request, key):
         form = AppliedForm.objects.get(pk=pk, apply_date=apply_date)
         items = form.applied_form_item.all().order_by('category')
 
-        if form.status.id in [2, 6]:
+        # 簽核中
+        if form.status.id == 1:
+            action = "cancel"
+        # 處理中/退單
+        elif form.status.id in [2, 6]:
             action = "done"
         else:
             form.status = FormStatus.objects.get(pk=2)
@@ -300,7 +304,11 @@ def mail_reject(request, key):
         form = AppliedForm.objects.get(pk=pk, apply_date=apply_date)
         items = form.applied_form_item.all().order_by('category')
 
-        if form.status.id in [2, 6]:
+        # 簽核中
+        if form.status.id == 1:
+            action = "cancel"
+        # 處理中/退單
+        elif form.status.id in [2, 6]:
             action = "done"
         else:
             form.status = FormStatus.objects.get(pk=6)
