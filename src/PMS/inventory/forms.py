@@ -24,10 +24,11 @@ class InvAppliedHistoryForm(forms.ModelForm):
         self.helper.form_show_errors = True
 
         self.helper.layout = Layout(
-            Div(Div('start_date', css_class='col-md-3'),
-                Div('due_date', css_class='col-md-3'),
-                Div('status', css_class='col-md-3'),
-                Div(Submit('submit', '查詢', css_class='btn btn-info'), css_class='col-md-3 d-flex align-items-center'),
+            Div(Div('start_date', css_class='col-md-2'),
+                Div('due_date', css_class='col-md-2'),
+                Div('status', css_class='col-md-2'),
+                Div(Submit('search', '查詢', css_class='btn btn-info'), css_class='col-md-3 d-flex align-items-center'),
+                Div(Button('export', 'Excel', css_class='btn btn-info', onclick="export_excel();"), css_class='col-md-3 d-flex align-items-center'),
                 css_class='row'),
         )
 

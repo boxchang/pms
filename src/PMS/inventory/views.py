@@ -1,11 +1,12 @@
 import json
 from datetime import datetime
 import openpyxl
+import xlwt
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import connection
 from django.db.models import Q
-from django.http import JsonResponse, Http404
+from django.http import JsonResponse, Http404, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from bases.utils import django_go_sql, get_invform_status_dropdown
@@ -164,34 +165,65 @@ def import_excel(request):
 
 @login_required
 def apply_list(request):
-    # ["已發放", "取消", "退單"])
-    exclude_list = [4, 5, 6]
-    list = AppliedForm.objects.exclude(status__in=exclude_list)
+    action = ""
     if request.method == 'POST':
-        list = AppliedForm.objects.all()
+        action = request.POST.get('action')
+        form = InvAppliedHistoryForm(request.POST)
+    else:
+        form = InvAppliedHistoryForm()
+
+    list = get_form_queryset(request)
+
+    if action == "EXPORT":
+        return export_form_xls(list)
+
+    return render(request, 'inventory/list.html', locals())
+
+
+def get_form_queryset(request):
+    # ["取消", "已發放", "退單"])
+    exclude_list = [4, 5, 6]
+    _start_date = (datetime.now() - timedelta(days=60)).strftime('%Y-%m-%d')
+    _due_date = datetime.now().strftime('%Y-%m-%d')
+    request.session['start_date'] = _start_date
+    request.session['due_date'] = _due_date
+    list = AppliedForm.objects.all()
+
+    if request.method == 'POST':
+
         _status = request.POST['status']
         _start_date = str(request.POST['start_date']).replace('/', '-')
         _due_date = str(request.POST['due_date']).replace('/', '-')
 
         if _status:
-            list = list.filter(status=_status)
+            request.session['status'] = _status
         else:
-            list = list.exclude(status__in=exclude_list)
+            if 'status' in request.session:
+                del request.session['status']
 
         if _start_date and _due_date:
-            list = list.filter(apply_date__gte=_start_date, apply_date__lte=_due_date)
-        form = InvAppliedHistoryForm(request.POST)
+            request.session['start_date'] = _start_date
+            request.session['due_date'] = _due_date
+
+    if request.method == 'GET':
+        if 'start_date' in request.session:
+            _start_date = request.session['start_date']
+
+        if 'due_date' in request.session:
+            _due_date = request.session["due_date"]
+
+    if 'status' in request.session:
+        _status = request.session["status"]
+        list = list.filter(status=_status)
     else:
-        _start_date = (datetime.now() - timedelta(days=60)).strftime('%Y-%m-%d')
-        _due_date = datetime.now().strftime('%Y-%m-%d')
-        list = list.filter(apply_date__gte=_start_date, apply_date__lte=_due_date)
-        form = InvAppliedHistoryForm()
+        list = list.exclude(status__in=exclude_list)
 
     if not request.user.has_perm("perm_misc_apply"):  # 不是管理者只能看自己的單據
         list = list.filter(Q(requester=request.user) | Q(approver=request.user) | Q(create_by=request.user))
 
+    list = list.filter(apply_date__gte=_start_date, apply_date__lte=_due_date)
     list = list.order_by('-apply_date', '-form_no')
-    return render(request, 'inventory/list.html', locals())
+    return list
 
 
 @login_required
@@ -398,7 +430,8 @@ def detail(request, pk):
         if form.status.id == 1 and form.requester.manager == request.user:
             isApprover = True
 
-        if form.requester == request.user:
+        # 只有簽核中的狀態才能取消
+        if form.status.id == 1 and form.create_by == request.user:
             isCreater = True
 
         files = Apply_attachment.objects.filter(apply=form)
@@ -725,3 +758,72 @@ def setting(request):
         print(e)
 
     return render(request, 'inventory/setting.html', locals())
+
+
+#Excel
+def export_form_xls(list):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="inventory_application.xls"'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Forms')
+    ws.col(0).width = 256 *20
+    ws.col(1).width = 256 *20
+    ws.col(2).width = 256 *20
+    ws.col(3).width = 256 *20
+    ws.col(4).width = 256 *20
+    ws.col(5).width = 256 *20
+    ws.col(6).width = 256 *20
+
+
+    # Sheet header, first row
+    row_num = 0
+    form_columns = ['單號', '申請日期', '狀態', '簽核者', '申請部門', '申請者', '分機']
+    form_item_columns = ['', '物品類別', '品名', '申請數量', '已發放數量', '單位', '備註']
+
+    for data in list:
+        # Form Header
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+
+        for col_num in range(len(form_columns)):
+            ws.write(row_num, col_num, form_columns[col_num], font_style)
+
+        row_num += 1
+        # Sheet body, remaining rows
+        font_style = xlwt.XFStyle()
+        ws.write(row_num, 0, data.form_no, font_style)
+        ws.write(row_num, 1, data.apply_date, font_style)
+        ws.write(row_num, 2, data.status.status_name, font_style)
+        ws.write(row_num, 3, data.approver.username, font_style)
+        ws.write(row_num, 4, data.unit.unitName, font_style)
+        ws.write(row_num, 5, data.requester.username, font_style)
+        ws.write(row_num, 6, data.ext_number, font_style)
+
+        items = data.applied_form_item.all().order_by('category')
+        for form_item in items:
+            form_item.x = Item.objects.get(item_code=form_item.item_code)
+
+        for form_item in items:
+            row_num += 1
+            # Form Item Header
+            font_style = xlwt.XFStyle()
+            font_style.font.bold = True
+
+            for col_num in range(len(form_item_columns)):
+                ws.write(row_num, col_num, form_item_columns[col_num], font_style)
+
+            row_num += 1
+            # Sheet body, remaining rows
+            font_style = xlwt.XFStyle()
+            ws.write(row_num, 0, "", font_style)
+            ws.write(row_num, 1, form_item.category, font_style)
+            ws.write(row_num, 2, form_item.x.spec, font_style)
+            ws.write(row_num, 3, form_item.qty, font_style)
+            ws.write(row_num, 4, form_item.received_qty, font_style)
+            ws.write(row_num, 5, form_item.unit, font_style)
+            ws.write(row_num, 6, form_item.comment, font_style)
+        row_num += 2
+
+    wb.save(response)
+    return response

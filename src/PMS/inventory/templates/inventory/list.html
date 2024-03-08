@@ -10,9 +10,10 @@
             </div>
         </div>
         <div class="card-body">
-            <form action="" method="post" class="form-group font-weight-bold align-middle" id="request_form" enctype="multipart/form-data">
+            <form action="{% url 'inv_list' %}" method="post" class="form-group font-weight-bold align-middle" id="form" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% crispy form %}
+                <input type="hidden" name="action" id="action">
             </form>
         </div>
     </div>
@@ -53,5 +54,10 @@
 </div>
 {% endblock %}
 {% block js %}
-
+<script>
+var export_excel = function() {
+    $('#action').val('EXPORT');
+    $('#form').submit();
+}
+</script>
 {% endblock js %}
