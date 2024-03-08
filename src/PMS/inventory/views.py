@@ -804,15 +804,15 @@ def export_form_xls(list):
         for form_item in items:
             form_item.x = Item.objects.get(item_code=form_item.item_code)
 
+        # Form Item Header
+        row_num += 1
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+
+        for col_num in range(len(form_item_columns)):
+            ws.write(row_num, col_num, form_item_columns[col_num], font_style)
+
         for form_item in items:
-            row_num += 1
-            # Form Item Header
-            font_style = xlwt.XFStyle()
-            font_style.font.bold = True
-
-            for col_num in range(len(form_item_columns)):
-                ws.write(row_num, col_num, form_item_columns[col_num], font_style)
-
             row_num += 1
             # Sheet body, remaining rows
             font_style = xlwt.XFStyle()
