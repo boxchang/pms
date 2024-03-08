@@ -801,8 +801,6 @@ def export_form_xls(list):
         ws.write(row_num, 6, data.ext_number, font_style)
 
         items = data.applied_form_item.all().order_by('category')
-        for form_item in items:
-            form_item.x = Item.objects.get(item_code=form_item.item_code)
 
         # Form Item Header
         row_num += 1
@@ -818,7 +816,7 @@ def export_form_xls(list):
             font_style = xlwt.XFStyle()
             ws.write(row_num, 0, "", font_style)
             ws.write(row_num, 1, form_item.category, font_style)
-            ws.write(row_num, 2, form_item.x.spec, font_style)
+            ws.write(row_num, 2, form_item.spec, font_style)
             ws.write(row_num, 3, form_item.qty, font_style)
             ws.write(row_num, 4, form_item.received_qty, font_style)
             ws.write(row_num, 5, form_item.unit, font_style)
