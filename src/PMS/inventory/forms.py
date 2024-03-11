@@ -35,7 +35,7 @@ class InvAppliedHistoryForm(forms.ModelForm):
             Div(Div('category', css_class='col-md-2'),
                 Div('unit', css_class='col-md-2'),
                 Div('requester', css_class='col-md-2'),
-                Div(Button('search', '查詢', css_class='btn btn-info', onclick="submit();"), css_class='col-md-3 d-flex align-items-center'),
+                Div(Button('search', '查詢', css_class='btn btn-info', onclick="submit1();"), css_class='col-md-3 d-flex align-items-center'),
                 Div(Button('export', 'Excel', css_class='btn btn-info', onclick="export_excel();"),
                     css_class='col-md-3 d-flex align-items-center'),
                 css_class='row'),
