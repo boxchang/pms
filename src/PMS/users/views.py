@@ -404,7 +404,7 @@ def get_deptuser_api(request):
     if request.method == 'POST':
         unit = request.POST.get('unit')
         employees = CustomUser.objects.filter(unit=unit, is_active=True)
-        html = "<option value="" selected>---------</option>"
+        html = """<option value="" selected>---------</option>"""
 
         for employee in employees:
             html += """<option value="{value}">{name}</option>""".format(value=employee.id, name=employee.username)
