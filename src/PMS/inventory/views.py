@@ -251,13 +251,14 @@ def get_form_queryset(request):
         _category = request.session["category"]
         list = list.filter(category=_category)
 
-    if 'unit' in request.session:
-        _unit = request.session["unit"]
-        list = list.filter(unit=_unit)
-
+    # 沒有輸入人名條件才會觸發部門條件
     if 'requester' in request.session:
         _requester = request.session["requester"]
         list = list.filter(Q(requester=_requester) | Q(approver=_requester) | Q(create_by=_requester))
+    else:
+        if 'unit' in request.session:
+            _unit = request.session["unit"]
+            list = list.filter(unit=_unit)
 
     if not request.user.has_perm("perm_misc_apply"):  # 不是管理者只能看自己的單據
         list = list.filter(Q(requester=request.user) | Q(approver=request.user) | Q(create_by=request.user))

@@ -18,7 +18,7 @@ class InvAppliedHistoryForm(forms.ModelForm):
     category = forms.ModelChoiceField(required=False, label="物品類別", queryset=ItemCategory.objects.all(), initial=0)
     unit = forms.ModelChoiceField(required=False, label="申請部門", queryset=Unit.objects.all(),
                                   widget=forms.Select(attrs={"onChange": "dept_change()"}))
-    requester = forms.ModelChoiceField(required=False, label="申請人", queryset=CustomUser.objects.none())
+    requester = forms.ModelChoiceField(required=False, label="申請人/代申請人/簽核者", queryset=CustomUser.objects.none())
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
