@@ -17,7 +17,7 @@
             </form>
         </div>
     </div>
-    <div id="data" class="table-responsive" style="height:550px; overflow:auto;">
+    <div id="data" class="table-responsive" style="height:500px; overflow:auto;">
         <table class="table table-bordered table-striped">
         <thead class="thead-dark">
             <tr>
@@ -55,6 +55,17 @@
 {% endblock %}
 {% block js %}
 <script>
+function dept_change() {
+    $.ajax({
+        url: '{% url 'get_deptuser_api' %}', type: 'post',
+        dataType: 'json',
+        data: {"csrfmiddlewaretoken": "{{ csrf_token }}", "unit": $("#id_unit :selected").val()},
+        success: function(data) {
+            $("#id_requester").html(data);
+        }
+    });
+}
+
 var export_excel = function() {
     $('#action').val('EXPORT');
     $('#form').submit();

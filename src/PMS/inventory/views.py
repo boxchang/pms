@@ -168,7 +168,16 @@ def apply_list(request):
     action = ""
     if request.method == 'POST':
         action = request.POST.get('action')
-        form = InvAppliedHistoryForm(request.POST)
+        status = request.POST.get('status')
+        start_date = request.POST.get('start_date')
+        due_date = request.POST.get('due_date')
+        category = request.POST.get('category')
+        unit = request.POST.get('unit')
+        requester = request.POST.get('requester')
+        form = InvAppliedHistoryForm(initial={'start_date': start_date, 'due_date': due_date, 'status': status,
+                                              'category': category, 'unit': unit, 'requester': requester})
+        if unit:
+            form.fields["requester"].queryset = CustomUser.objects.filter(unit=unit, is_active=True).all()
     else:
         form = InvAppliedHistoryForm()
 
@@ -190,16 +199,36 @@ def get_form_queryset(request):
     list = AppliedForm.objects.all()
 
     if request.method == 'POST':
-
         _status = request.POST['status']
         _start_date = str(request.POST['start_date']).replace('/', '-')
         _due_date = str(request.POST['due_date']).replace('/', '-')
+        _category = request.POST['category']
+        _unit = request.POST['unit']
+        _requester = request.POST['requester']
 
         if _status:
             request.session['status'] = _status
         else:
             if 'status' in request.session:
                 del request.session['status']
+
+        if _category:
+            request.session['category'] = _category
+        else:
+            if 'category' in request.session:
+                del request.session['category']
+
+        if _unit:
+            request.session['unit'] = _unit
+        else:
+            if 'unit' in request.session:
+                del request.session['unit']
+
+        if _requester:
+            request.session['requester'] = _requester
+        else:
+            if 'requester' in request.session:
+                del request.session['requester']
 
         if _start_date and _due_date:
             request.session['start_date'] = _start_date
@@ -217,6 +246,18 @@ def get_form_queryset(request):
         list = list.filter(status=_status)
     else:
         list = list.exclude(status__in=exclude_list)
+
+    if 'category' in request.session:
+        _category = request.session["category"]
+        list = list.filter(category=_category)
+
+    if 'unit' in request.session:
+        _unit = request.session["unit"]
+        list = list.filter(unit=_unit)
+
+    if 'requester' in request.session:
+        _requester = request.session["requester"]
+        list = list.filter(Q(requester=_requester) | Q(approver=_requester) | Q(create_by=_requester))
 
     if not request.user.has_perm("perm_misc_apply"):  # 不是管理者只能看自己的單據
         list = list.filter(Q(requester=request.user) | Q(approver=request.user) | Q(create_by=request.user))

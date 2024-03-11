@@ -15,6 +15,10 @@ class InvAppliedHistoryForm(forms.ModelForm):
     status = forms.ModelChoiceField(required=False, label="狀態", queryset=FormStatus.objects.all(), initial=0)
     start_date = forms.DateField(label="申請日期(起)")
     due_date = forms.DateField(label="申請日期(迄)")
+    category = forms.ModelChoiceField(required=False, label="物品類別", queryset=ItemCategory.objects.all(), initial=0)
+    unit = forms.ModelChoiceField(required=False, label="申請部門", queryset=Unit.objects.all(),
+                                  widget=forms.Select(attrs={"onChange": "dept_change()"}))
+    requester = forms.ModelChoiceField(required=False, label="申請人", queryset=CustomUser.objects.none())
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -27,8 +31,13 @@ class InvAppliedHistoryForm(forms.ModelForm):
             Div(Div('start_date', css_class='col-md-2'),
                 Div('due_date', css_class='col-md-2'),
                 Div('status', css_class='col-md-2'),
+                css_class='row'),
+            Div(Div('category', css_class='col-md-2'),
+                Div('unit', css_class='col-md-2'),
+                Div('requester', css_class='col-md-2'),
                 Div(Submit('search', '查詢', css_class='btn btn-info'), css_class='col-md-3 d-flex align-items-center'),
-                Div(Button('export', 'Excel', css_class='btn btn-info', onclick="export_excel();"), css_class='col-md-3 d-flex align-items-center'),
+                Div(Button('export', 'Excel', css_class='btn btn-info', onclick="export_excel();"),
+                    css_class='col-md-3 d-flex align-items-center'),
                 css_class='row'),
         )
 
