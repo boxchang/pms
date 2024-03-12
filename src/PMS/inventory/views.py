@@ -851,7 +851,10 @@ def export_form_xls(list):
         row_num += 1
         # Sheet body, remaining rows
         font_style = xlwt.XFStyle()
-        font_style.font.colour_index = xlwt.Style.colour_map['yellow']
+        font_style.font.colour_index = xlwt.Style.colour_map['white']
+        pattern = xlwt.Pattern()
+        pattern.pattern = xlwt.Pattern.SOLID_PATTERN
+        pattern.pattern_fore_colour = xlwt.Style.colour_map['gray50']
         font_style.pattern = pattern
         ws.write(row_num, 0, data.form_no, font_style)
         ws.write(row_num, 1, data.apply_date, font_style)
@@ -870,7 +873,7 @@ def export_form_xls(list):
         font_style.font.colour_index = xlwt.Style.colour_map['white']
         pattern = xlwt.Pattern()
         pattern.pattern = xlwt.Pattern.SOLID_PATTERN
-        pattern.pattern_fore_colour = xlwt.Style.colour_map['gray50']
+        pattern.pattern_fore_colour = xlwt.Style.colour_map['gray40']
         font_style.pattern = pattern
 
         for col_num in range(len(form_item_columns)):
