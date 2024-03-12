@@ -832,9 +832,18 @@ def export_form_xls(list):
     form_item_columns = ['', '物品類別', '品名', '申請數量', '已發放數量', '單位', '備註']
 
     for data in list:
+        username = ""
+        if data.approver:
+            username = data.approver.username
+
         # Form Header
         font_style = xlwt.XFStyle()
         font_style.font.bold = True
+        font_style.font.colour_index = xlwt.Style.colour_map['white']
+        pattern = xlwt.Pattern()
+        pattern.pattern = xlwt.Pattern.SOLID_PATTERN
+        pattern.pattern_fore_colour = xlwt.Style.colour_map['gray80']
+        font_style.pattern = pattern
 
         for col_num in range(len(form_columns)):
             ws.write(row_num, col_num, form_columns[col_num], font_style)
@@ -842,10 +851,12 @@ def export_form_xls(list):
         row_num += 1
         # Sheet body, remaining rows
         font_style = xlwt.XFStyle()
+        font_style.font.colour_index = xlwt.Style.colour_map['yellow']
+        font_style.pattern = pattern
         ws.write(row_num, 0, data.form_no, font_style)
         ws.write(row_num, 1, data.apply_date, font_style)
         ws.write(row_num, 2, data.status.status_name, font_style)
-        ws.write(row_num, 3, data.approver.username, font_style)
+        ws.write(row_num, 3, username, font_style)
         ws.write(row_num, 4, data.unit.unitName, font_style)
         ws.write(row_num, 5, data.requester.username, font_style)
         ws.write(row_num, 6, data.ext_number, font_style)
@@ -856,6 +867,11 @@ def export_form_xls(list):
         row_num += 1
         font_style = xlwt.XFStyle()
         font_style.font.bold = True
+        font_style.font.colour_index = xlwt.Style.colour_map['white']
+        pattern = xlwt.Pattern()
+        pattern.pattern = xlwt.Pattern.SOLID_PATTERN
+        pattern.pattern_fore_colour = xlwt.Style.colour_map['gray50']
+        font_style.pattern = pattern
 
         for col_num in range(len(form_item_columns)):
             ws.write(row_num, col_num, form_item_columns[col_num], font_style)
