@@ -15,7 +15,22 @@ class FormStatus(models.Model):
         return self.status_name
 
 
+class ItemFamily(models.Model):
+    family_code = models.CharField(max_length=2, blank=False, null=False)
+    family_name = models.CharField(max_length=50, blank=False, null=False)
+    create_at = models.DateTimeField(auto_now_add=True, editable=True)  # 建立日期
+    create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
+                                  related_name='item_family_create_by')  # 建立者
+    update_at = models.DateTimeField(auto_now=True, null=True)
+    update_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
+                                  related_name='item_family_update_by')
+
+    def __str__(self):
+        return self.family_name
+
+
 class ItemCategory(models.Model):
+    family = models.ForeignKey(ItemFamily, related_name='item_family_category', on_delete=models.CASCADE)
     catogory_code = models.CharField(max_length=2, blank=False, null=False)
     category_name = models.CharField(max_length=50, blank=False, null=False)
     manual = models.BooleanField(default=False)

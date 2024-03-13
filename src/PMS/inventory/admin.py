@@ -1,5 +1,10 @@
 from django.contrib import admin
-from inventory.models import ItemCategory, ItemType, Item, FormStatus
+from inventory.models import ItemCategory, ItemType, Item, FormStatus, ItemFamily
+
+
+@admin.register(ItemFamily)
+class ItemCategoryAdmin(admin.ModelAdmin):
+    list_display = ('family_code', 'family_name')
 
 
 @admin.register(ItemCategory)
