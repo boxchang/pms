@@ -61,7 +61,7 @@ class ItemType(models.Model):
 
 
 class Item(models.Model):
-    item_code = models.CharField(max_length=10, blank=False, null=False)
+    item_code = models.CharField(max_length=11, blank=False, null=False)
     sap_code = models.CharField(max_length=20, blank=True, null=True)
     vendor_code = models.CharField(max_length=20, blank=True, null=True)
     unit = models.CharField(max_length=10, blank=False, null=False)
