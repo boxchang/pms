@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from django import forms
 from users.models import Unit, CustomUser
-from .models import AppliedForm, ItemType, Item, AppliedItem, ItemCategory, FormStatus
+from .models import AppliedForm, ItemType, Item, AppliedItem, ItemCategory, FormStatus, ItemFamily
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, HTML, Button, Submit
 from bootstrap_datepicker_plus.widgets import DatePickerInput
@@ -231,12 +231,14 @@ class ItemSearchForm(forms.Form):
 class ItemModelForm(forms.ModelForm):
     class Meta:
         model = Item
-        fields = ('item_code', 'sap_code', 'vendor_code', 'unit', 'item_type', 'spec', 'price', 'enabled',)
+        fields = ('item_code', 'sap_code', 'vendor_code', 'unit', 'item_type', 'spec', 'price', 'enabled', 'item_family', 'item_category')
 
     item_code = forms.CharField(required=False, label="Item Code")
     sap_code = forms.CharField(required=False, label="SAP Code")
     vendor_code = forms.CharField(required=False, label="Vendor Code")
     unit = forms.CharField(required=True, label="Unit")
+    item_family = forms.ModelChoiceField(required=True, label="Item Family", queryset=ItemFamily.objects.all())
+    item_category = forms.ModelChoiceField(required=True, label="Item Category", queryset=ItemCategory.objects.all())
     item_type = forms.ModelChoiceField(required=True, label="Item Type", queryset=ItemType.objects.all())
     spec = forms.CharField(required=True, label="SPEC")
     price = forms.FloatField(required=False, label="Price", initial=0)
@@ -258,8 +260,12 @@ class ItemModelForm(forms.ModelForm):
                 Div('vendor_code', css_class='col-md-4'),
                 css_class='row'),
             Div(
+                Div('item_family', css_class='col-md-4'),
+                Div('item_category', css_class='col-md-4'),
                 Div('item_type', css_class='col-md-4'),
-                Div('spec', css_class='col-md-8'),
+                css_class='row'),
+            Div(
+                Div('spec', css_class='col-md-12'),
                 css_class='row'),
             Div(
                 Div('price', css_class='col-md-4'),

@@ -13,7 +13,7 @@ from bases.utils import django_go_sql, get_invform_status_dropdown
 from inventory.forms import OfficeInvForm, InvAppliedHistoryForm, OfficeItemForm, SearchForm, AttachmentForm, \
     ItemSearchForm, ItemModelForm
 from inventory.models import ItemType, Item, AppliedForm, FormStatus, AppliedItem, Series, Apply_attachment, \
-    ItemCategory, Pic_attachment, Setting
+    ItemCategory, Pic_attachment, Setting, ItemFamily
 from users.models import CustomUser, Unit
 from django.core.mail import EmailMessage
 from django.conf import settings
@@ -134,6 +134,7 @@ def main(request):
 def import_excel(request):
     if request.method == 'POST':
         try:
+            family = ItemFamily.objects.get(family_name="庶務用品")
             excel_file = request.FILES.get('files1')
             if excel_file:
                 wb = openpyxl.load_workbook(excel_file)
@@ -154,7 +155,7 @@ def import_excel(request):
                     _key = type.category.catogory_code+type.type_code
                     _key_name = type.type_name
                     series = get_series_number(_key, _key_name)
-                    item_code = type.category.catogory_code+type.type_code+str(series).zfill(5)
+                    item_code = family.family_code + type.category.catogory_code + type.type_code + str(series).zfill(5)
                     item = Item.objects.update_or_create(item_code=item_code, defaults={'item_type': type, 'vendor_code': vendor_code, 'spec': spec, 'unit': unit,
                                                          'price': price, 'create_by': request.user, 'update_by': request.user})
         except Exception as e:
@@ -769,10 +770,10 @@ def item_create(request):
         form = ItemModelForm(request.POST)
         if form.is_valid():
             tmp_form = form.save(commit=False)
-            _key = tmp_form.item_type.category.catogory_code + tmp_form.item_type.type_code
+            _key = tmp_form.item_type.category.family.family_code + tmp_form.item_type.category.catogory_code + tmp_form.item_type.type_code
             _key_name = tmp_form.item_type.type_name
             series = get_series_number(_key, _key_name)
-            item_code = tmp_form.item_type.category.catogory_code + tmp_form.item_type.type_code + str(series).zfill(5)
+            item_code = _key + str(series).zfill(5)
             tmp_form.item_code = item_code
             tmp_form.create_by = request.user
             tmp_form.update_by = request.user

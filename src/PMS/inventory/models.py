@@ -30,7 +30,7 @@ class ItemFamily(models.Model):
 
 
 class ItemCategory(models.Model):
-    family = models.ForeignKey(ItemFamily, related_name='item_family_category', on_delete=models.CASCADE)
+    family = models.ForeignKey(ItemFamily, related_name='category_family', on_delete=models.CASCADE)
     catogory_code = models.CharField(max_length=2, blank=False, null=False)
     category_name = models.CharField(max_length=50, blank=False, null=False)
     manual = models.BooleanField(default=False)
@@ -46,7 +46,7 @@ class ItemCategory(models.Model):
 
 class ItemType(models.Model):
     category = models.ForeignKey(
-        ItemCategory, related_name='item_category_type', on_delete=models.CASCADE)
+        ItemCategory, related_name='type_category', on_delete=models.CASCADE)
     type_code = models.CharField(max_length=2, blank=False, null=False)
     type_name = models.CharField(max_length=50, blank=False, null=False)
     is_attached = models.BooleanField(default=False)
