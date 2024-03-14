@@ -37,5 +37,36 @@
 </div>
 {% endblock %}
 {% block js %}
+<script>
+changeFamilySelect = function(family_id)
+{
+    $.get('/inventory/categoryapi/'+family_id, function (data){
+        $.each(data, function(index, item){
+            asset_type.append('<option value="' + item.id + '">' + item.type_name + '</option>')
+        })
+    })
+}
 
+$(function (){
+    item_family = $('#id_item_family');
+    item_category = $('#id_item_category');
+    item_type = $('#id_item_type');
+
+    changeFamilySelect(0, item_family);
+
+    item_family.change(function(){
+        alert('item_family');
+        item_category.empty().append('<option value="">---------</option>');
+        item_type.empty().append('<option value="">---------</option>');
+        changeFamilySelect(this.value, item_family);
+    })
+
+    item_category.change(function(){
+        alert('item_category');
+        //asset_type.empty().append('<option value="">---------</option>');
+        //asset_brand.empty().append('<option value="">---------</option>');
+        //changeSelect(this.value, asset_type, asset_brand)
+    })
+})
+</script>
 {% endblock js %}

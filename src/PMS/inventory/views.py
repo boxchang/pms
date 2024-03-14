@@ -297,8 +297,8 @@ def mail_agree(request, key):
         form = AppliedForm.objects.get(pk=pk, apply_date=apply_date)
         items = form.applied_form_item.all().order_by('category')
 
-        # 簽核中
-        if form.status.id == 1:
+        # 取消
+        if form.status.id == 4:
             action = "cancel"
         # 處理中/退單
         elif form.status.id in [2, 6]:
@@ -347,8 +347,8 @@ def mail_reject(request, key):
         form = AppliedForm.objects.get(pk=pk, apply_date=apply_date)
         items = form.applied_form_item.all().order_by('category')
 
-        # 簽核中
-        if form.status.id == 1:
+        # 取消
+        if form.status.id == 4:
             action = "cancel"
         # 處理中/退單
         elif form.status.id in [2, 6]:
@@ -810,7 +810,6 @@ def setting(request):
 
     return render(request, 'inventory/setting.html', locals())
 
-
 #Excel
 def export_form_xls(list):
     response = HttpResponse(content_type='application/ms-excel')
@@ -825,7 +824,6 @@ def export_form_xls(list):
     ws.col(4).width = 256 *20
     ws.col(5).width = 256 *20
     ws.col(6).width = 256 *20
-
 
     # Sheet header, first row
     row_num = 0
@@ -895,3 +893,11 @@ def export_form_xls(list):
 
     wb.save(response)
     return response
+
+def CategoryAPI(request, family_id):
+    category_data = ItemCategory.objects.filter(family_id=int(family_id)).values('id', 'category_name')
+    category_list = []
+    for data in category_data:
+        category_list.append({'id': data['id'], 'category_name': data['category_name']})
+
+    return JsonResponse(category_list, safe=False)
