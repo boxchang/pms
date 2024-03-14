@@ -117,6 +117,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             ('perm_workhour', '產線報工'),
             ('perm_user_manage', '使用者管理'),
             ('perm_svr_monitor', '伺服器監控'),
+            ('perm_stock', '庫存管理系統權限'),
         )
 
     def get_full_name(self):

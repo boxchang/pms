@@ -147,6 +147,7 @@ def detail(request):
         perm_user_manage = member.has_perm('users.perm_user_manage')
         perm_misc_apply = member.has_perm('users.perm_misc_apply')
         perm_svr_monitor = member.has_perm('users.perm_svr_monitor')
+        perm_stock = member.has_perm('users.perm_stock')
 
         if not request.user.is_superuser:
             form = CurrentCustomUserForm(instance=member, initial={'user_type': 2})
@@ -286,6 +287,11 @@ def user_auth_api(request):
             add_permission(user, 'perm_svr_monitor')
         else:
             remove_permission(user, 'perm_svr_monitor')
+
+        if request.POST.get('perm_stock'):
+            add_permission(user, 'perm_stock')
+        else:
+            remove_permission(user, 'perm_stock')
 
         msg = "權限更新完成"
         return JsonResponse(msg, safe=False)

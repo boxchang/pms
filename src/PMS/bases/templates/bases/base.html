@@ -132,6 +132,11 @@
             <a class="box-nav-btn" href="{% url 'inv_approve' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'General Supply Application' %}">
                 <i class="fas fa-pen"></i>
             </a>
+            {% if perms.users.perm_stock %}
+            <a class="box-nav-btn" href="{% url 'stock_search' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="庫存管理系統">
+                <i class="fas fa-warehouse"></i>
+            </a>
+            {% endif %}
             <!--
             <a class="box-nav-btn" href="{% url 'inv_pr_apply' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="請購單">
                 <i class="fas fa-cart-plus"></i>
