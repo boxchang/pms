@@ -66,7 +66,7 @@ def statistic(request):
     with connection.cursor() as cursor:
         sql = """select category,item_code,spec,cost_center,unitId,unitName, sum(qty)-sum(received_qty) sum_qty from inventory_appliedform a, inventory_applieditem b, users_unit c 
                  where a.form_no = b.applied_form_id and a.unit_id = c.id
-                    and a.status_id in (2,3)
+                    and a.status_id in (2,3,7)
                     group by category,item_code,spec,cost_center,unitId,unitName having sum_qty > 0"""
         rows = django_go_sql(sql)
 
