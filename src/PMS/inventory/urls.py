@@ -29,4 +29,5 @@ urlpatterns = [
     url(r'^setting/', setting, name='inv_setting'),
     url(r'^export_form_xls/', export_form_xls, name='export_form_xls'),
     url(r'^categoryapi/(?P<family_id>\d+)', CategoryAPI, name='item_categoryapi'),
+    url(r'^typeapi/(?P<category_id>\d+)', TypeAPI, name='item_typeapi'),
 ]

@@ -899,5 +899,12 @@ def CategoryAPI(request, family_id):
     category_list = []
     for data in category_data:
         category_list.append({'id': data['id'], 'category_name': data['category_name']})
-
     return JsonResponse(category_list, safe=False)
+
+
+def TypeAPI(request, category_id):
+    type_data = ItemType.objects.filter(category_id=int(category_id)).values('id', 'type_name')
+    type_list = []
+    for data in type_data:
+        type_list.append({'id': data['id'], 'type_name': data['type_name']})
+    return JsonResponse(type_list, safe=False)

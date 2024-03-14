@@ -34,8 +34,18 @@
                 </li>
                 <li class="list-group-item">
                     <div class="row">
+                        <div class="col-2 p-2" style="text-align:right;">ITEM FAMILY：</div>
+                        <div class="col-2 p-2 content">{{ item.item_type.category.family }}</div>
+                        <div class="col-2 p-2" style="text-align:right;">ITEM CATEGORY：</div>
+                        <div class="col-2 p-2 content">{{ item.item_type.category }}</div>
                         <div class="col-2 p-2" style="text-align:right;">ITEM TYPE：</div>
                         <div class="col-2 p-2 content">{{ item.item_type }}</div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-2 p-2" style="text-align:right;"></div>
+                        <div class="col-2 p-2 content"></div>
                         <div class="col-2 p-2" style="text-align:right;">PRICE：</div>
                         <div class="col-2 p-2 content">{{ item.price }}</div>
                         <div class="col-2 p-2" style="text-align:right;">UNIT：</div>
