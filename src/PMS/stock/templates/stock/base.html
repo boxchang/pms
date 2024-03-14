@@ -16,20 +16,28 @@ Inventory
 <div class="card-header">
     <div class="row">
         <div class="col">
-            {% if perms.users.perm_misc_apply %}
-            <a href="{% url 'item_create' %}" class="btn btn-info">料號新增</a>
-            <a href="{% url 'item_list' %}" class="btn btn-info">料號編輯</a>
-            <a href="/admin/inventory/itemfamily/" class="btn btn-info" target="_blank">編輯大類</a>
-            <a href="/admin/inventory/itemcategory/" class="btn btn-info" target="_blank">編輯類別</a>
-            <a href="/admin/inventory/itemtype/" class="btn btn-info" target="_blank">編輯種類</a>
-            <a href="{% url 'inv_import' %}" class="btn btn-info">匯入料號</a>
-            {% endif %}
         </div>
-
+        {% if perms.users.perm_misc_apply %}
+        <div class="ml-md-auto pr-3">
+            <div class="btn-group">
+                <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                基本資料
+                </button>
+                <ul class="dropdown-menu dropdown-menu-dark">
+                    <li><a class="dropdown-item" href="{% url 'item_create' %}">料號新增</a></li>
+                    <li><a class="dropdown-item" href="{% url 'item_list' %}">料號編輯</a></li>
+                    <li><a class="dropdown-item" href="/admin/inventory/itemfamily/" target="_blank">編輯大類</a></li>
+                    <li><a class="dropdown-item" href="/admin/inventory/itemcategory/" target="_blank">編輯類別</a></li>
+                    <li><a class="dropdown-item" href="/admin/inventory/itemtype/" target="_blank">編輯種類</a></li>
+                    <li><a class="dropdown-item" href="{% url 'inv_import' %}">匯入料號</a></li>
+                    <hr />
+                    <li><a class="dropdown-item" href="{% url 'location_setting' %}">儲位設定</a></li>
+                </ul>
+            </div>
+        </div>
+        {% endif %}
         {% if user.is_authenticated %}
-        <div class="ml-md-auto">
             <a class="btn btn-info" href="{% url 'logout' %}" role="button"><i class="fas fa-sign-out-alt"></i>{% trans "logout" %} ({{ user.username }})</a>
-        </div>
         {% endif %}
     </div>
 </div>
