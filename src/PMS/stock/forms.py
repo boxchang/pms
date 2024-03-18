@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from bootstrap_datepicker_plus.widgets import DatePickerInput
 from django import forms
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Button, Submit
+from crispy_forms.layout import Layout, Div, Button, Submit, HTML
 
 from stock.models import Storage, Location, Bin
 
@@ -333,13 +333,11 @@ class BinEditForm(forms.ModelForm):
     location = forms.ModelChoiceField(required=True, label="Location", queryset=Location.objects.all())
     bin_code = forms.CharField(max_length=20, label="Bin Code", required=True)
     bin_name = forms.CharField(max_length=20, label="Bin Name", required=True)
-    sap_storage = forms.ChoiceField(required=True, label="SAP Storage",
-                                         choices=(("0020", "0020"), ("C000", "C000"), ("C001", "C001")))
     enable = forms.BooleanField(initial={'enable': True}, required=False)
 
     class Meta:
         model = Bin
-        fields = ('location', 'bin_code', 'bin_name', 'sap_storage', 'enable')
+        fields = ('location', 'bin_code', 'bin_name', 'enable')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -356,8 +354,47 @@ class BinEditForm(forms.ModelForm):
                 Div('bin_name', css_class='col-md-4'),
                 css_class='row'),
             Div(
-                Div('sap_storage', css_class='col-md-4'),
                 Div('enable', css_class='col-md-4'),
                 css_class='row'),
         )
 
+
+class StockInForm(forms.Form):
+    apply_date = forms.DateField(label="異動日期")
+    desc = forms.CharField(max_length=250, label="說明", required=False, widget=forms.Textarea(attrs={'rows': 4, 'cols': 15}))
+    item_code = forms.CharField(max_length=11, label="料號", required=False,)
+    qty = forms.CharField(max_length=10, label="數量", required=False, )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.form_show_errors = True
+
+        self.helper.layout = Layout(
+            Div(
+                Div('apply_date', css_class='col-md-3'),
+                css_class='row'),
+            Div(
+                Div('desc', css_class='col-md-12'),
+                css_class='row'),
+            Div(
+                Div('item_code', css_class='col-md-2'),
+                Div(Button('search', '查詢', css_class='btn btn-info', onclick="popup();"),
+                css_class='col-md-2 d-flex align-items-center pt-3'),
+                Div('qty', css_class='col-md-2'),
+                Div(HTML('<a href="#" class="btn btn-info"><i class="fas fa-plus-circle"></i> 加入</a>'),
+                    css_class='col-md-2 d-flex align-items-center pt-3'),
+                css_class='row'),
+        )
+
+        self.fields['apply_date'].widget = DatePickerInput(
+            attrs={'value': (datetime.now()).strftime('%Y-%m-%d')},
+            options={
+                "format": "YYYY-MM-DD",
+                "showClose": False,
+                "showClear": False,
+                "showTodayButton": False,
+            }
+        )

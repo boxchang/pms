@@ -1,5 +1,18 @@
 from django.db import models
 from django.conf import settings
+from inventory.models import Item
+
+
+class MovementType(models.Model):
+    mvt_code = models.CharField(max_length=5, primary_key=True)
+    mvt_name = models.CharField(max_length=20, blank=False, null=False)
+    desc = models.CharField(max_length=200, blank=True, null=True)
+    create_at = models.DateTimeField(auto_now_add=True, editable=True)  # 建立日期
+    create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
+                                  related_name='mvt_create_by')  # 建立者
+
+    def __str__(self):
+        return self.desc
 
 
 class Storage(models.Model):
@@ -39,3 +52,30 @@ class Bin(models.Model):
 
     def __str__(self):
         return self.bin_name
+
+
+class Stock(models.Model):
+    item = models.ForeignKey(Item, related_name='stock_item', on_delete=models.DO_NOTHING)
+    bin = models.ForeignKey(Bin, related_name='stock_bin', on_delete=models.DO_NOTHING)
+    qty = models.IntegerField(default=0)
+    update_at = models.DateTimeField(auto_now=True, null=True)
+    update_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
+                                  related_name='stock_update_by')
+
+
+class StockHistory(models.Model):
+    batch_no = models.CharField(max_length=20, blank=False, null=False)
+    mtr_doc = models.CharField(max_length=10, blank=True, null=True)
+    item = models.ForeignKey(Item, related_name='stock_hist_item', on_delete=models.DO_NOTHING)
+    bin = models.ForeignKey(Bin, related_name='stock_hist_bin', on_delete=models.DO_NOTHING)
+    mvt = models.ForeignKey(MovementType, related_name='stock_hist_mvt', on_delete=models.DO_NOTHING)
+    plus_qty = models.IntegerField(default=0)
+    minus_qty = models.IntegerField(default=0)
+    remain_qty = models.IntegerField(default=0)
+    desc = models.CharField(max_length=200, blank=True, null=True)
+    create_at = models.DateTimeField(auto_now=True, null=True)
+    create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
+                                  related_name='stock_hist_update_by')
+
+
+

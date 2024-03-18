@@ -3,8 +3,8 @@ from inventory.models import ItemCategory, ItemType, Item, FormStatus, ItemFamil
 
 
 @admin.register(ItemFamily)
-class ItemCategoryAdmin(admin.ModelAdmin):
-    list_display = ('family_code', 'family_name')
+class ItemFamilyAdmin(admin.ModelAdmin):
+    list_display = ('family_code', 'family_name', 'perm_group')
 
 
 @admin.register(ItemCategory)

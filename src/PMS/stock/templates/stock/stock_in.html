@@ -1,0 +1,32 @@
+{% extends 'stock/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<div class="row p-3">
+    <div class="col-1"></div>
+    <div class="col-10">
+        <form id="form" action="{% url 'stock_in' %}" method="post">
+            {% csrf_token %}
+            {% crispy form %}
+            <div id="item_list" class="item_list p-3"></div>
+            <div style="text-align: center" class="p-3">
+                <input type="submit" value="送出" class='btn btn-info' onclick="submit();" />
+            </div>
+        </form>
+    </div>
+    <div class="col-1"></div>
+</div>
+{% endblock %}
+{% block js %}
+
+{% endblock js %}
+{% block css %}
+<style>
+.item_list {
+    background: #ffffe7;
+    border-color: #f7e1b5;
+    border-width: 1px;
+    border-style: dashed solid;
+}
+</style>
+{% endblock css %}

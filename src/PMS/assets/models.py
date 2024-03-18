@@ -114,7 +114,7 @@ class AssetStatus(models.Model):
 
 class Asset(models.Model):
     asset_no = models.CharField(max_length=50, blank=False, null=False, unique=True)
-    label_no = models.CharField(max_length=50, blank=True, null=True)
+    label_no = models.CharField(max_length=50, blank=True, null=True, unique=True)
     auto_encode = models.BooleanField(default=True)
     category = models.ForeignKey(
         AssetCategory, related_name='asset_category', on_delete=models.DO_NOTHING)

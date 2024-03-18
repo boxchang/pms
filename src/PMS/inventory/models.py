@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Group
 from django.db import models
 from django.conf import settings
 from datetime import datetime
@@ -18,6 +19,8 @@ class FormStatus(models.Model):
 class ItemFamily(models.Model):
     family_code = models.CharField(max_length=2, blank=False, null=False)
     family_name = models.CharField(max_length=50, blank=False, null=False)
+    perm_group = models.ForeignKey(Group, on_delete=models.DO_NOTHING, related_name='family_group', null=True,
+                                   blank=True)
     create_at = models.DateTimeField(auto_now_add=True, editable=True)  # 建立日期
     create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
                                   related_name='item_family_create_by')  # 建立者

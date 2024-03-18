@@ -33,7 +33,6 @@ function edit(pk) {
                         <tr class="text-center table-active">
                             <th style="width: 15%;">編輯</th>
                             <th scope="col" class="text-center text-nowrap" style="width: 15%;" data-order="desc">倉庫代碼</th>
-                            <th scope="col" class="text-center text-nowrap" style="width: 15%;" data-order="desc">倉庫類型</th>
                             <th scope="col" class="text-center text-nowrap" style="width: 15%;" data-order="desc">倉庫狀態</th>
                             <th scope="col" class="text-center text-nowrap" style="width: 15%;" data-order="desc">說明</th>
                             <th style="width: 15%;">選擇</th>
@@ -55,7 +54,6 @@ function edit(pk) {
                                 <input type="button" class="btn btn-outline-dark" onclick="edit('{{ storage.pk }}')" value="編輯">
                             </td>
                             <td class="text-center text-nowrap">{{ storage.storage_code }}</td>
-                            <td class="text-center text-nowrap">{{ storage.type }}</td>
                             <td class="text-center text-nowrap">{% if storage.enable == 1 %}啟用{% else %}停用{% endif %}</td>
                             <td class="text-center text-nowrap">{{ storage.desc|default:'' }}</td>
                             <td style="text-align: center">
