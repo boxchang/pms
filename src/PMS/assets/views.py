@@ -186,7 +186,7 @@ def get_assets_queryset(request):
 
     if 'desc' in request.session:
         _desc = request.session['desc']
-        assets = assets.filter(desc__icontains=_desc)
+        assets = assets.filter(Q(desc__icontains=_desc) | Q(comment__icontains=_desc) | Q(model__icontains=_desc))
 
     results = assets.order_by('-type')
     return results
