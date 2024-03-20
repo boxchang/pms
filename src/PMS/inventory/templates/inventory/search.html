@@ -102,6 +102,7 @@
             $("#button-id-search").click(function() {
                 var tmp_table = "<table class=\"table\"><tr><th width='70%'>品名&規格</th><th width='20%'>單位</th><th width='10%'></th></tr>{0}</table>";
                 var tmp_item = "<tr><td><a href=\"#\" onclick=\"open_window('/media/{0}')\">{1}</a></td><td>{2}</td><td>{3}</td></tr>";
+                var tmp_manual = "<tr><td>{1}</td><td>{2}</td><td>{3}</td></tr>";
                 var tmp_btn = "<button type='button' class='btn btn-info' onclick=\"cart_add('{0}', '{1}', '{2}', '{3}', '{4}', '{5}')\">加入</button>";
                 var temp="";
                 var items="";
@@ -128,7 +129,7 @@
                                 txtSpec = "<input type=\"text\" name=\"spec\" id=\"spec\" style=\"width:100%;\">";
                                 tmp_btn = "<button type='button' class='btn btn-warn' onclick=\"cart_misc_add('{0}', '{1}', '{2}')\">加入</button>";
                                 add_btn = String.format(tmp_btn, item.category, item.item_code, item.unit);
-                                temp = String.format(tmp_item, item.pic, txtSpec, item.unit, add_btn);
+                                temp = String.format(tmp_manual, item.pic, txtSpec, item.unit, add_btn);
                                 items = items + temp;
                             }else{
                                 add_btn = String.format(tmp_btn, item.category, item.item_code, item.spec, item.unit, item.pic);
