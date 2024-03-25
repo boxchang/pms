@@ -1,5 +1,7 @@
 from django.db import models
 from django.conf import settings
+from django.urls import reverse
+
 from inventory.models import Item
 
 
@@ -77,5 +79,31 @@ class StockHistory(models.Model):
     create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
                                   related_name='stock_hist_update_by')
 
+
+class StockInForm(models.Model):
+    form_no = models.CharField(max_length=20, primary_key=True)
+    requester = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='stockin_form_requester')
+    apply_date = models.CharField(max_length=10, blank=False, null=False)
+    pr_no = models.CharField(max_length=100, blank=True, null=True)
+    reason = models.CharField(max_length=2000, blank=True, null=True)
+    create_at = models.DateTimeField(auto_now_add=True, editable=True)  # 建立日期
+    create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
+                                  related_name='stockin_form_create_by')  # 建立者
+
+    def get_absolute_url(self):
+        return reverse('stockin_detail', kwargs={'pk': self.pk})
+
+
+class StockOutForm(models.Model):
+    form_no = models.CharField(max_length=20, primary_key=True)
+    requester = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='stockout_form_requester')
+    apply_date = models.CharField(max_length=10, blank=False, null=False)
+    reason = models.CharField(max_length=2000, blank=True, null=True)
+    create_at = models.DateTimeField(auto_now_add=True, editable=True)  # 建立日期
+    create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
+                                  related_name='stockout_form_create_by')  # 建立者
+
+    def get_absolute_url(self):
+        return reverse('stockout_detail', kwargs={'pk': self.pk})
 
 

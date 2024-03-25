@@ -9,10 +9,16 @@
     <link rel="stylesheet" href="{% static 'jquery-ui\jquery-ui.min.css' %}">
     <link rel="stylesheet" href="{% static 'bootstrap-4.1.3\css\bootstrap.min.css' %}">
     <script src="{% static 'base\js\umd\popper.js' %}"></script>
+    <script src="{% static 'base\js\func.js' %}"></script>
     <script src="{% static 'jquery\jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'jquery-ui\jquery-ui.min.js' %}"></script>
     <script src="{% static 'bootstrap-4.1.3\js\bootstrap.min.js' %}"></script>
     <link rel="stylesheet" href="{% static 'fontawesome-5.4.2\css\all.css' %}">
+    <link href="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/bootstrap-table@1.22.1/dist/extensions/fixed-columns/bootstrap-table-fixed-columns.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/extensions/fixed-columns/bootstrap-table-fixed-columns.min.js"></script>
+
     <style type="text/css">
         input:required {
             background: #ffffe7;
@@ -133,7 +139,7 @@
                 <i class="fas fa-pen"></i>
             </a>
             {% if perms.users.perm_stock %}
-            <a class="box-nav-btn" href="{% url 'stock_search' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="庫存管理系統">
+            <a class="box-nav-btn" href="{% url 'stock_out' %}" role="button" data-bs-toggle="tooltip" data-bs-placement="right" title="庫存管理系統">
                 <i class="fas fa-warehouse"></i>
             </a>
             {% endif %}

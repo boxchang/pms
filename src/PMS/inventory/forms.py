@@ -231,19 +231,23 @@ class ItemSearchForm(forms.Form):
 class ItemModelForm(forms.ModelForm):
     class Meta:
         model = Item
-        fields = ('item_code', 'sap_code', 'vendor_code', 'unit', 'item_type', 'spec', 'price', 'enabled', 'item_family', 'item_category')
+        fields = ('item_code', 'sap_code', 'vendor_code', 'unit', 'item_type', 'spec', 'price', 'enabled',
+                  'item_family', 'item_category', 'is_stock', 'safe_qty')
 
-    item_code = forms.CharField(required=False, label="Item Code")
+    item_code = forms.CharField(required=False, label="料號")
     sap_code = forms.CharField(required=False, label="SAP Code")
     vendor_code = forms.CharField(required=False, label="Vendor Code")
-    unit = forms.CharField(required=True, label="Unit")
-    item_family = forms.ModelChoiceField(required=False, label="Item Family", queryset=ItemFamily.objects.all())
-    item_category = forms.ModelChoiceField(required=False, label="Item Category", queryset=ItemCategory.objects.all())
-    item_type = forms.ModelChoiceField(required=True, label="Item Type", queryset=ItemType.objects.all())
-    spec = forms.CharField(required=True, label="SPEC")
+    unit = forms.CharField(required=True, label="單位")
+    item_family = forms.ModelChoiceField(required=False, label="大分類", queryset=ItemFamily.objects.all())
+    item_category = forms.ModelChoiceField(required=False, label="中分類", queryset=ItemCategory.objects.all())
+    item_type = forms.ModelChoiceField(required=True, label="小分類", queryset=ItemType.objects.all())
+    spec = forms.CharField(required=True, label="品名")
     price = forms.FloatField(required=False, label="Price", initial=0)
-    enabled = forms.ChoiceField(label="Enable", choices=(
+    enabled = forms.ChoiceField(label="啟用", choices=(
             (True, 'True'), (False, 'False'),), required=True)
+    is_stock = forms.ChoiceField(label="庫存品", choices=(
+            (True, 'True'), (False, 'False'),), required=True)
+    safe_qty = forms.CharField(required=False, label="安全庫存量")
 
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
@@ -270,8 +274,10 @@ class ItemModelForm(forms.ModelForm):
             Div(
                 Div('price', css_class='col-md-4'),
                 Div('unit', css_class='col-md-4'),
+                Div('is_stock', css_class='col-md-4'),
                 css_class='row'),
             Div(
+                Div('safe_qty', css_class='col-md-4'),
                 Div('enabled', css_class='col-md-4'),
                 css_class='row'),
         )

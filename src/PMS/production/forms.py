@@ -7,11 +7,8 @@ from django.utils.translation import gettext_lazy as _
 from production.models import Record, Machine
 
 
-class ExportForm(forms.ModelForm):
-    class Meta:
-        model = Record
-        fields = ('record_dt',)
-
+class ExportForm(forms.Form):
+    plant = forms.ChoiceField(label="廠別", choices=(('', '-------'), ('302A', '302A'), ('302B', '302B'),), required=True, initial='')
     record_dt = forms.DateField(label=_('record_date'))
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
@@ -22,6 +19,7 @@ class ExportForm(forms.ModelForm):
 
         self.helper.layout = Layout(
             Div(
+                Div('plant', css_class='col-md-3'),
                 Div('record_dt', css_class='col-md-3'),
                 Div(Submit('submit', _('export'), css_class='btn btn-info'),
                     css_class='col-md-3 d-flex align-items-center mt-3'),
