@@ -1,5 +1,7 @@
 from .base import *
 
+PROD = False
+
 SECRET_KEY = '8i7h&)&2z!$!e710^%m)i4f(7_lpn)8ofu8&)djhix$q^66k0s'
 
 ALLOWED_HOSTS = ['*']

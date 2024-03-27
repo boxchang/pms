@@ -130,30 +130,21 @@ class Record2(models.Model):
 
 class Consumption(models.Model):
     id = models.CharField(max_length=20, primary_key=True)
+    plant = models.CharField(max_length=10, blank=False, null=False)
     cfm_code = models.CharField(max_length=20, blank=False, null=False)
     wo_no = models.CharField(max_length=20, blank=False, null=False)
     item_no = models.CharField(max_length=20, blank=False, null=False)
     qty = models.FloatField(default=0)
+    sap_flag = models.BooleanField(default=False)
     create_at = models.DateTimeField(auto_now=True, null=True)
     create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
                                   related_name='consumption_create_by')
 
-
-class Sync_SAP_Series(models.Model):
-    function = models.CharField(max_length=20)
-    series_no = models.IntegerField()
-    update_at = models.DateTimeField(auto_now=True, null=True)
-    update_by = models.CharField(max_length=20)
-
-    class Meta:
-        unique_together = (("function", "series_no"),)
-
-
 class Sync_SAP_Log(models.Model):
     function = models.CharField(max_length=20, blank=False, null=False)
     batch_no = models.CharField(max_length=20, blank=False, null=False)
-    from_series_no = models.IntegerField(blank=False, null=False)
-    to_series_no = models.IntegerField(blank=False, null=False)
+    file_name = models.CharField(max_length=30, blank=True, null=True)
+    amount = models.IntegerField(default=0)
     create_at = models.DateTimeField(auto_now=True, null=True)
     create_by = models.CharField(max_length=20)
 

@@ -14,11 +14,12 @@ from django.urls import reverse
 from django.utils.translation import get_language
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
-from bases.utils import django_go_sql
+from bases.utils import django_go_sql, get_date_str
 from production.encode import get_series_number
 from production.forms import RecordForm, RecordSearchForm, WoSearchForm, RecordManageForm, ExportForm, \
     RecordHistoryForm, ItemSearchForm
-from production.models import ExcelTemp, WODetail, Record, Record2, WorkType, COOIS_Record, WOMain, Machine, Consumption
+from production.models import ExcelTemp, WODetail, Record, Record2, WorkType, COOIS_Record, WOMain, Machine, \
+    Consumption, Sync_SAP_Log
 from production.sap_sync import sap_record_sync
 from users.models import CustomUser
 from django.utils.translation import gettext_lazy as _
@@ -90,6 +91,7 @@ def record(request):
         mach_code = request.POST.get('mach_code')
         status = request.POST.get('status')
         mach = None
+        key = get_date_str()
         # record = Record.objects.update_or_create(record_dt=record_dt, emp_no=emp_no, wo_no=wo_no, cfm_code=cfm_code,
         #                                 defaults={'labor_time': labor_time, 'mach_time': mach_time, 'ctr_code': ctr_code,
         #                                           'good_qty': good_qty, 'ng_qty': ng_qty, 'spec':spec, 'username': username,
@@ -98,7 +100,8 @@ def record(request):
 
         if mach_code:
             mach = Machine.objects.get(mach_code=mach_code)
-        series_no = "T" + get_series_number("record")
+        _series = get_series_number("record", key)
+        series_no = "T" + key + str(_series).zfill(7)
         record = Record.objects.create(record_dt=record_dt, emp_no=emp_no, wo_no=wo_no, cfm_code=cfm_code,
                                         labor_time=labor_time, mach_time=mach_time, ctr_code=ctr_code,
                                         good_qty=good_qty, ng_qty=ng_qty, item_no=item_no, spec=spec, username=username,
@@ -110,8 +113,9 @@ def record(request):
         if mtr_info:
             mtr_info = json.loads(mtr_info)
             for mtr in mtr_info:
-                series_no = "M" + get_series_number("consumption")
-                Consumption.objects.create(cfm_code=cfm_code, wo_no=wo_no, item_no=mtr['mtr_no'], qty=mtr['qty'], create_by=key_user, id=series_no)
+                _series = get_series_number("consumption", key)
+                series_no = "M" + key + str(_series).zfill(7)
+                Consumption.objects.create(plant=plant, cfm_code=cfm_code, wo_no=wo_no, item_no=mtr['mtr_no'], qty=mtr['qty'], create_by=key_user, id=series_no)
 
         return redirect(record.get_absolute_url())
 
@@ -126,6 +130,8 @@ def record2(request):
         record_dt = request.POST.get('hid_record_dt2')
         work_type = request.POST.get('work_type')
         qty = request.POST.get('qty')
+        key = get_date_str()
+
         key_user = CustomUser.objects.get(sap_emp_no=sap_emp_no)
         if work_type:
             work_type = WorkType.objects.get(type_code=work_type)
@@ -139,7 +145,8 @@ def record2(request):
         #                                          defaults={'labor_time': labor_time,
         #                                                    'comment': comment,
         #                                                    'create_by': key_user})
-        series_no = "T" + get_series_number("record2")
+        _series = get_series_number("record2", key)
+        series_no = "T" + key + str(_series).zfill(7)
         record2 = Record2.objects.create(record_dt=record_dt, sap_emp_no=sap_emp_no, work_type=work_type,
                                          labor_time=labor_time, comment=comment, create_by=key_user, id=series_no, qty=qty)
         return redirect(record2.get_absolute_url())
@@ -746,139 +753,36 @@ def record_manage(request):
 
 
 def prod_sap_export(request):
+    if request.method == 'POST':
+        plant = request.POST.get('plant')
+        action = request.POST.get('action')
+        if action == "workhour":
+            sync = sap_record_sync(settings.PROD)
+            records = sync.export_records(plant)                              # 取得本次處理資料
+            batch_no = sync.get_batch_no()                                    # 取號
+            amount = sync.create_dc_workhour_data(records, batch_no)          # Insert中介資料
+            if amount > 0:
+                key = get_date_str()
+                series = get_series_number("sap_workhour_excel", key)
+                file_name = "TimeConf_{plant}_{key}V{series}.xls".format(plant=plant, key=key, series=series)
+                sync.save_log("workhour", batch_no, amount, request.user, file_name)     # 紀錄Log
+                return sync.prod_sap_workhour_excel(file_name, batch_no)                 # 取出中介資料匯出Excel
+
+        if action == "consumption":
+            sync = sap_record_sync(settings.PROD)
+            records = sync.export_consumptions(plant)                         # 取得本次處理資料
+            batch_no = sync.get_batch_no()                                    # 取號
+            amount = sync.create_dc_consumption_data(records, batch_no)       # Insert中介資料
+            if amount > 0:
+                key = get_date_str()
+                series = get_series_number("sap_consumption_excel", key)
+                file_name = "Consumption_{plant}_{key}V{series}.xls".format(plant=plant, key=key, series=series)
+                sync.save_log("consumption", batch_no, amount, request.user, file_name)  # 紀錄Log
+                return sync.prod_sap_consumption_excel(file_name, batch_no)              # 取出中介資料匯出Excel
+
+    logs = Sync_SAP_Log.objects.all().order_by('-create_at')[:20]
+
     form = ExportForm()
-    return render(request, 'production/export.html', locals())
-
-def prod_sap_record_excel(batch_no):
-    file_name = "ZANZ_CONFIRM_{record_dt}.xls".format(record_dt=record_dt)
-    response = HttpResponse(content_type='application/ms-excel')
-    response['Content-Disposition'] = "attachment; filename={file_name}".format(file_name=file_name)
-
-    wb = xlwt.Workbook(encoding='utf-8')
-    ws = wb.add_sheet('Confirmation')
-    ws.col(0).width = 256 * 20
-    ws.col(1).width = 256 * 20
-    ws.col(2).width = 256 * 20
-    ws.col(3).width = 256 * 20
-    ws.col(4).width = 256 * 20
-    ws.col(5).width = 256 * 20
-    ws.col(6).width = 256 * 20
-    ws.col(7).width = 256 * 20
-    ws.col(8).width = 256 * 20
-    ws.col(9).width = 256 * 20
-    ws.col(10).width = 256 * 20
-    ws.col(11).width = 256 * 20
-
-    # Sheet header, first row
-    row_num = 0
-
-    font_style = xlwt.XFStyle()
-    font_style.font.bold = True
-
-    columns = ['afrud_pernr', 'afrud_budat', 'afvgd_arbpl', 'afrud_aufnr', 'afrud_rueck', 'caufvd_matnr',
-               'afrud_ism01', 'afrud_ism02', 'afrud_ism03', 'Yield to Confirm', 'Scrap to Confirm', 'ConfText']
-
-    for col_num in range(len(columns)):
-        ws.write(row_num, col_num, columns[col_num], font_style)
-
-    # Sheet body, remaining rows
-    font_style = xlwt.XFStyle()
-
-    records = Record.objects.filter(record_dt=record_dt)
-
-    for record in records:
-        row_num += 1
-        tmp_record_dt = record.record_dt.split('-')
-        record.record_dt = tmp_record_dt[2] + tmp_record_dt[1] + tmp_record_dt[0]
-        ws.write(row_num, 0, record.sap_emp_no, font_style)  # SAP員編
-        ws.write(row_num, 1, record.record_dt, font_style)  # 工作執行日
-        ws.write(row_num, 2, record.work_center, font_style)  # 工作中心
-        ws.write(row_num, 3, record.wo_no, font_style)  # 生產工單
-        ws.write(row_num, 4, record.cfm_code, font_style)  # 確認單
-        ws.write(row_num, 5, record.item_no, font_style)  # 料號
-        ws.write(row_num, 6, "0", font_style)  # setting time
-        ws.write(row_num, 7, record.mach_time, font_style)  # machine time
-        ws.write(row_num, 8, record.labor_time, font_style)  # labor time
-        ws.write(row_num, 9, record.good_qty, font_style)  # Yield to Confirm
-        ws.write(row_num, 10, record.ng_qty, font_style)  # Scrap to Confirm
-        ws.write(row_num, 11, record.comment, font_style)  # ConfText
-    wb.save(response)
-    return response
-
-def prod_sap_record_file(request):
-    if request.method == 'POST':
-        plant = request.POST.get('plant')
-        record_dt = request.POST.get('record_dt')
-        sync = sap_record_sync()
-        start_s = sync.get_latest_series()
-        records = sync.export_records(plant, start_s)  # 取得本次處理資料
-        batch_no = sync.get_batch_no()  # 取號
-        end_s = sync.create_dc_data(records, batch_no)  # Insert中介資料
-        if end_s:
-            sync.update_sap_series(end_s)  # 更新最後紀錄
-            sync.save_log(batch_no, start_s, end_s)  # 紀錄Log
-            sync.prod_sap_record_excel(batch_no)  # 取出中介資料匯出Excel
-
-    return render(request, 'production/export.html', locals())
-
-def prod_sap_consumption_file(request):
-    if request.method == 'POST':
-        plant = request.POST.get('plant')
-        record_dt = request.POST.get('record_dt')
-        file_name = "ZANZ_CONFIRM_{record_dt}.xls".format(record_dt=record_dt)
-        response = HttpResponse(content_type='application/ms-excel')
-        response['Content-Disposition'] = "attachment; filename={file_name}".format(file_name=file_name)
-
-        wb = xlwt.Workbook(encoding='utf-8')
-        ws = wb.add_sheet('Confirmation')
-        ws.col(0).width = 256 * 20
-        ws.col(1).width = 256 * 20
-        ws.col(2).width = 256 * 20
-        ws.col(3).width = 256 * 20
-        ws.col(4).width = 256 * 20
-        ws.col(5).width = 256 * 20
-        ws.col(6).width = 256 * 20
-        ws.col(7).width = 256 * 20
-        ws.col(8).width = 256 * 20
-        ws.col(9).width = 256 * 20
-        ws.col(10).width = 256 * 20
-        ws.col(11).width = 256 * 20
-
-        # Sheet header, first row
-        row_num = 0
-
-        font_style = xlwt.XFStyle()
-        font_style.font.bold = True
-
-        columns = ['afrud_pernr', 'afrud_budat', 'afvgd_arbpl', 'afrud_aufnr', 'afrud_rueck', 'caufvd_matnr',
-                   'afrud_ism01', 'afrud_ism02', 'afrud_ism03', 'Yield to Confirm', 'Scrap to Confirm', 'ConfText']
-
-        for col_num in range(len(columns)):
-            ws.write(row_num, col_num, columns[col_num], font_style)
-
-        # Sheet body, remaining rows
-        font_style = xlwt.XFStyle()
-
-        records = Record.objects.filter(record_dt=record_dt)
-
-        for record in records:
-            row_num += 1
-            tmp_record_dt = record.record_dt.split('-')
-            record.record_dt = tmp_record_dt[2]+tmp_record_dt[1]+tmp_record_dt[0]
-            ws.write(row_num, 0, record.sap_emp_no, font_style)  # SAP員編
-            ws.write(row_num, 1, record.record_dt, font_style)  # 工作執行日
-            ws.write(row_num, 2, record.work_center, font_style)  # 工作中心
-            ws.write(row_num, 3, record.wo_no, font_style)  # 生產工單
-            ws.write(row_num, 4, record.cfm_code, font_style)  # 確認單
-            ws.write(row_num, 5, record.item_no, font_style)  # 料號
-            ws.write(row_num, 6, "0", font_style)  # setting time
-            ws.write(row_num, 7, record.mach_time, font_style)  # machine time
-            ws.write(row_num, 8, record.labor_time, font_style)  # labor time
-            ws.write(row_num, 9, record.good_qty, font_style)  # Yield to Confirm
-            ws.write(row_num, 10, record.ng_qty, font_style)  # Scrap to Confirm
-            ws.write(row_num, 11, record.comment, font_style)  # ConfText
-        wb.save(response)
-        return response
     return render(request, 'production/export.html', locals())
 
 #Excel
@@ -971,3 +875,6 @@ def record_export(request):
         return response
     form = RecordHistoryForm()
     return render(request, 'production/record_excel.html', locals())
+
+
+

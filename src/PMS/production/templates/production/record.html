@@ -91,7 +91,6 @@ $("#consumption").css({"visibility":"hidden"});
             success: function(data) {
                 //第一站可以更改物料用量, Ex 0010, 0015(重工)
                 if(data.step_no != undefined && data.step_no.substring(0,3) == "001" && data.plant == "302B"){
-                    alert(data.consumption_exist);
                     if(data.consumption_exist == "Y") {
                         $("#button-id-mtr_change").val("物料已報工");
                         $("#button-id-mtr_change").css({"visibility": ""});

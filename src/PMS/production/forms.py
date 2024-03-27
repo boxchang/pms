@@ -9,7 +9,6 @@ from production.models import Record, Machine
 
 class ExportForm(forms.Form):
     plant = forms.ChoiceField(label="廠別", choices=(('', '-------'), ('302A', '302A'), ('302B', '302B'),), required=True, initial='')
-    record_dt = forms.DateField(label=_('record_date'))
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -20,20 +19,9 @@ class ExportForm(forms.Form):
         self.helper.layout = Layout(
             Div(
                 Div('plant', css_class='col-md-3'),
-                Div('record_dt', css_class='col-md-3'),
                 Div(Submit('submit', _('export'), css_class='btn btn-info'),
                     css_class='col-md-3 d-flex align-items-center mt-3'),
                 css_class='row'),
-        )
-
-        self.fields['record_dt'].widget = DatePickerInput(
-            attrs={'value': datetime.now().strftime('%Y-%m-%d')},
-            options={
-                "format": "YYYY-MM-DD",
-                "showClose": False,
-                "showClear": False,
-                "showTodayButton": False,
-            }
         )
 
 

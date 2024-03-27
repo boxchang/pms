@@ -3,8 +3,7 @@ from production.models import Series
 
 
 # 滾序號
-def get_series_number(function):
-    key = get_date_str()
+def get_series_number(function, key):
     obj = Series.objects.filter(function=function, key=key)
     if obj:
         _series = obj[0].series + 1
@@ -12,5 +11,4 @@ def get_series_number(function):
     else:
         _series = 1
         Series.objects.create(function=function, key=key, series=1)
-    _series = key + str(_series).zfill(7)
     return _series
