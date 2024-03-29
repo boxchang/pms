@@ -246,8 +246,8 @@ class ItemModelForm(forms.ModelForm):
     enabled = forms.ChoiceField(label="啟用", choices=(
             (True, 'True'), (False, 'False'),), required=True)
     is_stock = forms.ChoiceField(label="庫存品", choices=(
-            (True, 'True'), (False, 'False'),), required=True)
-    safe_qty = forms.CharField(required=False, label="安全庫存量")
+            (True, 'True'), (False, 'False'),), required=True, initial=False)
+    safe_qty = forms.CharField(required=False, label="安全庫存量", initial=0)
 
 
     def __init__(self, *args, submit_title='Submit', **kwargs):

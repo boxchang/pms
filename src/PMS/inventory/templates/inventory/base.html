@@ -30,6 +30,19 @@ Inventory
                     <li><a class="dropdown-item" href="/admin/inventory/formstatus/" target="_blank">狀態編輯</a></li>
                 </ul>
             </div>
+            <div class="btn-group">
+                <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                基本資料
+                </button>
+                <ul class="dropdown-menu dropdown-menu-dark">
+                    <li><a class="dropdown-item" href="{% url 'item_create' %}">料號新增</a></li>
+                    <li><a class="dropdown-item" href="{% url 'item_list' %}">料號編輯</a></li>
+                    <li><a class="dropdown-item" href="/admin/inventory/itemfamily/" target="_blank">編輯大類</a></li>
+                    <li><a class="dropdown-item" href="/admin/inventory/itemcategory/" target="_blank">編輯中類</a></li>
+                    <li><a class="dropdown-item" href="/admin/inventory/itemtype/" target="_blank">編輯小類</a></li>
+                    <li><a class="dropdown-item" href="{% url 'inv_import' %}">匯入料號</a></li>
+                </ul>
+            </div>
             {% endif %}
         </div>
 
