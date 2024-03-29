@@ -863,6 +863,13 @@ def export_form_xls(list):
         ws.write(row_num, 5, data.requester.username, font_style)
         ws.write(row_num, 6, data.ext_number, font_style)
 
+        # 申請原因
+        row_num += 1
+        font_style = xlwt.XFStyle()
+        font_style.font.colour_index = xlwt.Style.colour_map['black']
+        ws.write(row_num, 0, "申請原因：", font_style)
+        ws.write(row_num, 1, data.reason, font_style)
+
         items = data.applied_form_item.all().order_by('category')
 
         # Form Item Header
