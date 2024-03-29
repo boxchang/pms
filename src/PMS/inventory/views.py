@@ -305,7 +305,7 @@ def mail_agree(request, key):
             action = "done"
         else:
             form.status = FormStatus.objects.get(pk=2)
-            apply.approve_time = datetime.now()
+            form.approve_time = datetime.now()
             form.save()
             action = "agree"
 
