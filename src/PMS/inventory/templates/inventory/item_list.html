@@ -1,4 +1,4 @@
-{% extends 'stock/base.html' %}
+{% extends 'inventory/base.html' %}
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
@@ -16,7 +16,6 @@
                 <th class="text-center text-nowrap">SPEC</th>
                 <th class="text-center text-nowrap">UNIT</th>
                 <th class="text-center text-nowrap">IS STOCK</th>
-                <th class="text-center text-nowrap">SAFE QTY</th>
                 <th></th>
             </tr>
         </thead>
@@ -29,7 +28,6 @@
                 <td>{{ item.spec }}</td>
                 <td class="text-center text-nowrap">{{ item.unit }}</td>
                 <td class="text-center text-nowrap">{{ item.is_stock }}</td>
-                <td class="text-center text-nowrap">{{ item.safe_qty|default:'無設定' }}</td>
                 <td class="text-center text-nowrap">
                     <a href="{% url 'item_detail' item.pk %}" class="btn btn-info">明細</a>
                 </td>

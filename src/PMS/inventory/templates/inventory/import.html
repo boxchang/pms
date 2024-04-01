@@ -1,4 +1,4 @@
-{% extends 'stock/base.html' %}
+{% extends 'inventory/base.html' %}
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
@@ -19,6 +19,11 @@
 {% endblock %}
 
 {% block js %}
+<script>
+if("{{ action }}" == "DONE") {
+    alert("匯入完成");
+}
+</script>
 {% endblock js %}
 
 {% block ready %}

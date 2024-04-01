@@ -151,13 +151,15 @@ def import_excel(request):
                     unit = sheet.cell(row=iRow, column=6).value
                     price = sheet.cell(row=iRow, column=8).value
 
-                    item = Item()
-                    _key = type.category.catogory_code+type.type_code
-                    _key_name = type.type_name
-                    series = get_series_number(_key, _key_name)
-                    item_code = family.family_code + type.category.catogory_code + type.type_code + str(series).zfill(5)
-                    item = Item.objects.update_or_create(item_code=item_code, defaults={'item_type': type, 'vendor_code': vendor_code, 'spec': spec, 'unit': unit,
+                    if not Item.objects.filter(spec=spec).exists():
+                        item = Item()
+                        _key = type.category.catogory_code+type.type_code
+                        _key_name = type.type_name
+                        series = get_series_number(_key, _key_name)
+                        item_code = family.family_code + type.category.catogory_code + type.type_code + str(series).zfill(5)
+                        item = Item.objects.update_or_create(item_code=item_code, defaults={'item_type': type, 'vendor_code': vendor_code, 'spec': spec, 'unit': unit,
                                                          'price': price, 'create_by': request.user, 'update_by': request.user})
+            action = "DONE"
         except Exception as e:
             print(e)
 
@@ -521,10 +523,12 @@ def ItemAPI(request):
         type_id = request.POST.get('type_id')
         keyword = request.POST.get('keyword')
 
+        item_data = Item.objects.filter(enabled=True)
+
         if type_id:
-            item_data = Item.objects.all().values('item_code', 'spec', 'unit', 'item_pics__files')
+            item_data = item_data.values('item_code', 'spec', 'unit', 'item_pics__files')
         else:
-            item_data = Item.objects.exclude(spec__contains="自行輸入").values('item_code', 'spec', 'unit', 'item_pics__files')
+            item_data = item_data.exclude(spec__contains="自行輸入").values('item_code', 'spec', 'unit', 'item_pics__files')
 
         if category_id:
             item_type = ItemType.objects.filter(category_id=category_id)

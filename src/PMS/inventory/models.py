@@ -73,7 +73,6 @@ class Item(models.Model):
     price = models.FloatField(default=0)
     enabled = models.BooleanField(default=True)
     is_stock = models.BooleanField(default=True)
-    safe_qty = models.IntegerField(blank=True, null=True)
     create_at = models.DateTimeField(auto_now_add=True, editable=True)  # 建立日期
     create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='item_create_by')  # 建立者
     update_at = models.DateTimeField(auto_now=True, null=True)

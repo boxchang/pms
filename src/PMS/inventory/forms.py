@@ -232,7 +232,7 @@ class ItemModelForm(forms.ModelForm):
     class Meta:
         model = Item
         fields = ('item_code', 'sap_code', 'vendor_code', 'unit', 'item_type', 'spec', 'price', 'enabled',
-                  'item_family', 'item_category', 'is_stock', 'safe_qty')
+                  'item_family', 'item_category', 'is_stock')
 
     item_code = forms.CharField(required=False, label="料號")
     sap_code = forms.CharField(required=False, label="SAP Code")
@@ -247,7 +247,6 @@ class ItemModelForm(forms.ModelForm):
             (True, 'True'), (False, 'False'),), required=True)
     is_stock = forms.ChoiceField(label="庫存品", choices=(
             (True, 'True'), (False, 'False'),), required=True, initial=False)
-    safe_qty = forms.CharField(required=False, label="安全庫存量", initial=0)
 
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
@@ -277,7 +276,6 @@ class ItemModelForm(forms.ModelForm):
                 Div('is_stock', css_class='col-md-4'),
                 css_class='row'),
             Div(
-                Div('safe_qty', css_class='col-md-4'),
                 Div('enabled', css_class='col-md-4'),
                 css_class='row'),
         )
