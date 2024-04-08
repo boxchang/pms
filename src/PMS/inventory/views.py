@@ -64,7 +64,7 @@ def get_series_number(_key, _key_name):
 def statistic(request):
     item_map = []
     with connection.cursor() as cursor:
-        sql = """select category,item_code,spec,cost_center,unitId,unitName, sum(qty)-sum(received_qty) sum_qty from inventory_appliedform a, inventory_applieditem b, users_unit c 
+        sql = """select category,item_code,spec,cost_center,unitId,unitName, sum(qty)-sum(received_qty) sum_qty from inventory_appliedform a, inventory_applieditem b, users_unit c
                  where a.form_no = b.applied_form_id and a.unit_id = c.id
                     and a.status_id in (2,3,7)
                     group by category,item_code,spec,cost_center,unitId,unitName having sum_qty > 0"""
@@ -834,43 +834,56 @@ def export_form_xls(list):
     form_columns = ['單號', '申請日期', '狀態', '簽核者', '申請部門', '申請者', '分機']
     form_item_columns = ['', '物品類別', '品名', '申請數量', '已發放數量', '單位', '備註']
 
-    for data in list:
-        username = ""
-        if data.approver:
-            username = data.approver.username
+    # Form Header Style
+    header_style = xlwt.XFStyle()
+    header_style.font.bold = True
+    header_style.font.colour_index = xlwt.Style.colour_map['white']
+    pattern = xlwt.Pattern()
+    pattern.pattern = xlwt.Pattern.SOLID_PATTERN
+    pattern.pattern_fore_colour = xlwt.Style.colour_map['gray80']
+    header_style.pattern = pattern
 
-        # Form Header
-        font_style = xlwt.XFStyle()
-        font_style.font.bold = True
-        font_style.font.colour_index = xlwt.Style.colour_map['white']
-        pattern = xlwt.Pattern()
-        pattern.pattern = xlwt.Pattern.SOLID_PATTERN
-        pattern.pattern_fore_colour = xlwt.Style.colour_map['gray80']
-        font_style.pattern = pattern
+    # Header Content Style
+    hc_style = xlwt.XFStyle()
+    hc_style.font.colour_index = xlwt.Style.colour_map['white']
+    pattern = xlwt.Pattern()
+    pattern.pattern = xlwt.Pattern.SOLID_PATTERN
+    pattern.pattern_fore_colour = xlwt.Style.colour_map['gray50']
+    hc_style.pattern = pattern
+
+    # Form Item Header
+    item_header_style = xlwt.XFStyle()
+    item_header_style.font.bold = True
+    item_header_style.font.colour_index = xlwt.Style.colour_map['white']
+    pattern = xlwt.Pattern()
+    pattern.pattern = xlwt.Pattern.SOLID_PATTERN
+    pattern.pattern_fore_colour = xlwt.Style.colour_map['gray40']
+    item_header_style.pattern = pattern
+
+    # Normal Style
+    font_style = xlwt.XFStyle()
+    font_style.font.colour_index = xlwt.Style.colour_map['black']
+
+    for data in list:
+        approver = ""
+        if data.approver:
+            approver = data.approver.username
 
         for col_num in range(len(form_columns)):
-            ws.write(row_num, col_num, form_columns[col_num], font_style)
+            ws.write(row_num, col_num, form_columns[col_num], header_style)
 
         row_num += 1
         # Sheet body, remaining rows
-        font_style = xlwt.XFStyle()
-        font_style.font.colour_index = xlwt.Style.colour_map['white']
-        pattern = xlwt.Pattern()
-        pattern.pattern = xlwt.Pattern.SOLID_PATTERN
-        pattern.pattern_fore_colour = xlwt.Style.colour_map['gray50']
-        font_style.pattern = pattern
-        ws.write(row_num, 0, data.form_no, font_style)
-        ws.write(row_num, 1, data.apply_date, font_style)
-        ws.write(row_num, 2, data.status.status_name, font_style)
-        ws.write(row_num, 3, username, font_style)
-        ws.write(row_num, 4, data.unit.unitName, font_style)
-        ws.write(row_num, 5, data.requester.username, font_style)
-        ws.write(row_num, 6, data.ext_number, font_style)
+        ws.write(row_num, 0, data.form_no, hc_style)
+        ws.write(row_num, 1, data.apply_date, hc_style)
+        ws.write(row_num, 2, data.status.status_name, hc_style)
+        ws.write(row_num, 3, approver, hc_style)
+        ws.write(row_num, 4, data.unit.unitName, hc_style)
+        ws.write(row_num, 5, data.requester.username, hc_style)
+        ws.write(row_num, 6, data.ext_number, hc_style)
 
         # 申請原因
         row_num += 1
-        font_style = xlwt.XFStyle()
-        font_style.font.colour_index = xlwt.Style.colour_map['black']
         ws.write(row_num, 0, "申請原因：", font_style)
         ws.write(row_num, 1, data.reason, font_style)
 
@@ -878,16 +891,8 @@ def export_form_xls(list):
 
         # Form Item Header
         row_num += 1
-        font_style = xlwt.XFStyle()
-        font_style.font.bold = True
-        font_style.font.colour_index = xlwt.Style.colour_map['white']
-        pattern = xlwt.Pattern()
-        pattern.pattern = xlwt.Pattern.SOLID_PATTERN
-        pattern.pattern_fore_colour = xlwt.Style.colour_map['gray40']
-        font_style.pattern = pattern
-
         for col_num in range(len(form_item_columns)):
-            ws.write(row_num, col_num, form_item_columns[col_num], font_style)
+            ws.write(row_num, col_num, form_item_columns[col_num], item_header_style)
 
         for form_item in items:
             row_num += 1
