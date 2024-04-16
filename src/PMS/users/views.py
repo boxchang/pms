@@ -370,31 +370,34 @@ def user_sync(request):
 
         for row in rows:
             try:
-                user = CustomUser.objects.get(emp_no=row.userId)
-                if row.leaveDate:
-                    user.is_active = False
-                    user.save()
-                else:
-                    user.unit = Unit.objects.get(unitId=row.unitId)
-                    if CustomUser.objects.filter(emp_no=row.managerId).exists():
-                        user.manager = CustomUser.objects.get(emp_no=row.managerId)
-                    user.update_by = request.user
-                    user.email = row.mailAddress
-                    user.save()
+                # Noah有存在人員就更新資料
+                if CustomUser.objects.filter(emp_no=row.userId).exists():
+                    user = CustomUser.objects.get(emp_no=row.userId)
+                    if row.leaveDate:
+                        user.is_active = False
+                        user.save()
+                    else:
+                        user.unit = Unit.objects.get(unitId=row.unitId)
+                        if CustomUser.objects.filter(emp_no=row.managerId).exists():
+                            user.manager = CustomUser.objects.get(emp_no=row.managerId)
+                        user.update_by = request.user
+                        user.email = row.mailAddress
+                        user.save()
+                else:  # 不存在就新增
+                    if not row.leaveDate:
+                        user = CustomUser(is_staff=1, is_active=1, user_type_id=2)
+                        user.username = row.userName
+                        user.email = row.mailAddress
+                        user.emp_no = row.userId
+                        user.unit = Unit.objects.get(unitId=row.unitId)
+                        if CustomUser.objects.filter(emp_no=row.managerId).exists():
+                            user.manager = CustomUser.objects.get(emp_no=row.managerId)
+                        user.set_password(row.userId)
+                        user.create_by = request.user
+                        user.update_by = request.user
+                        user.save()
             except Exception as e:
                 print(e)
-                if not row.leaveDate:
-                    user = CustomUser(is_staff=1, is_active=1, user_type_id=2)
-                    user.username = row.userName
-                    user.email = row.mailAddress
-                    user.emp_no = row.userId
-                    user.unit = Unit.objects.get(unitId=row.unitId)
-                    if CustomUser.objects.filter(emp_no=row.managerId).exists():
-                        user.manager = CustomUser.objects.get(emp_no=row.managerId)
-                    user.set_password(row.userId)
-                    user.create_by = request.user
-                    user.update_by = request.user
-                    user.save()
 
         users = CustomUser.objects.filter(manager_id__isnull=True)
         for user in users:
