@@ -496,7 +496,9 @@ def detail(request, pk):
             form_item.x = Item.objects.get(item_code=form_item.item_code)
 
         # 查過去請領的資料
-        hists = AppliedForm.objects.filter(requester=form.requester, status=FormStatus.objects.get(status_name="已發放"), category=form.category).order_by('-apply_date')
+        two_year_ago = datetime.now() - timedelta(days=730)
+        hists = AppliedForm.objects.filter(requester=form.requester, create_at__gte=two_year_ago,
+                                           status=FormStatus.objects.get(status_name="已發放"), category=form.category).order_by('-apply_date')
 
     except AppliedForm.DoesNotExist:
         raise Http404('Form does not exist')
