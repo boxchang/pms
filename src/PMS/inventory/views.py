@@ -836,6 +836,12 @@ def export_form_xls(list):
     form_columns = ['單號', '申請日期', '狀態', '簽核者', '申請部門', '申請者', '分機']
     form_item_columns = ['', '物品類別', '品名', '申請數量', '已發放數量', '單位', '備註']
 
+    # Title Style
+    title_style = xlwt.XFStyle()
+    title_style.font.bold = True
+    title_style.font.colour_index = xlwt.Style.colour_map['blue']
+    title_style.font.height = 20 * 14
+
     # Form Header Style
     header_style = xlwt.XFStyle()
     header_style.font.bold = True
@@ -865,6 +871,12 @@ def export_form_xls(list):
     # Normal Style
     font_style = xlwt.XFStyle()
     font_style.font.colour_index = xlwt.Style.colour_map['black']
+
+    # Title
+    ws.write(row_num, 0, "台灣伊格爾博格曼股份有限公司", title_style)
+    row_num += 1
+    ws.write(row_num, 0, "總務用品請領單", title_style)
+    row_num += 1
 
     for data in list:
         approver = ""
