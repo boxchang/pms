@@ -69,7 +69,7 @@ def delete(request, pk):
 #Excel
 def export_assets_xls(request):
     response = HttpResponse(content_type='application/ms-excel')
-    response['Content-Disposition'] = 'attachment; filename="assets.xls"'
+    response['Content-Disposition'] = 'attachment; filename="assets.xlsx"'
 
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet('Users')
