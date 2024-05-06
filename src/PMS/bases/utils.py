@@ -1,20 +1,12 @@
-from enum import Enum
+import socket
 import datetime
 from django.utils.translation import gettext as _
 from django.http import Http404
-from django.shortcuts import redirect
 from django.urls import reverse
 from django.db import connection
 from bases.models import DataIndex, FormType, Status
-
-# class FORM_TYPE(Enum):
-#     PROJECT = 1
-#     REQUEST = 2
-#     PROBLEM = 3
-#     BUG = 4
 from inventory.models import FormStatus
 from projects.models import Project
-from requests.models import Request_attachment
 from users.models import CustomUser
 
 
@@ -140,10 +132,9 @@ def get_invform_status_dropdown(o_form):
     return status_html
 
 
-def django_go_sql(sql):
-    with connection.cursor() as cursor:
-        cursor.execute(sql)
-        columns = [col[0] for col in cursor.description]
-        result = [dict(zip(columns, row)) for row in cursor.fetchall()]
-    return result
-
+def get_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    ip = s.getsockname()[0]
+    s.close()
+    return ip

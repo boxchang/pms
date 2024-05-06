@@ -1,14 +1,10 @@
 import datetime
 import xlwt
 from django.http import HttpResponse
-
 from PMS.settings.base import MEDIA_ROOT
-from bases.utils import get_date_str
-from jobs.func import get_ip
 from PMS.database import dc_database, database
-from production.encode import get_series_number
+from bases.utils import get_ip
 from production.models import Consumption, Sync_SAP_Log, Record
-
 
 class sap_record_sync(object):
     db = None
@@ -20,10 +16,6 @@ class sap_record_sync(object):
     def __init__(self, PROD):
         self.IP = get_ip()
         self.PROD = PROD
-        if PROD:
-            self.DC_SCHEMA = "DC.dbo"
-        else:
-            self.DC_SCHEMA = "DC_Dev.dbo"
         self.db = database()
 
     def export_records(self, plant):
@@ -40,14 +32,14 @@ class sap_record_sync(object):
         return batch_no
 
     def create_dc_workhour_data(self, records, batch_no):
-        db = dc_database(self.PROD)
+        db = dc_database()
         amount = 0
         for record in records:
             tmp_record_dt = record.record_dt.split('-')
             tmp_record_dt = tmp_record_dt[2] + tmp_record_dt[1] + tmp_record_dt[0]
             tmp_status = 'X' if record.status == None else ''
 
-            sql = """insert into {dc_schema}.SYN_Noah_WorkHour(wo_no, cfm_code, item_no, record_id, 
+            sql = """insert into SYN_Noah_WorkHour(wo_no, cfm_code, item_no, record_id, 
                              setting_time, mach_time, labor_time, emp_no, record_dt, good_qty, ng_qty, comment,
                              status, batch_no, create_by, create_at) 
                              values('{wo_no}', '{cfm_code}', '{item_no}', '{record_id}', {setting_time}, 
@@ -58,7 +50,7 @@ class sap_record_sync(object):
                         labor_time=record.labor_time,
                         emp_no=record.sap_emp_no, record_dt=tmp_record_dt, good_qty=record.good_qty,
                         ng_qty=record.ng_qty, comment=record.comment, status=tmp_status,
-                        batch_no=batch_no, create_by=self.IP, dc_schema=self.DC_SCHEMA)
+                        batch_no=batch_no, create_by=self.IP)
             try:
                 db.execute_sql(sql)
 
@@ -73,16 +65,16 @@ class sap_record_sync(object):
         return amount
 
     def create_dc_consumption_data(self, records, batch_no):
-        db = dc_database(self.PROD)
+        db = dc_database()
         amount = 0
         for record in records:
-            sql = """insert into {dc_schema}.SYN_Noah_Consumption(wo_no, cfm_code, item_no, record_id, 
+            sql = """insert into SYN_Noah_Consumption(wo_no, cfm_code, item_no, record_id, 
                              qty, batch_no, create_by, create_at) 
                              values('{wo_no}', '{cfm_code}', '{item_no}', '{record_id}', {qty}, {batch_no},
                              '{create_by}', GETDATE())""" \
                 .format(wo_no=record.wo_no, cfm_code=record.cfm_code, item_no=record.item_no,
                         record_id=record.id, qty=record.qty,
-                        batch_no=batch_no, create_by=self.IP, dc_schema=self.DC_SCHEMA)
+                        batch_no=batch_no, create_by=self.IP)
             try:
                 db.execute_sql(sql)
 
@@ -97,14 +89,14 @@ class sap_record_sync(object):
         return amount
 
     def get_dc_workhour_data(self, batch_no):
-        db = dc_database(self.PROD)
-        sql = "select * from {dc_schema}.SYN_Noah_WorkHour where batch_no='{batch_no}'".format(dc_schema=self.DC_SCHEMA, batch_no=batch_no)
+        db = dc_database()
+        sql = "select * from SYN_Noah_WorkHour where batch_no='{batch_no}'".format(dc_schema=self.DC_SCHEMA, batch_no=batch_no)
         records = db.select_sql_dict(sql)
         return records
 
     def get_dc_consumption_data(self, batch_no):
-        db = dc_database(self.PROD)
-        sql = "select * from {dc_schema}.SYN_Noah_Consumption where batch_no='{batch_no}'".format(dc_schema=self.DC_SCHEMA, batch_no=batch_no)
+        db = dc_database()
+        sql = "select * from SYN_Noah_Consumption where batch_no='{batch_no}'".format(dc_schema=self.DC_SCHEMA, batch_no=batch_no)
         records = db.select_sql_dict(sql)
         return records
 

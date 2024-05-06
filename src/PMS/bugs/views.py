@@ -4,7 +4,6 @@ from django.forms import HiddenInput
 from django.http import Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse
-
 from bases.models import Status, FormType
 from bases.utils import save_data_index, get_serial_num, get_form_type, get_home_url
 from bases.views import get_user_setting_pagenum

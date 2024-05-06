@@ -1,14 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.shortcuts import render
 from bases.models import Status
-from bugs.models import Bug
-from problems.models import Problem
-from projects.models import Project, Project_setting
 from requests.models import Request
 from requests.utils import update_process_rate
-from users.models import CustomUser
 
 
 @login_required

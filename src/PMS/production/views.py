@@ -2,7 +2,6 @@ import json
 import os
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import default_storage
-from django.db import connection
 from django.db.models import Sum, Max
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -14,7 +13,9 @@ from django.urls import reverse
 from django.utils.translation import get_language
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
-from bases.utils import django_go_sql, get_date_str
+
+from PMS.database import database
+from bases.utils import get_date_str
 from production.encode import get_series_number
 from production.forms import RecordForm, RecordSearchForm, WoSearchForm, RecordManageForm, ExportForm, \
     RecordHistoryForm, ItemSearchForm
@@ -675,7 +676,7 @@ def excel_import_preview(request):
                 wo['std_qty'] = sheet.cell(row=iRow, column=15).value
                 wos.append(wo)
 
-                if iRow > 50:  # 預覽只顯示100筆
+                if iRow > 50:  # 預覽只顯示50筆
                     break
 
             html = COOIS2Table(wos)
@@ -791,25 +792,25 @@ def record_export(request):
         start_date = request.POST.get('start_date')
         due_date = request.POST.get('due_date')
 
-        with connection.cursor() as cursor:
-            sql = """select plant,wo_no,user.emp_no,unit.unitName,user.username,r.step_code,r.step_name,record_dt,labor_time,m.mach_name,mach_time,good_qty,ng_qty,comment,r.update_at,r.work_center 
-                        from production_record r,users_customuser user, users_unit unit left outer join production_machine m on  r.mach_id = m.mach_code 
-                        where r.sap_emp_no = user.sap_emp_no and user.unit_id = unit.id 
-                        and record_dt between '{start_date}' and '{due_date}'
-                        union
-                        select '','',user.emp_no,unit.unitName,user.username,w.type_code,w.type_name,record_dt,labor_time,'','',qty,'',comment, r.create_at,'' 
-                        from production_record2 r,users_customuser user, users_unit unit , production_worktype w
-                        where r.sap_emp_no=user.sap_emp_no and user.unit_id = unit.id and r.work_type_id = w.type_code
-                        and record_dt between '{start_date}' and '{due_date}'
-                        union
-                        select plant,'',emp_no,unitName,username,'','橡膠成型機時計算' step_name,record_dt,max(mach_time) mach_time,'','','','','','','' from (
-                        select r.plant,r.record_dt,r.emp_no,unit.unitName,user.username,mach_name,sum(mach_time) mach_time from production_record r,users_customuser user, users_unit unit, production_machine m  
-                        where r.sap_emp_no = user.sap_emp_no and user.unit_id = unit.id and r.mach_id = m.mach_code and r.step_code = 'TWA027'
-						and record_dt between '{start_date}' and '{due_date}'
-						group by r.plant,r.record_dt,r.emp_no,unit.unitName,user.username,mach_name
-						) A group by plant,record_dt,emp_no,username
-                        order by unitName, username, record_dt""".format(start_date=start_date, due_date=due_date)
-            records = django_go_sql(sql)
+        db = database()
+        sql = """select plant,wo_no,user.emp_no,unit.unitName,user.username,r.step_code,r.step_name,record_dt,labor_time,m.mach_name,mach_time,good_qty,ng_qty,comment,r.update_at,r.work_center 
+                    from production_record r,users_customuser user, users_unit unit left outer join production_machine m on  r.mach_id = m.mach_code 
+                    where r.sap_emp_no = user.sap_emp_no and user.unit_id = unit.id 
+                    and record_dt between '{start_date}' and '{due_date}'
+                    union
+                    select '','',user.emp_no,unit.unitName,user.username,w.type_code,w.type_name,record_dt,labor_time,'','',qty,'',comment, r.create_at,'' 
+                    from production_record2 r,users_customuser user, users_unit unit , production_worktype w
+                    where r.sap_emp_no=user.sap_emp_no and user.unit_id = unit.id and r.work_type_id = w.type_code
+                    and record_dt between '{start_date}' and '{due_date}'
+                    union
+                    select plant,'',emp_no,unitName,username,'','橡膠成型機時計算' step_name,record_dt,max(mach_time) mach_time,'','','','','','','' from (
+                    select r.plant,r.record_dt,r.emp_no,unit.unitName,user.username,mach_name,sum(mach_time) mach_time from production_record r,users_customuser user, users_unit unit, production_machine m  
+                    where r.sap_emp_no = user.sap_emp_no and user.unit_id = unit.id and r.mach_id = m.mach_code and r.step_code = 'TWA027'
+                    and record_dt between '{start_date}' and '{due_date}'
+                    group by r.plant,r.record_dt,r.emp_no,unit.unitName,user.username,mach_name
+                    ) A group by plant,record_dt,emp_no,username
+                    order by unitName, username, record_dt""".format(start_date=start_date, due_date=due_date)
+        records = db.select_sql_dict(sql)
 
         file_name = "Record_{record_dt}.xls".format(record_dt=start_date)
         response = HttpResponse(content_type='application/ms-excel')

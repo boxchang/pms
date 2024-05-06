@@ -5,7 +5,6 @@ from django.db import transaction
 from django.db.models import Sum, Count
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-
 from bases.utils import *
 from bases.views import get_user_setting_pagenum
 from problems.forms import ProblemForm, ProblemReplyForm, ProblemHistoryForm, ProblemChartForm

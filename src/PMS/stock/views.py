@@ -8,7 +8,6 @@ from django.db.models import Q
 from django.http import JsonResponse, Http404, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
-
 from inventory.models import ItemCategory, ItemType, Item, Series
 from stock.forms import StorageEditForm, LocationEditForm, BinEditForm, ItemSearchForm, BinSearchForm, \
     StockInPForm, StockOutPForm, StockHistoryForm, RecentHistoryForm, StockSearchForm

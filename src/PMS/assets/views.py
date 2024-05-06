@@ -1,19 +1,13 @@
 #!/usr/bin/python
 # coding=utf-8
 import copy
-
-from django.contrib.auth.models import AnonymousUser
-from django.core import serializers
-from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.core.files.storage import FileSystemStorage
 from django.db.models import Count
-
 from assets import encode
 from assets.encode import EncodeInterface, EncodeIT, EncodeGeneral, EncodeOffice
 from assets.forms import AssetModelForm, AssetSearchForm
 from assets.models import Asset, AssetArea, AssetCategory, AssetStatus, AssetType, Brand, Doc_attachment, \
-    Label_attachment, Pic_attachment, Series, Location, Unit, History
+    Pic_attachment, Location, Unit, History
 import openpyxl
 from django.http import JsonResponse
 import os

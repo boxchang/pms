@@ -13,15 +13,31 @@ ALLOWED_HOSTS = ['*']
 
 DATABASES = {
     'default': {
-        # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'ENGINE': 'django.db.backends.mysql',
-        # Or path to database file if using sqlite3.
-        'NAME': 'nico',
-        'USER': 'nico',                       # Not used with sqlite3.
-        'PASSWORD': 'nicodb#123',               # Not used with sqlite3.
-        # Set to empty string for localhost. Not used with sqlite3.
-        'HOST': 'git-runner.it.srv.dc',
-        # Set to empty string for default. Not used with sqlite3.
-        'PORT': '3306',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     },
+    'BPM': {
+        'ENGINE': 'mssql',
+        'NAME': 'NaNa',
+        'USER': 'sa',
+        'PASSWORD': '134',
+        'HOST': '10.96.101.4',
+        'PORT': '1433',
+
+        'OPTIONS': {
+            'driver': 'ODBC Driver 17 for SQL Server',
+        },
+    },
+    'DC': {
+        'ENGINE': 'mssql',
+        'NAME': 'DC',
+        'USER': 'noah',
+        'PASSWORD': 'noah',
+        'HOST': '10.96.101.10',
+        'PORT': '1433',
+
+        'OPTIONS': {
+            'driver': 'ODBC Driver 17 for SQL Server',
+        },
+    }
 }

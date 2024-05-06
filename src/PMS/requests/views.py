@@ -2,11 +2,8 @@ import json
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from django.forms import HiddenInput
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-
-from PMS.settings.base import DEFAULT_STATUS
 from bases.utils import *
 from bases.views import get_user_setting_pagenum
 from requests.forms import *

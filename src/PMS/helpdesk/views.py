@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from helpdesk.forms import HelpdeskForm
@@ -6,7 +5,6 @@ from helpdesk.models import Helpdesk, Helpdesk_attachment, HelpdeskType
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.urls import reverse
-from datetime import datetime
 from django.core.paginator import Paginator
 
 

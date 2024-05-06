@@ -10,9 +10,7 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.urls import reverse
 from django.db.models import Q
-
-from PMS.database import database
-from bases.utils import get_invform_status_dropdown
+from PMS.database import bpm_database
 from bases.views import index
 from users.forms import CurrentCustomUserForm, CustomUser, UserInfoForm, Unit
 from users.models import UserType
@@ -323,20 +321,23 @@ def unit_sync(request):
                 LEFT JOIN Users Manager ON OrganizationUnit.managerOID = Manager.OID
                 where OrganizationUnit.validType = 1
                 ORDER BY unitId"""
-        db = database()
-        rows = db.select_sql(sql)
+        db = bpm_database()
+        rows = db.select_sql_dict(sql)
 
         for row in rows:
             try:  # 更新
-                unit = Unit.objects.get(unitId=row.unitId)
-                unit.unitName = row.unitName
-                unit.manager = CustomUser.objects.get(emp_no=row.managerId)
-                unit.isValid = row.isValid
-                unit.update_by = request.user
-                unit.save()
+                if CustomUser.objects.filter(emp_no=row['managerId']).exists():
+                    unit = Unit.objects.get(unitId=row['unitId'])
+                    unit.unitName = row['unitName']
+                    unit.manager = CustomUser.objects.get(emp_no=row['managerId'])
+                    unit.isValid = row['isValid']
+                    unit.update_by = request.user
+                    unit.save()
+                else:
+                    print("{unitName} BPM尚未設定部門主管".format(unitName=row['unitName']))
             except:  # 新增
-                unit = Unit(orgId=row.orgId, unitId=row.unitId, unitName=row.unitName, isValid=row.isValid)
-                unit.manager = CustomUser.objects.get(emp_no=row.managerId)
+                unit = Unit(orgId=row['orgId'], unitId=row['unitId'], unitName=row['unitName'], isValid=row['isValid'])
+                unit.manager = CustomUser.objects.get(emp_no=row['managerId'])
                 unit.create_by = request.user
                 unit.update_by = request.user
                 unit.save()
@@ -365,34 +366,34 @@ def user_sync(request):
                                     where isMain = 1 and OrganizationUnit.validType=1) main, OrganizationUnit unit, Users boss
                                     where main.unitId = unit.id and unit.managerOID = boss.OID
                                     order by userId"""
-        db = database()
-        rows = db.select_sql(sql)
+        db = bpm_database()
+        rows = db.select_sql_dict(sql)
 
         for row in rows:
             try:
                 # Noah有存在人員就更新資料
-                if CustomUser.objects.filter(emp_no=row.userId).exists():
-                    user = CustomUser.objects.get(emp_no=row.userId)
-                    if row.leaveDate:
+                if CustomUser.objects.filter(emp_no=row['userId']).exists():
+                    user = CustomUser.objects.get(emp_no=row['userId'])
+                    if row['leaveDate']:
                         user.is_active = False
                         user.save()
                     else:
-                        user.unit = Unit.objects.get(unitId=row.unitId)
-                        if CustomUser.objects.filter(emp_no=row.managerId).exists():
-                            user.manager = CustomUser.objects.get(emp_no=row.managerId)
+                        user.unit = Unit.objects.get(unitId=row['unitId'])
+                        if CustomUser.objects.filter(emp_no=row['managerId']).exists():
+                            user.manager = CustomUser.objects.get(emp_no=row['managerId'])
                         user.update_by = request.user
-                        user.email = row.mailAddress
+                        user.email = row['mailAddress']
                         user.save()
                 else:  # 不存在就新增
-                    if not row.leaveDate:
+                    if not row['leaveDate']:
                         user = CustomUser(is_staff=1, is_active=1, user_type_id=2)
-                        user.username = row.userName
-                        user.email = row.mailAddress
-                        user.emp_no = row.userId
-                        user.unit = Unit.objects.get(unitId=row.unitId)
-                        if CustomUser.objects.filter(emp_no=row.managerId).exists():
-                            user.manager = CustomUser.objects.get(emp_no=row.managerId)
-                        user.set_password(row.userId)
+                        user.username = row['userName']
+                        user.email = row['mailAddress']
+                        user.emp_no = row['userId']
+                        user.unit = Unit.objects.get(unitId=row['unitId'])
+                        if CustomUser.objects.filter(emp_no=row['managerId']).exists():
+                            user.manager = CustomUser.objects.get(emp_no=row['managerId'])
+                        user.set_password(row['userId'])
                         user.create_by = request.user
                         user.update_by = request.user
                         user.save()

@@ -1,15 +1,14 @@
 import json
-from datetime import datetime
 import openpyxl
 import xlwt
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.db import connection
 from django.db.models import Q
 from django.http import JsonResponse, Http404, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from bases.utils import django_go_sql, get_invform_status_dropdown
+from PMS.database import database
+from bases.utils import get_invform_status_dropdown
 from inventory.forms import OfficeInvForm, InvAppliedHistoryForm, OfficeItemForm, SearchForm, AttachmentForm, \
     ItemSearchForm, ItemModelForm
 from inventory.models import ItemType, Item, AppliedForm, FormStatus, AppliedItem, Series, Apply_attachment, \
@@ -63,15 +62,16 @@ def get_series_number(_key, _key_name):
 @login_required
 def statistic(request):
     item_map = []
-    with connection.cursor() as cursor:
-        sql = """select category,item_code,spec,cost_center,unitId,unitName, sum(qty)-sum(received_qty) sum_qty from inventory_appliedform a, inventory_applieditem b, users_unit c
-                 where a.form_no = b.applied_form_id and a.unit_id = c.id
-                    and a.status_id in (2,3,7)
-                    group by category,item_code,spec,cost_center,unitId,unitName having sum_qty > 0"""
-        rows = django_go_sql(sql)
 
-        item_map = sorted((list(set((dic["item_code"] for dic in rows)))))
-        unit_map = (list(set((dic["unitName"] for dic in rows))))
+    db = database()
+    sql = """select category,item_code,spec,cost_center,unitId,unitName, sum(qty)-sum(received_qty) sum_qty from inventory_appliedform a, inventory_applieditem b, users_unit c
+             where a.form_no = b.applied_form_id and a.unit_id = c.id
+                and a.status_id in (2,3,7)
+                group by category,item_code,spec,cost_center,unitId,unitName having sum_qty > 0"""
+    rows = db.select_sql_dict(sql)
+
+    item_map = sorted((list(set((dic["item_code"] for dic in rows)))))
+    unit_map = (list(set((dic["unitName"] for dic in rows))))
 
     html_row = "<table border='1' class='table table-bordered table-striped'>"
     # 部門HEADER

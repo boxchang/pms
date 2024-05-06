@@ -6,7 +6,7 @@ from PMS.settings.base import DEBUG
 
 if __name__ == '__main__':
     os.environ.setdefault('DJANGO_SETTINGS_MODULE',
-                          'PMS.settings.test-box-local')
+                          'PMS.settings.production')
 
     # from django.conf import settings
     # if DEBUG:
