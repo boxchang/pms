@@ -3,7 +3,6 @@ import datetime
 from django.utils.translation import gettext as _
 from django.http import Http404
 from django.urls import reverse
-from django.db import connection
 from bases.models import DataIndex, FormType, Status
 from inventory.models import FormStatus
 from projects.models import Project
@@ -138,3 +137,8 @@ def get_ip():
     ip = s.getsockname()[0]
     s.close()
     return ip
+
+def get_batch_no():
+    now = datetime.datetime.now()
+    batch_no = now.strftime("%y%m%d%H%M%S")
+    return batch_no

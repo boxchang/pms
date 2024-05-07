@@ -13,15 +13,16 @@ from django.urls import reverse
 from django.utils.translation import get_language
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
-
-from PMS.database import database
+from PMS.database import database, dc_database
+from PMS.settings.base import MEDIA_ROOT
 from bases.utils import get_date_str
+from jobs.sap_sync.SYN_Noah_Consumption import SYN_Noah_Consumption
+from jobs.sap_sync.SYN_Noah_WorkHour import SYN_Noah_WorkHour
 from production.encode import get_series_number
 from production.forms import RecordForm, RecordSearchForm, WoSearchForm, RecordManageForm, ExportForm, \
     RecordHistoryForm, ItemSearchForm
 from production.models import ExcelTemp, WODetail, Record, Record2, WorkType, COOIS_Record, WOMain, Machine, \
     Consumption, Sync_SAP_Log
-from production.sap_sync import sap_record_sync
 from users.models import CustomUser
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
@@ -757,29 +758,24 @@ def prod_sap_export(request):
     if request.method == 'POST':
         plant = request.POST.get('plant')
         action = request.POST.get('action')
-        if action == "workhour":
-            sync = sap_record_sync(settings.PROD)
-            records = sync.export_records(plant)                              # 取得本次處理資料
-            batch_no = sync.get_batch_no()                                    # 取號
-            amount = sync.create_dc_workhour_data(records, batch_no)          # Insert中介資料
-            if amount > 0:
-                key = get_date_str()
-                series = get_series_number("sap_workhour_excel", key)
-                file_name = "TimeConf_{plant}_{key}V{series}.xls".format(plant=plant, key=key, series=series)
-                sync.save_log("workhour", batch_no, amount, request.user, file_name)     # 紀錄Log
-                return sync.prod_sap_workhour_excel(file_name, batch_no)                 # 取出中介資料匯出Excel
+        dc_db = dc_database()
+        sqlite_db = database()
+        save_path = MEDIA_ROOT + 'sync_sap_excel\\'
 
-        if action == "consumption":
-            sync = sap_record_sync(settings.PROD)
-            records = sync.export_consumptions(plant)                         # 取得本次處理資料
-            batch_no = sync.get_batch_no()                                    # 取號
-            amount = sync.create_dc_consumption_data(records, batch_no)       # Insert中介資料
-            if amount > 0:
-                key = get_date_str()
-                series = get_series_number("sap_consumption_excel", key)
-                file_name = "Consumption_{plant}_{key}V{series}.xls".format(plant=plant, key=key, series=series)
-                sync.save_log("consumption", batch_no, amount, request.user, file_name)  # 紀錄Log
-                return sync.prod_sap_consumption_excel(file_name, batch_no)              # 取出中介資料匯出Excel
+        if action == "workhour":  # 工時
+            sync = SYN_Noah_WorkHour(sqlite_db, dc_db, request.user)
+
+        if action == "consumption":  # 物料
+            sync = SYN_Noah_Consumption(sqlite_db, dc_db, request.user)
+
+        file_name = sync.get_file_name(plant)
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = "attachment; filename={file_name}".format(file_name=file_name)
+        wb = sync.generate_excel(plant)
+
+        if wb:
+            wb.save(response)
+            return response
 
     logs = Sync_SAP_Log.objects.all().order_by('-create_at')[:20]
 
