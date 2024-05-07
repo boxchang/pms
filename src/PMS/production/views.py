@@ -763,10 +763,10 @@ def prod_sap_export(request):
         save_path = MEDIA_ROOT + 'sync_sap_excel\\'
 
         if action == "workhour":  # 工時
-            sync = SYN_Noah_WorkHour(sqlite_db, dc_db, request.user)
+            sync = SYN_Noah_WorkHour(sqlite_db, dc_db, request.user, save_path)
 
         if action == "consumption":  # 物料
-            sync = SYN_Noah_Consumption(sqlite_db, dc_db, request.user)
+            sync = SYN_Noah_Consumption(sqlite_db, dc_db, request.user, save_path)
 
         file_name = sync.get_file_name(plant)
         response = HttpResponse(content_type='application/ms-excel')
