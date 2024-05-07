@@ -771,7 +771,7 @@ def prod_sap_export(request):
         file_name = sync.get_file_name(plant)
         response = HttpResponse(content_type='application/ms-excel')
         response['Content-Disposition'] = "attachment; filename={file_name}".format(file_name=file_name)
-        wb = sync.generate_excel(plant)
+        wb = sync.generate_excel(plant, file_name)
 
         if wb:
             wb.save(response)
