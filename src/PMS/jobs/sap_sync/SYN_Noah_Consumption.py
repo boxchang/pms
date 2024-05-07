@@ -100,12 +100,11 @@ class SYN_Noah_Consumption(object):
         self.sqlite_db.execute_sql(sql)
 
     # 產生Excel檔案流程
-    def generate_excel(self, plant):
+    def generate_excel(self, plant, file_name):
         records = self.export_consumptions(plant)  # 取得本次處理資料
         batch_no = get_batch_no()  # 取號
         amount = self.create_dc_consumption_data(records, batch_no)  # Insert中介資料
         if amount > 0:
-            file_name = self.get_file_name(plant)
             self.save_log("consumption", batch_no, amount, self.create_by, file_name)  # 紀錄Log
             wb = self.prod_sap_consumption_excel(batch_no)  # 取出中介資料匯出Excel
             wb.save(self.save_path + file_name)  # 儲存一份在主機上

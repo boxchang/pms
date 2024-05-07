@@ -39,10 +39,12 @@ def prepare_test_data():
 # 測試時使用，上線要拿掉
 prepare_test_data()
 
-wh = SYN_Noah_WorkHour(sqlite_db, dc_db, create_by, save_path)
+workhour = SYN_Noah_WorkHour(sqlite_db, dc_db, create_by, save_path)
 for plant in plants:
-    wh.generate_excel(plant)
+    file_name = workhour.get_file_name(plant)
+    workhour.generate_excel(plant, file_name)
 
-wh = SYN_Noah_Consumption(sqlite_db, dc_db, create_by, save_path)
+material = SYN_Noah_Consumption(sqlite_db, dc_db, create_by, save_path)
 for plant in plants:
-    wh.generate_excel(plant)
+    file_name = material.get_file_name(plant)
+    material.generate_excel(plant, file_name)
