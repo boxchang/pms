@@ -1,13 +1,7 @@
-import sys
-import os
 import xlwt
 from jobs.sap_sync.encode import get_series_number
 from jobs.sap_sync.utils import get_ip, get_batch_no, get_date_str
-
-curPath = os.path.abspath(os.path.dirname(__file__))
-rootPath = os.path.split(curPath)[0]
-sys.path.append(rootPath)
-
+import datetime
 
 class SYN_Noah_Consumption(object):
     create_by = ""
@@ -35,8 +29,8 @@ class SYN_Noah_Consumption(object):
     def create_dc_consumption_data(self, records, batch_no):
         amount = 0
         for record in records:
-            sql = """insert into SYN_Noah_Consumption(wo_no, cfm_code, item_no, record_id, 
-                             qty, batch_no, create_by, create_at) 
+            sql = """insert into SYN_Noah_Consumption(wo_no, cfm_code, item_no, record_id,
+                             qty, batch_no, create_by, create_at)
                              values('{wo_no}', '{cfm_code}', '{item_no}', '{record_id}', {qty}, {batch_no},
                              '{create_by}', GETDATE())""" \
                 .format(wo_no=record['wo_no'], cfm_code=record['cfm_code'], item_no=record['item_no'],
@@ -99,9 +93,10 @@ class SYN_Noah_Consumption(object):
 
     # 紀錄Log
     def save_log(self, func, batch_no, amount, create_by, file_name):
-        sql = """insert into production_sync_sap_log(function,batch_no,create_by,amount,file_name)
-                 Values('{function}','{batch_no}','{create_by}',{amount},'{file_name}')"""\
-            .format(function=func, batch_no=batch_no, amount=amount, create_by=create_by, file_name=file_name)
+        create_at = datetime.datetime.now()
+        sql = """insert into production_sync_sap_log(function,batch_no,create_by,amount,file_name,create_at)
+                 Values('{function}','{batch_no}','{create_by}',{amount},'{file_name}','{create_at}')"""\
+            .format(function=func, batch_no=batch_no, amount=amount, create_by=create_by, file_name=file_name, create_at=create_at)
         self.sqlite_db.execute_sql(sql)
 
     # 產生Excel檔案流程
