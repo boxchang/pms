@@ -72,7 +72,7 @@ class SYN_Noah_Consumption(object):
         font_style = xlwt.XFStyle()
         font_style.font.bold = True
 
-        columns = ['order_no', 'cfm_code', 'material', 'x_id', 'qty']
+        columns = ['Production Order', 'Confirmation', 'Material', 'SysX ID', 'Quantity']
 
         for col_num in range(len(columns)):
             ws.write(row_num, col_num, columns[col_num], font_style)
