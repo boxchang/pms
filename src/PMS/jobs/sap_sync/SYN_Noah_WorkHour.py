@@ -102,7 +102,7 @@ class SYN_Noah_WorkHour(object):
             row_num += 1
             ws.write(row_num, 0, record['emp_no'], font_style)  # SAP員編
             ws.write(row_num, 1, record['record_dt'], font_style)  # 工作執行日
-            ws.write(row_num, 2, record['work_center'], font_style)  # Work Center
+            ws.write(row_num, 2, "", font_style)  # Work Center
             ws.write(row_num, 3, record['wo_no'], font_style)  # 生產工單
             ws.write(row_num, 4, record['cfm_code'], font_style)  # 確認單
             ws.write(row_num, 5, record['item_no'], font_style)  # 料號
@@ -113,7 +113,7 @@ class SYN_Noah_WorkHour(object):
             ws.write(row_num, 10, record['ng_qty'], font_style)  # Scrap to Confirm
             ws.write(row_num, 11, record['comment'], font_style)  # ConfText
             ws.write(row_num, 12, record['status'], font_style)  # Partial/Final
-            ws.write(row_num, 13, record['id'], font_style)  # SysX ID
+            ws.write(row_num, 13, record['record_id'], font_style)  # SysX ID
         return wb
 
     # 紀錄Log
