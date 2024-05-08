@@ -86,8 +86,9 @@ class SYN_Noah_WorkHour(object):
         font_style = xlwt.XFStyle()
         font_style.font.bold = True
 
-        columns = ['afrud_pernr', 'afrud_budat', 'afrud_aufnr', 'afrud_rueck', 'caufvd_matnr',
-                   'afrud_ism01', 'afrud_ism02', 'afrud_ism03', 'Yield to Confirm', 'Scrap to Confirm', 'ConfText']
+        columns = ['PersonalNumber', 'Posting Date (DDMMYYYY)', 'WorkCenter', 'Production Order', 'Confirmation',
+                   'Material', 'SetupTime', 'Machine Time', 'Labour Time', 'Yield to Confirm', 'Scrap to Confirm',
+                   'ConfText', 'Partial/Final', 'SysX ID']
 
         for col_num in range(len(columns)):
             ws.write(row_num, col_num, columns[col_num], font_style)
@@ -101,15 +102,18 @@ class SYN_Noah_WorkHour(object):
             row_num += 1
             ws.write(row_num, 0, record['emp_no'], font_style)  # SAP員編
             ws.write(row_num, 1, record['record_dt'], font_style)  # 工作執行日
-            ws.write(row_num, 2, record['wo_no'], font_style)  # 生產工單
-            ws.write(row_num, 3, record['cfm_code'], font_style)  # 確認單
-            ws.write(row_num, 4, record['item_no'], font_style)  # 料號
-            ws.write(row_num, 5, "0", font_style)  # setting time
-            ws.write(row_num, 6, record['mach_time'], font_style)  # machine time
-            ws.write(row_num, 7, record['labor_time'], font_style)  # labor time
-            ws.write(row_num, 8, record['good_qty'], font_style)  # Yield to Confirm
-            ws.write(row_num, 9, record['ng_qty'], font_style)  # Scrap to Confirm
-            ws.write(row_num, 10, record['comment'], font_style)  # ConfText
+            ws.write(row_num, 2, record['work_center'], font_style)  # Work Center
+            ws.write(row_num, 3, record['wo_no'], font_style)  # 生產工單
+            ws.write(row_num, 4, record['cfm_code'], font_style)  # 確認單
+            ws.write(row_num, 5, record['item_no'], font_style)  # 料號
+            ws.write(row_num, 6, "0", font_style)  # setting time
+            ws.write(row_num, 7, record['mach_time'], font_style)  # machine time
+            ws.write(row_num, 8, record['labor_time'], font_style)  # labor time
+            ws.write(row_num, 9, record['good_qty'], font_style)  # Yield to Confirm
+            ws.write(row_num, 10, record['ng_qty'], font_style)  # Scrap to Confirm
+            ws.write(row_num, 11, record['comment'], font_style)  # ConfText
+            ws.write(row_num, 12, record['status'], font_style)  # Partial/Final
+            ws.write(row_num, 13, record['id'], font_style)  # SysX ID
         return wb
 
     # 紀錄Log
