@@ -30,7 +30,7 @@ class SYN_Noah_WorkHour(object):
         for record in records:
             tmp_record_dt = record['record_dt'].split('-')
             tmp_record_dt = tmp_record_dt[2] + tmp_record_dt[1] + tmp_record_dt[0]
-            tmp_status = 'X' if record['status'] == None else ''
+            tmp_status = 'X' if record['status'] != None else ''
 
             sql = """insert into SYN_Noah_WorkHour(wo_no, cfm_code, item_no, record_id,
                              setting_time, mach_time, labor_time, emp_no, record_dt, good_qty, ng_qty, comment,
