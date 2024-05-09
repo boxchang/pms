@@ -50,6 +50,7 @@ class EncodeOffice:
         self.type_name = asset_type.type_name.upper()
         self.category_id = str(asset_category.id)
         self.category_name = str(asset_category.category_name)
+        self.series_len = asset_type.series_len
 
     def run(self):
         loc_obj = Location.objects.filter(id=self.location_id)
