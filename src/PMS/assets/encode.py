@@ -58,7 +58,7 @@ class EncodeOffice:
         _key = self.category_id.zfill(3) + location_code.zfill(3) + self.type_code.zfill(3)
         _key_name = self.category_name + "_" + self.location_name + "_" + self.type_name
         _series = get_series_number(_key, _key_name)
-        series_format = str(_series).zfill(3)
+        series_format = str(_series).zfill(self.series_len)
         series_code = series_code + series_format
         return series_code
 
