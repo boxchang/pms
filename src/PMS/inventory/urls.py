@@ -1,7 +1,7 @@
 from django.urls import re_path as url
 from inventory.views import main, apply, TypeAPI, ItemAPI, detail, agree, apply_list, approve, reject, import_excel, \
     statistic, change_status, delete, mail_reject, mail_agree, recieved, pr_apply, search, item_list, item_detail, \
-    item_update, item_create, setting, export_form_xls, CategoryAPI
+    item_update, item_create, setting, export_form_xls, CategoryAPI, template_edit
 
 urlpatterns = [
     url(r'^main/', main, name='inv_main'),
@@ -30,4 +30,5 @@ urlpatterns = [
     url(r'^export_form_xls/', export_form_xls, name='export_form_xls'),
     url(r'^categoryapi/(?P<family_id>\d+)', CategoryAPI, name='item_categoryapi'),
     url(r'^typeapi/(?P<category_id>\d+)', TypeAPI, name='item_typeapi'),
+    url(r'^template_edit/', template_edit, name='template_edit'),
 ]

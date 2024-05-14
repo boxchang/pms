@@ -279,3 +279,29 @@ class ItemModelForm(forms.ModelForm):
                 Div('enabled', css_class='col-md-4'),
                 css_class='row'),
         )
+
+
+class TemplateEditForm(forms.Form):
+    key_file = forms.FileField(required=False, label="更換鑰匙申請單範本")
+    stamp_file = forms.FileField(required=False, label="更換印章申請單範本")
+    print_file = forms.FileField(required=False, label="更換印刷品申請單範本")
+
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.form_show_errors = True
+
+        self.helper.layout = Layout(
+            Div(
+                Div('key_file', css_class='col-md-8 pt-3'),
+                css_class='row'),
+            Div(
+                Div('stamp_file', css_class='col-md-8 pt-3'),
+                css_class='row'),
+            Div(
+                Div('print_file', css_class='col-md-8 pt-3'),
+                css_class='row'),
+        )

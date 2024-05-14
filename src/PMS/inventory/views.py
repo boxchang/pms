@@ -1,4 +1,6 @@
 import json
+import os
+
 import openpyxl
 import xlwt
 from django.contrib.auth.decorators import login_required
@@ -10,9 +12,9 @@ from django.urls import reverse
 from PMS.database import database
 from bases.utils import get_invform_status_dropdown
 from inventory.forms import OfficeInvForm, InvAppliedHistoryForm, OfficeItemForm, SearchForm, AttachmentForm, \
-    ItemSearchForm, ItemModelForm
+    ItemSearchForm, ItemModelForm, TemplateEditForm
 from inventory.models import ItemType, Item, AppliedForm, FormStatus, AppliedItem, Series, Apply_attachment, \
-    ItemCategory, Pic_attachment, Setting, ItemFamily
+    ItemCategory, Pic_attachment, Setting, ItemFamily, Template_attachment
 from users.models import CustomUser, Unit
 from django.core.mail import EmailMessage
 from django.conf import settings
@@ -465,6 +467,7 @@ def apply(request):
 
         return redirect(apply.get_absolute_url())
 
+    templates = Template_attachment.objects.all()
     form = OfficeInvForm(initial={"unit": request.user.unit, "requester": request.user})
     form.fields["requester"].queryset = CustomUser.objects.filter(unit=request.user.unit, is_active=True).all()
     search_form = SearchForm()
@@ -938,3 +941,35 @@ def TypeAPI(request, category_id):
     for data in type_data:
         type_list.append({'id': data['id'], 'type_name': data['type_name']})
     return JsonResponse(type_list, safe=False)
+
+
+def template_edit(request):
+    result = ""
+    if request.method == 'POST':
+        attach_form = TemplateEditForm(request.POST, request.FILES)
+        if attach_form.is_valid():
+            files = Template_attachment.objects.all()
+
+            key_file = request.FILES['key_file'] if 'key_file' in request.FILES else None
+            stamp_file = request.FILES['stamp_file'] if 'stamp_file' in request.FILES else None
+            print_file = request.FILES['print_file'] if 'print_file' in request.FILES else None
+
+            if files:
+                if key_file:
+                    os.remove(files[0].key_file.path)
+                    files[0].key_file = key_file
+
+                if stamp_file:
+                    os.remove(files[0].stamp_file.path)
+                    files[0].stamp_file = stamp_file
+
+                if print_file:
+                    os.remove(files[0].print_file.path)
+                    files[0].print_file = print_file
+
+                files[0].save()
+            else:
+                Template_attachment.objects.create(key_file=key_file, stamp_file=stamp_file, print_file=print_file, update_by=request.user)
+            result = "DONE"
+    attach_form = TemplateEditForm()
+    return render(request, 'inventory/template_edit.html', locals())

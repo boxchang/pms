@@ -143,3 +143,13 @@ class Series(models.Model):
 class Setting(models.Model):
     attr = models.CharField(max_length=50, blank=False, null=False)
     values = models.CharField(max_length=500, blank=False, null=False)
+
+
+class Template_attachment(models.Model):
+    key_file = models.FileField(upload_to='inventory/template/')
+    stamp_file = models.FileField(upload_to='inventory/template/')
+    print_file = models.FileField(upload_to='inventory/template/')
+    update_at = models.DateTimeField(auto_now=True, null=True)
+    update_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
+                                  related_name='template_update_by')
+
