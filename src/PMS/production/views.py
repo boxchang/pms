@@ -755,18 +755,21 @@ def record_manage(request):
 
 
 def prod_sap_export(request):
+    dc_db = dc_database()
+    sqlite_db = database()
+    save_path = MEDIA_ROOT + 'sync_sap_excel\\'
+    work_sync = SYN_Noah_WorkHour(sqlite_db, dc_db, request.user, save_path)
+    mtrl_sync = SYN_Noah_Consumption(sqlite_db, dc_db, request.user, save_path)
+
     if request.method == 'POST':
         plant = request.POST.get('plant')
         action = request.POST.get('action')
-        dc_db = dc_database()
-        sqlite_db = database()
-        save_path = MEDIA_ROOT + 'sync_sap_excel\\'
 
         if action == "workhour":  # 工時
-            sync = SYN_Noah_WorkHour(sqlite_db, dc_db, request.user, save_path)
+            sync = work_sync
 
         if action == "consumption":  # 物料
-            sync = SYN_Noah_Consumption(sqlite_db, dc_db, request.user, save_path)
+            sync = mtrl_sync
 
         file_name = sync.get_file_name(plant)
         response = HttpResponse(content_type='application/ms-excel')
@@ -778,6 +781,16 @@ def prod_sap_export(request):
             return response
 
     logs = Sync_SAP_Log.objects.all().order_by('-create_at')[:20]
+
+    record_list = []
+    for plant in ['302A', '302B']:
+        record_count = {}
+        work_records = work_sync.export_records(plant)
+        mtrl_records = mtrl_sync.export_consumptions(plant)
+        record_count['plant'] = plant
+        record_count['record_count'] = len(work_records)
+        record_count['material_count'] = len(mtrl_records)
+        record_list.append(record_count)
 
     form = ExportForm()
     return render(request, 'production/export.html', locals())

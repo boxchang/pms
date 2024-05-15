@@ -18,7 +18,7 @@ class ExportForm(forms.Form):
 
         self.helper.layout = Layout(
             Div(
-                Div('plant', css_class='col-md-3'),
+                Div('plant', css_class='col-md-9'),
                 Div(Submit('submit', _('export'), css_class='btn btn-info'),
                     css_class='col-md-3 d-flex align-items-center mt-3'),
                 css_class='row'),

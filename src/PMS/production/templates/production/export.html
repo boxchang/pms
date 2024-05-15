@@ -30,26 +30,47 @@
                 <p class="lead">※SAP會判斷檔名第一個底線後為匯入廠別</p>
                 <p class="lead">※上傳SAP的檔案名稱不能重覆，故程式會自動在檔名日期後面加V版號</p>
             </div>
-            <fieldset class="form-group">
-                <legend class="pl-3">報工資料</legend>
-                <div class="control-group pl-3">
-                    <form action="{% url 'prod_sap_export' %}" method="POST" id="workhour_export">
-                        {% csrf_token %}
-                        {% crispy form %}
-                        <input type="hidden" name="action" id="action" value="workhour">
-                    </form>
+            <div class="row pt-3">
+                <div class="col">
+                    <fieldset class="form-group">
+                        <legend class="pl-3">報工資料</legend>
+                        <div class="control-group pl-3">
+                            <form action="{% url 'prod_sap_export' %}" method="POST" id="workhour_export">
+                                {% csrf_token %}
+                                {% crispy form %}
+                                <input type="hidden" name="action" id="action" value="workhour">
+                            </form>
+                        </div>
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <legend class="pl-3">用料資料</legend>
+                        <div class="control-group pl-3">
+                            <form action="{% url 'prod_sap_export' %}" method="POST" id="consumption_export">
+                                {% csrf_token %}
+                                {% crispy form %}
+                                <input type="hidden" name="action" id="action" value="consumption">
+                            </form>
+                        </div>
+                    </fieldset>
                 </div>
-            </fieldset>
-            <fieldset class="form-group">
-                <legend class="pl-3">用料資料</legend>
-                <div class="control-group pl-3">
-                    <form action="{% url 'prod_sap_export' %}" method="POST" id="consumption_export">
-                        {% csrf_token %}
-                        {% crispy form %}
-                        <input type="hidden" name="action" id="action" value="consumption">
-                    </form>
+                <div class="col">
+                    <table id="not_upload_table" class="table table-bordered table-striped table-hover mb-3">
+                        <tr>
+                            <th width="40%" style="text-align: center">廠別</th>
+                            <th width="30%" style="text-align: center">報工筆數</th>
+                            <th width="30%" style="text-align: center">用料筆數</th>
+                        </tr>
+                        {% for x in record_list %}
+                        <tr>
+                            <td style="text-align: center">{{ x.plant }}</td>
+                            <td style="text-align: right">{{ x.record_count }}</td>
+                            <td style="text-align: right">{{ x.material_count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
                 </div>
-            </fieldset>
+            </div>
+
         </div>
         <div class="tab-pane fade" id="upload-record" role="tabpanel" aria-labelledby="upload-record-tab">
             <div class="p-3">
