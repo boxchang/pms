@@ -416,8 +416,8 @@ def create(request):
 
             tmp_form = form.save(commit=False)
             if _auto_encode:
-                tmp_form.label_no = get_series_number(_category, _type, _location)
-            tmp_form.asset_no = encode.get_series_number("asset_no", "資產編號")
+                tmp_form.label_no = get_series_number(_category, _type, _location)  # 資產標籤，可變動
+            tmp_form.asset_no = encode.get_series_number("asset_no", "資產編號")  # 資產的身份證，不可變動
             tmp_form.create_by = request.user
             tmp_form.update_by = request.user
             form.save()
@@ -508,7 +508,10 @@ def get_series_number(asset_category, asset_type, asset_location):
         encode = EncodeInterface(EncodeGeneral())
     series_code = encode.run()
 
-    return series_code
+    if Asset.objects.filter(label_no=series_code).exists():
+        return get_series_number(asset_category, asset_type, asset_location)
+    else:
+        return series_code
 
 #明細
 def detail(request, pk):
@@ -616,43 +619,65 @@ def label(request):
 #匯入Excel
 def import_excel(request):
     if request.method == 'POST':
-        excel_file = request.FILES.get('files1')
-        if excel_file:
-            wb = openpyxl.load_workbook(excel_file)
-            sheet = wb.worksheets[0]
-            for iRow in range(2, sheet.max_row+1):
-                if not sheet.cell(row = iRow, column = 1).value:
-                    break
+        try:
+            excel_file = request.FILES.get('files1')
+            if excel_file:
+                wb = openpyxl.load_workbook(excel_file)
+                sheet = wb.worksheets[0]
+                for iRow in range(2, sheet.max_row+1):
+                    if not sheet.cell(row=iRow, column=1).value:
+                        break
 
-                asset = Asset()
-                asset.auto_encode = False
-                asset.asset_no = sheet.cell(row=iRow, column=1).value or ''
-                asset.sap_asset_no = sheet.cell(row=iRow, column=2).value or ''
-                if sheet.cell(row=iRow, column=3).value:
-                    asset.status = AssetStatus.objects.get(status_name=sheet.cell(row=iRow, column=2).value)
-                if sheet.cell(row=iRow, column=4).value:
-                    asset.category = AssetCategory.objects.get(category_name=sheet.cell(row=iRow, column=3).value)
-                if sheet.cell(row=iRow, column=5).value:
-                    asset.type = AssetType.objects.get(type_name=sheet.cell(row=iRow, column=4).value)
-                if sheet.cell(row=iRow, column=6).value:
-                    asset.brand = Brand.objects.get(brand_name=sheet.cell(row=iRow, column=5).value)
-                asset.model = sheet.cell(row=iRow, column=7).value or ''
-                asset.desc = sheet.cell(row=iRow, column=8).value or ''
-                if sheet.cell(row=iRow, column=9).value:
-                    asset.area = AssetArea.objects.get(area_name=sheet.cell(row=iRow, column=9).value)
-                asset.location = Location.objects.get(location_name=sheet.cell(row=iRow, column=10).value)
-                asset.location_desc = sheet.cell(row=iRow, column=11).value or ''
-                if sheet.cell(row=iRow, column=12).value:
-                    asset.owner_unit = Unit.objects.get(unit_name=sheet.cell(row=iRow, column=12).value)
-                if sheet.cell(row=iRow, column=13).value:
-                    asset.keeper_unit = Unit.objects.get(unit_name=sheet.cell(row=iRow, column=13).value)
-                asset.keeper_name = sheet.cell(row=iRow, column=14).value or ''
-                asset.pur_date = sheet.cell(row=iRow, column=15).value or ''
-                asset.pur_price = sheet.cell(row=iRow, column=16).value
-                asset.create_by = request.user
-                asset.update_by = request.user
-                asset.save()
-            return redirect(get_main_url(request))
+                    auto_encode = False
+                    label_no = sheet.cell(row=iRow, column=1).value or ''
+                    sap_asset_no = sheet.cell(row=iRow, column=2).value or ''
+                    if sheet.cell(row=iRow, column=3).value:
+                        status = AssetStatus.objects.get(status_name=sheet.cell(row=iRow, column=3).value)
+                    if sheet.cell(row=iRow, column=4).value:
+                        category = AssetCategory.objects.get(category_name=sheet.cell(row=iRow, column=4).value)
+                    if sheet.cell(row=iRow, column=5).value:
+                        type = AssetType.objects.get(type_name=sheet.cell(row=iRow, column=5).value)
+                    if sheet.cell(row=iRow, column=6).value:
+                        brand = Brand.objects.get(brand_name=sheet.cell(row=iRow, column=6).value)
+                    model = sheet.cell(row=iRow, column=7).value or ''
+                    desc = sheet.cell(row=iRow, column=8).value or ''
+                    if sheet.cell(row=iRow, column=9).value:
+                        area = AssetArea.objects.get(area_name=sheet.cell(row=iRow, column=9).value)
+                    location = Location.objects.get(location_name=sheet.cell(row=iRow, column=10).value)
+                    location_desc = sheet.cell(row=iRow, column=11).value or ''
+                    if sheet.cell(row=iRow, column=12).value:
+                        owner_unit = Unit.objects.get(unit_name=sheet.cell(row=iRow, column=12).value)
+                    if sheet.cell(row=iRow, column=13).value:
+                        if Unit.objects.filter(unit_name=sheet.cell(row=iRow, column=13).value).exists():
+                            keeper_unit = Unit.objects.get(unit_name=sheet.cell(row=iRow, column=13).value)
+                        else:
+                            keeper_unit = None
+                    keeper_name = sheet.cell(row=iRow, column=14).value or ''
+                    pur_date = sheet.cell(row=iRow, column=15).value or ''
+                    pur_price = sheet.cell(row=iRow, column=16).value
+                    create_by = request.user
+                    update_by = request.user
+
+                    Asset.objects.update_or_create(defaults={'auto_encode': auto_encode,
+                                                             'sap_asset_no': sap_asset_no,
+                                                             'status': status,
+                                                             'category': category,
+                                                             'type': type,
+                                                             'brand': brand,
+                                                             'model': model,
+                                                             'desc': desc,
+                                                             'area': area,
+                                                             'location': location,
+                                                             'location_desc': location_desc,
+                                                             'owner_unit': owner_unit,
+                                                             'keeper_name': keeper_name,
+                                                             'pur_date': pur_date,
+                                                             'pur_price': pur_price,
+                                                             'create_by': create_by,
+                                                             'update_by': update_by}, label_no=label_no)
+                return redirect(get_main_url(request))
+        except Exception as ex:
+            print(ex)
 
     return render(request, 'assets/import.html', locals())
 
@@ -683,32 +708,42 @@ def Sheet2AssetObject(sheet):
     assets = []
     for iRow in range(2, sheet.max_row+1):
         print("目前第{iRow}行".format(iRow=iRow))
-        if not sheet.cell(row = iRow, column = 1).value:
+        if not sheet.cell(row=iRow, column=1).value:
             break
 
         asset = Asset()
-        asset.asset_no = sheet.cell(row = iRow, column = 1).value or ''
-        if sheet.cell(row = iRow, column = 2).value:
-            asset.status = AssetStatus.objects.get(status_name=sheet.cell(row = iRow, column = 2).value)
-        if sheet.cell(row = iRow, column = 3).value:
-            asset.category = AssetCategory.objects.get(category_name=sheet.cell(row = iRow, column = 3).value)
-        if sheet.cell(row = iRow, column = 4).value:
-            asset.type = AssetType.objects.get(type_name=sheet.cell(row = iRow, column = 4).value)
-        if sheet.cell(row = iRow, column = 5).value:
-            asset.brand = Brand.objects.get(brand_name=sheet.cell(row = iRow, column = 5).value)
-        asset.model = sheet.cell(row = iRow, column = 6).value or ''
-        asset.desc = sheet.cell(row = iRow, column = 7).value or ''
-        if sheet.cell(row = iRow, column = 8).value:
-            asset.area = AssetArea.objects.get(area_name=sheet.cell(row = iRow, column = 8).value)
-        asset.location = Location.objects.get(location_name=sheet.cell(row = iRow, column = 9).value)
-        asset.location_desc = sheet.cell(row = iRow, column = 10).value or ''
-        if sheet.cell(row = iRow, column = 11).value:
-            asset.owner_unit = Unit.objects.get(unit_name=sheet.cell(row = iRow, column = 11).value)
-        if sheet.cell(row = iRow, column = 12).value:
-            asset.keeper_unit = Unit.objects.get(unit_name=sheet.cell(row = iRow, column = 12).value)
-        asset.keeper_name = sheet.cell(row = iRow, column = 13).value or ''
-        asset.pur_date = sheet.cell(row = iRow, column = 14).value or ''
-        asset.pur_price = sheet.cell(row = iRow, column = 15).value
+        asset.label_no = sheet.cell(row=iRow, column=1).value or ''
+        if sheet.cell(row=iRow, column=2).value:
+            asset.sap_asset_no = sheet.cell(row=iRow, column=2).value
+        if sheet.cell(row=iRow, column=3).value:
+            asset.status = AssetStatus.objects.get(status_name=sheet.cell(row=iRow, column=3).value)
+        if sheet.cell(row=iRow, column=4).value:
+            asset.category = AssetCategory.objects.get(category_name=sheet.cell(row=iRow, column=4).value)
+        if sheet.cell(row=iRow, column=5).value:
+            asset.type = AssetType.objects.get(type_name=sheet.cell(row=iRow, column=5).value)
+        if sheet.cell(row=iRow, column=6).value:
+            if Brand.objects.filter(brand_name=sheet.cell(row=iRow, column=6).value).exists():
+                asset.brand = Brand.objects.get(brand_name=sheet.cell(row=iRow, column=6).value)
+        asset.model = sheet.cell(row=iRow, column=7).value or ''
+        asset.desc = sheet.cell(row=iRow, column=8).value or ''
+        if sheet.cell(row=iRow, column=9).value:
+            asset.area = AssetArea.objects.get(area_name=sheet.cell(row=iRow, column=9).value)
+        if Location.objects.filter(location_name=sheet.cell(row=iRow, column=10).value).exists():
+            asset.location = Location.objects.get(location_name=sheet.cell(row=iRow, column=10).value)
+        asset.location_desc = sheet.cell(row=iRow, column=11).value or ''
+        if sheet.cell(row=iRow, column=12).value:
+            if Unit.objects.filter(unit_name=sheet.cell(row=iRow, column=12).value).exists():
+                asset.owner_unit = Unit.objects.get(unit_name=sheet.cell(row=iRow, column=12).value)
+            else:
+                asset.owner_unit = None
+        if sheet.cell(row=iRow, column=13).value:
+            if Unit.objects.filter(unit_name=sheet.cell(row=iRow, column=13).value).exists():
+                asset.keeper_unit = Unit.objects.get(unit_name=sheet.cell(row=iRow, column=13).value)
+            else:
+                asset.keeper_unit = None
+        asset.keeper_name = sheet.cell(row=iRow, column=14).value or ''
+        asset.pur_date = sheet.cell(row=iRow, column=15).value or ''
+        asset.pur_price = sheet.cell(row=iRow, column=16).value
         assets.append(asset)
     return assets
 
@@ -720,29 +755,33 @@ def Object2AssetTable(assets, sheet):
     sRow = ""
     sCol = ""
     for iCol in range(1, sheet.max_column+1):
-        value = sheet.cell(row = 1, column = iCol).value or '' #若為None就回傳空字串
+        value = sheet.cell(row=1, column=iCol).value or '' #若為None就回傳空字串
         value = "<th>{value}</th>".format(value=value)
         sCol += value
     sCol = "<tr>" + sCol + "</tr>"
     sRow += sCol
 
     for asset in assets:
-        sCol = ""
-        sCol += "<td>{value}</td>".format(value=asset.asset_no)
-        sCol += "<td>{value}</td>".format(value=asset.status)
-        sCol += "<td>{value}</td>".format(value=asset.category)
-        sCol += "<td>{value}</td>".format(value=asset.type)
-        sCol += "<td>{value}</td>".format(value=asset.brand)
-        sCol += "<td>{value}</td>".format(value=asset.model)
-        sCol += "<td>{value}</td>".format(value=asset.desc)
-        sCol += "<td>{value}</td>".format(value=asset.area)
-        sCol += "<td>{value}</td>".format(value=asset.location)
-        sCol += "<td>{value}</td>".format(value=asset.location_desc)
-        sCol += "<td>{value}</td>".format(value=asset.owner_unit)
-        sCol += "<td>{value}</td>".format(value=asset.keeper_unit)
-        sCol += "<td>{value}</td>".format(value=asset.keeper_name)
-        sCol += "<td>{value}</td>".format(value=asset.pur_date)
-        sCol += "<td>{value}</td>".format(value=asset.pur_price)
+        try:
+            sCol = ""
+            sCol += "<td>{value}</td>".format(value=asset.label_no)
+            sCol += "<td>{value}</td>".format(value=asset.sap_asset_no)
+            sCol += "<td>{value}</td>".format(value=asset.status)
+            sCol += "<td>{value}</td>".format(value=asset.category)
+            sCol += "<td>{value}</td>".format(value=asset.type)
+            sCol += "<td>{value}</td>".format(value=asset.brand)
+            sCol += "<td>{value}</td>".format(value=asset.model)
+            sCol += "<td>{value}</td>".format(value=asset.desc)
+            sCol += "<td>{value}</td>".format(value=asset.area)
+            sCol += "<td>{value}</td>".format(value=asset.location)
+            sCol += "<td>{value}</td>".format(value=asset.location_desc)
+            sCol += "<td>{value}</td>".format(value=asset.owner_unit)
+            sCol += "<td>{value}</td>".format(value=asset.keeper_unit)
+            sCol += "<td>{value}</td>".format(value=asset.keeper_name)
+            sCol += "<td>{value}</td>".format(value=asset.pur_date)
+            sCol += "<td>{value}</td>".format(value=asset.pur_price)
+        except Exception as ex:
+            sCol += "<td style='background-color:yellow'>{value}</td>".format(value="資料錯誤")
 
         sCol = "<tr>" + sCol + "</tr>"
         sRow += sCol

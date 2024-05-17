@@ -18,6 +18,7 @@ AMS - Import Excel Data
         $("#import_form").submit(function(e) {
             if($("#send").text()=="Preview")
             {
+                $("body").loading();
                 e.preventDefault();
                 var formData = new FormData(this);
                 $.ajax({
@@ -30,6 +31,7 @@ AMS - Import Excel Data
                     success: function(data) {
                         $("#preview").html(data);
                         $("#send").text("Save");
+                        $("body").loading("stop");
                         console.log(data)
                     },
                     cache: false,
