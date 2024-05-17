@@ -30,12 +30,12 @@ class SYN_Noah_Consumption(object):
         amount = 0
         for record in records:
             sql = """insert into SYN_Noah_Consumption(wo_no, cfm_code, item_no, record_id,
-                             qty, batch_no, create_by, create_at)
+                             qty, batch_no, create_by, create_at, wo_mtrl_no)
                              values('{wo_no}', '{cfm_code}', '{item_no}', '{record_id}', {qty}, {batch_no},
-                             '{create_by}', GETDATE())""" \
+                             '{create_by}', GETDATE(), '{wo_mtrl_no}')""" \
                 .format(wo_no=record['wo_no'], cfm_code=record['cfm_code'], item_no=record['item_no'],
                         record_id=record['id'], qty=record['qty'],
-                        batch_no=batch_no, create_by=self.ip)
+                        batch_no=batch_no, create_by=self.ip, wo_mtrl_no=record['wo_mtrl_no'])
             try:
                 self.dc_db.execute_sql(sql)
 
@@ -72,7 +72,7 @@ class SYN_Noah_Consumption(object):
         font_style = xlwt.XFStyle()
         font_style.font.bold = True
 
-        columns = ['Production Order', 'Confirmation', 'Material', 'SysX ID', 'Quantity']
+        columns = ['Production Order', 'Confirmation', 'Item No.', 'Material', 'SysX ID', 'Quantity']
 
         for col_num in range(len(columns)):
             ws.write(row_num, col_num, columns[col_num], font_style)
@@ -86,9 +86,10 @@ class SYN_Noah_Consumption(object):
             row_num += 1
             ws.write(row_num, 0, record['wo_no'], font_style)  # 生產工單
             ws.write(row_num, 1, record['cfm_code'], font_style)  # 確認單
-            ws.write(row_num, 2, record['item_no'], font_style)  # 料號
-            ws.write(row_num, 3, record['record_id'], font_style)  # Record ID
-            ws.write(row_num, 4, record['qty'], font_style)  # Setting Time
+            ws.write(row_num, 2, record['wo_mtrl_no'], font_style)  # 工單料號項目
+            ws.write(row_num, 3, record['item_no'], font_style)  # 料號
+            ws.write(row_num, 4, record['record_id'], font_style)  # Record ID
+            ws.write(row_num, 5, record['qty'], font_style)  # Setting Time
         return wb
 
     # 紀錄Log

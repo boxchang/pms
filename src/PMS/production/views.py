@@ -117,7 +117,7 @@ def record(request):
             for mtr in mtr_info:
                 _series = get_series_number("consumption", key)
                 series_no = "M" + key + str(_series).zfill(7)
-                Consumption.objects.create(plant=plant, cfm_code=cfm_code, wo_no=wo_no, item_no=mtr['mtr_no'], qty=mtr['qty'], create_by=key_user, id=series_no)
+                Consumption.objects.create(plant=plant, cfm_code=cfm_code, wo_no=wo_no, item_no=mtr['mtr_no'], qty=mtr['qty'], create_by=key_user, id=series_no, wo_mtrl_no=mtr['wo_mtrl_no'])
 
         return redirect(record.get_absolute_url())
 
@@ -528,6 +528,7 @@ def get_mtr_info(request):
             records = Consumption.objects.filter(cfm_code=cfm_code)
             for record in records:
                 value = {}
+                value['wo_mtrl_no'] = record.wo_mtrl_no
                 value['mtr_no'] = record.item_no
                 value['qty'] = record.qty
                 value_list.append(value)

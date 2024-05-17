@@ -133,6 +133,7 @@ class Consumption(models.Model):
     plant = models.CharField(max_length=10, blank=False, null=False)
     cfm_code = models.CharField(max_length=20, blank=False, null=False)
     wo_no = models.CharField(max_length=20, blank=False, null=False)
+    wo_mtrl_no = models.CharField(max_length=20, blank=False, null=False)
     item_no = models.CharField(max_length=20, blank=False, null=False)
     qty = models.FloatField(default=0)
     sap_flag = models.BooleanField(default=False)

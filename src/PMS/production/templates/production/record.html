@@ -167,7 +167,7 @@ $("#consumption").css({"visibility":"hidden"});
                 $('#consumption tbody').html(''); //初始化清空表格內容
                 data = eval(data);
                 for(var j=0;j<data.length;j++){
-                    $('#consumption').append("<tr><td>" + data[j].mtr_no + "</td><td>" + data[j].qty + "</td><td></td></tr>");
+                    $('#consumption').append("<tr><td>" + data[j].wo_mtrl_no + "</td><td>" + data[j].mtr_no + "</td><td>" + data[j].qty + "</td><td></td></tr>");
                 }
             }
         });
@@ -221,12 +221,12 @@ $("#consumption").css({"visibility":"hidden"});
         $('#exampleModal').modal('show');
     }
 
-    function del_mtr(obj, mtr_item_no) {
+    function del_mtr(obj, wo_mtrl_no, mtr_item_no) {
         var temp_mtr_list = [];
         $(obj).closest("tr").remove();
 
         for(var j=0;j<mtr_list.length;j++){
-            if(mtr_list[j].mtr_no!=mtr_item_no){
+            if(mtr_list[j].mtr_no!=mtr_item_no && mtr_list[j].wo_mtrl_no!=wo_mtrl_no){
                 temp_mtr_list.push(mtr_list[j])
             }
         }
@@ -240,11 +240,11 @@ $("#consumption").css({"visibility":"hidden"});
         var mtr_item_no = $('#id_mtr_item_no').val();
         var mtr_qty = $('#id_mtr_qty').val();
         let obj = {};
-        obj['wo_mtr_no'] = wo_item_no;
+        obj['wo_mtrl_no'] = wo_item_no;
         obj['mtr_no'] = mtr_item_no;
         obj['qty'] = mtr_qty;
 
-        var del = "<a class=\"del_btn\" href=\"#\" onclick=\"del_mtr(this, " + mtr_item_no + ")\"><i class=\"fas fa-times fa-2x text-info\"></i></a>";
+        var del = "<a class=\"del_btn\" href=\"#\" onclick=\"del_mtr(this,'"+wo_item_no+"','"+ mtr_item_no + "')\"><i class=\"fas fa-times fa-2x text-info\"></i></a>";
 
         //欄位必填驗證
         if(mtr_item_no.length==0||mtr_qty.length==0) {
@@ -263,7 +263,7 @@ $("#consumption").css({"visibility":"hidden"});
         //若料號已存在就false==================
         var valid = true;
         for(var j=0;j<mtr_list.length;j++) {
-            if(mtr_list[j].mtr_no==mtr_item_no && mtr_list[j].wo_mtr_no==wo_item_no) {
+            if(mtr_list[j].mtr_no==mtr_item_no && mtr_list[j].wo_mtrl_no==wo_item_no) {
                 valid = false;
                 break;
             }
@@ -280,6 +280,7 @@ $("#consumption").css({"visibility":"hidden"});
         //按下儲存後，將所有的畫面進行初始化
         $('#id_mtr_item_no').val('');
         $('#id_mtr_qty').val('');
+        $('#id_wo_item_no').val('');
         $('#exampleModal').modal('hide');
         //===================================
     }
@@ -301,7 +302,7 @@ $("#consumption").css({"visibility":"hidden"});
               <div class="row">
                   <div class="col-3">
                       <div id="div_id_wo_item_no" class="form-group">
-                          <label for="id_wo_item_no" class="">工單料號項目</label>
+                          <label for="id_wo_item_no" class="">料號項目</label>
                           <div>
                               <input type="text" name="wo_item_no" class="textinput textInput form-control" id="id_wo_item_no">
                           </div>
