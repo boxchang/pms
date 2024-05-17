@@ -165,3 +165,24 @@ class AssetModelForm(forms.ModelForm):
     def clean_pur_date(self):
         value = self.cleaned_data['pur_date'][0:7]
         return value
+
+
+class CategoryResetForm(forms.ModelForm):
+    class Meta:
+        model = Asset
+        fields = ('category',)
+
+    category = forms.ModelChoiceField(required=False, label="資產類別", queryset=AssetCategory.objects.all())
+
+    def __init__(self, *args, submit_title='Submit', **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.form_show_errors = True
+
+        self.helper.layout = Layout(
+            Div(
+                Div('category', css_class='col-md-12'),
+                css_class='row'),
+        )

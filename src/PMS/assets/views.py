@@ -5,9 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from assets import encode
 from assets.encode import EncodeInterface, EncodeIT, EncodeGeneral, EncodeOffice
-from assets.forms import AssetModelForm, AssetSearchForm
+from assets.forms import AssetModelForm, AssetSearchForm, CategoryResetForm
 from assets.models import Asset, AssetArea, AssetCategory, AssetStatus, AssetType, Brand, Doc_attachment, \
-    Pic_attachment, Location, Unit, History
+    Pic_attachment, Location, Unit, History, Series
 import openpyxl
 from django.http import JsonResponse
 import os
@@ -628,53 +628,87 @@ def import_excel(request):
                     if not sheet.cell(row=iRow, column=1).value:
                         break
 
-                    auto_encode = False
-                    label_no = sheet.cell(row=iRow, column=1).value or ''
-                    sap_asset_no = sheet.cell(row=iRow, column=2).value or ''
+                    # 資產類別
+                    if sheet.cell(row=iRow, column=1).value:
+                        category = AssetCategory.objects.get(category_name=sheet.cell(row=iRow, column=1).value)
+
+                    # 資產種類
+                    if sheet.cell(row=iRow, column=2).value:
+                        type = AssetType.objects.get(type_name=sheet.cell(row=iRow, column=2).value)
+
+                    # 品牌
                     if sheet.cell(row=iRow, column=3).value:
-                        status = AssetStatus.objects.get(status_name=sheet.cell(row=iRow, column=3).value)
-                    if sheet.cell(row=iRow, column=4).value:
-                        category = AssetCategory.objects.get(category_name=sheet.cell(row=iRow, column=4).value)
+                        brand = Brand.objects.get(brand_name=sheet.cell(row=iRow, column=3).value)
+
+                    # 型號
+                    model = sheet.cell(row=iRow, column=4).value or ''
+
+                    # 地區
                     if sheet.cell(row=iRow, column=5).value:
-                        type = AssetType.objects.get(type_name=sheet.cell(row=iRow, column=5).value)
+                        area = AssetArea.objects.get(area_name=sheet.cell(row=iRow, column=5).value)
+
+                    # 負責單位
                     if sheet.cell(row=iRow, column=6).value:
-                        brand = Brand.objects.get(brand_name=sheet.cell(row=iRow, column=6).value)
-                    model = sheet.cell(row=iRow, column=7).value or ''
-                    desc = sheet.cell(row=iRow, column=8).value or ''
-                    if sheet.cell(row=iRow, column=9).value:
-                        area = AssetArea.objects.get(area_name=sheet.cell(row=iRow, column=9).value)
-                    location = Location.objects.get(location_name=sheet.cell(row=iRow, column=10).value)
-                    location_desc = sheet.cell(row=iRow, column=11).value or ''
-                    if sheet.cell(row=iRow, column=12).value:
-                        owner_unit = Unit.objects.get(unit_name=sheet.cell(row=iRow, column=12).value)
-                    if sheet.cell(row=iRow, column=13).value:
-                        if Unit.objects.filter(unit_name=sheet.cell(row=iRow, column=13).value).exists():
-                            keeper_unit = Unit.objects.get(unit_name=sheet.cell(row=iRow, column=13).value)
+                        owner_unit = Unit.objects.get(unit_name=sheet.cell(row=iRow, column=6).value)
+
+                    # 保管單位
+                    if sheet.cell(row=iRow, column=7).value:
+                        if Unit.objects.filter(unit_name=sheet.cell(row=iRow, column=7).value).exists():
+                            keeper_unit = Unit.objects.get(unit_name=sheet.cell(row=iRow, column=7).value)
                         else:
                             keeper_unit = None
-                    keeper_name = sheet.cell(row=iRow, column=14).value or ''
-                    pur_date = sheet.cell(row=iRow, column=15).value or ''
-                    pur_price = sheet.cell(row=iRow, column=16).value
+
+                    # 保管人姓名
+                    keeper_name = sheet.cell(row=iRow, column=8).value or ''
+
+                    # 放置地點
+                    location = Location.objects.get(location_name=sheet.cell(row=iRow, column=9).value)
+
+                    # 放置地點描述
+                    location_desc = sheet.cell(row=iRow, column=10).value or ''
+
+                    # 採購日期
+                    pur_date = sheet.cell(row=iRow, column=11).value or ''
+
+                    # 採購金額
+                    pur_price = sheet.cell(row=iRow, column=12).value
+
+                    # 狀態
+                    if sheet.cell(row=iRow, column=13).value:
+                        status = AssetStatus.objects.get(status_name=sheet.cell(row=iRow, column=13).value)
+
+                    # 描述
+                    desc = sheet.cell(row=iRow, column=14).value or ''
+
+                    # SAP資產編號
+                    sap_asset_no = sheet.cell(row=iRow, column=15).value or ''
+
+                    # 系統自動編碼
+                    auto_encode = True
+                    asset_no = encode.get_series_number("asset_no", "資產編號")
+                    label_no = get_series_number(category, type, location)
                     create_by = request.user
                     update_by = request.user
 
-                    Asset.objects.update_or_create(defaults={'auto_encode': auto_encode,
-                                                             'sap_asset_no': sap_asset_no,
-                                                             'status': status,
-                                                             'category': category,
-                                                             'type': type,
-                                                             'brand': brand,
-                                                             'model': model,
-                                                             'desc': desc,
-                                                             'area': area,
-                                                             'location': location,
-                                                             'location_desc': location_desc,
-                                                             'owner_unit': owner_unit,
-                                                             'keeper_name': keeper_name,
-                                                             'pur_date': pur_date,
-                                                             'pur_price': pur_price,
-                                                             'create_by': create_by,
-                                                             'update_by': update_by}, label_no=label_no)
+                    Asset.objects.create(auto_encode=auto_encode,
+                                         sap_asset_no=sap_asset_no,
+                                         status=status,
+                                         category=category,
+                                         type=type,
+                                         brand=brand,
+                                         model=model,
+                                         desc=desc,
+                                         area=area,
+                                         location=location,
+                                         location_desc=location_desc,
+                                         owner_unit=owner_unit,
+                                         keeper_name=keeper_name,
+                                         pur_date=pur_date,
+                                         pur_price=pur_price,
+                                         create_by=create_by,
+                                         update_by=update_by,
+                                         label_no=label_no,
+                                         asset_no=asset_no)
                 return redirect(get_main_url(request))
         except Exception as ex:
             print(ex)
@@ -712,38 +746,61 @@ def Sheet2AssetObject(sheet):
             break
 
         asset = Asset()
-        asset.label_no = sheet.cell(row=iRow, column=1).value or ''
+        # 資產類別
+        if sheet.cell(row=iRow, column=1).value:
+            asset.category = AssetCategory.objects.get(category_name=sheet.cell(row=iRow, column=1).value)
+
+        # 資產種類
         if sheet.cell(row=iRow, column=2).value:
-            asset.sap_asset_no = sheet.cell(row=iRow, column=2).value
+            asset.type = AssetType.objects.get(type_name=sheet.cell(row=iRow, column=2).value)
+
+        # 品牌
         if sheet.cell(row=iRow, column=3).value:
-            asset.status = AssetStatus.objects.get(status_name=sheet.cell(row=iRow, column=3).value)
-        if sheet.cell(row=iRow, column=4).value:
-            asset.category = AssetCategory.objects.get(category_name=sheet.cell(row=iRow, column=4).value)
+            asset.brand = Brand.objects.get(brand_name=sheet.cell(row=iRow, column=3).value)
+
+        # 型號
+        asset.model = sheet.cell(row=iRow, column=4).value or ''
+
+        # 地區
         if sheet.cell(row=iRow, column=5).value:
-            asset.type = AssetType.objects.get(type_name=sheet.cell(row=iRow, column=5).value)
+            asset.area = AssetArea.objects.get(area_name=sheet.cell(row=iRow, column=5).value)
+
+        # 負責單位
         if sheet.cell(row=iRow, column=6).value:
-            if Brand.objects.filter(brand_name=sheet.cell(row=iRow, column=6).value).exists():
-                asset.brand = Brand.objects.get(brand_name=sheet.cell(row=iRow, column=6).value)
-        asset.model = sheet.cell(row=iRow, column=7).value or ''
-        asset.desc = sheet.cell(row=iRow, column=8).value or ''
-        if sheet.cell(row=iRow, column=9).value:
-            asset.area = AssetArea.objects.get(area_name=sheet.cell(row=iRow, column=9).value)
-        if Location.objects.filter(location_name=sheet.cell(row=iRow, column=10).value).exists():
-            asset.location = Location.objects.get(location_name=sheet.cell(row=iRow, column=10).value)
-        asset.location_desc = sheet.cell(row=iRow, column=11).value or ''
-        if sheet.cell(row=iRow, column=12).value:
-            if Unit.objects.filter(unit_name=sheet.cell(row=iRow, column=12).value).exists():
-                asset.owner_unit = Unit.objects.get(unit_name=sheet.cell(row=iRow, column=12).value)
-            else:
-                asset.owner_unit = None
-        if sheet.cell(row=iRow, column=13).value:
-            if Unit.objects.filter(unit_name=sheet.cell(row=iRow, column=13).value).exists():
-                asset.keeper_unit = Unit.objects.get(unit_name=sheet.cell(row=iRow, column=13).value)
+            asset.owner_unit = Unit.objects.get(unit_name=sheet.cell(row=iRow, column=6).value)
+
+        # 保管單位
+        if sheet.cell(row=iRow, column=7).value:
+            if Unit.objects.filter(unit_name=sheet.cell(row=iRow, column=7).value).exists():
+                asset.keeper_unit = Unit.objects.get(unit_name=sheet.cell(row=iRow, column=7).value)
             else:
                 asset.keeper_unit = None
-        asset.keeper_name = sheet.cell(row=iRow, column=14).value or ''
-        asset.pur_date = sheet.cell(row=iRow, column=15).value or ''
-        asset.pur_price = sheet.cell(row=iRow, column=16).value
+
+        # 保管人姓名
+        asset.keeper_name = sheet.cell(row=iRow, column=8).value or ''
+
+        # 放置地點
+        asset.location = Location.objects.get(location_name=sheet.cell(row=iRow, column=9).value)
+
+        # 放置地點描述
+        asset.location_desc = sheet.cell(row=iRow, column=10).value or ''
+
+        # 採購日期
+        asset.pur_date = sheet.cell(row=iRow, column=11).value or ''
+
+        # 採購金額
+        asset.pur_price = sheet.cell(row=iRow, column=12).value
+
+        # 狀態
+        if sheet.cell(row=iRow, column=13).value:
+            asset.status = AssetStatus.objects.get(status_name=sheet.cell(row=iRow, column=13).value)
+
+        # 描述
+        asset.desc = sheet.cell(row=iRow, column=14).value or ''
+
+        # SAP資產編號
+        asset.sap_asset_no = sheet.cell(row=iRow, column=15).value or ''
+
         assets.append(asset)
     return assets
 
@@ -764,22 +821,21 @@ def Object2AssetTable(assets, sheet):
     for asset in assets:
         try:
             sCol = ""
-            sCol += "<td>{value}</td>".format(value=asset.label_no)
-            sCol += "<td>{value}</td>".format(value=asset.sap_asset_no)
-            sCol += "<td>{value}</td>".format(value=asset.status)
             sCol += "<td>{value}</td>".format(value=asset.category)
             sCol += "<td>{value}</td>".format(value=asset.type)
             sCol += "<td>{value}</td>".format(value=asset.brand)
             sCol += "<td>{value}</td>".format(value=asset.model)
-            sCol += "<td>{value}</td>".format(value=asset.desc)
             sCol += "<td>{value}</td>".format(value=asset.area)
-            sCol += "<td>{value}</td>".format(value=asset.location)
-            sCol += "<td>{value}</td>".format(value=asset.location_desc)
             sCol += "<td>{value}</td>".format(value=asset.owner_unit)
             sCol += "<td>{value}</td>".format(value=asset.keeper_unit)
             sCol += "<td>{value}</td>".format(value=asset.keeper_name)
+            sCol += "<td>{value}</td>".format(value=asset.location)
+            sCol += "<td>{value}</td>".format(value=asset.location_desc)
             sCol += "<td>{value}</td>".format(value=asset.pur_date)
             sCol += "<td>{value}</td>".format(value=asset.pur_price)
+            sCol += "<td>{value}</td>".format(value=asset.status)
+            sCol += "<td>{value}</td>".format(value=asset.desc)
+            sCol += "<td>{value}</td>".format(value=asset.sap_asset_no)
         except Exception as ex:
             sCol += "<td style='background-color:yellow'>{value}</td>".format(value="資料錯誤")
 
@@ -1034,3 +1090,21 @@ def chart_api(request):
 def asset_history(request, pk):
     records = History.objects.filter(asset=pk).order_by('-update_at')
     return render(request, 'assets/history.html', locals())
+
+
+# 類別重置
+def category_reset(request):
+    if request.method == "POST":
+        category = request.POST.get('category')
+        if category:
+            category = str(category).zfill(3)
+        Asset.objects.filter(category=category).delete()
+        Series.objects.filter(key__startswith=category).delete()
+        return redirect(reverse('assets_main'))
+
+    form = CategoryResetForm()
+    # 權限管理
+    if not request.user.is_anonymous:
+        groups = request.user.groups.all()
+        form.fields['category'].queryset = AssetCategory.objects.filter(perm_group__in=groups)
+    return render(request, 'assets/category_reset.html', locals())
