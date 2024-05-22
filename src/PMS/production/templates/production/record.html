@@ -175,6 +175,7 @@ $("#consumption").css({"visibility":"hidden"});
 
     function validation() {
         var labor_time = parseFloat($("#id_labor_time").val());
+        var mach_time = parseFloat($("#id_mach_time").val());
         var std_labor_time = parseFloat($("#hid_std_labor_time").val());
         var good_qty = parseFloat($("#id_good_qty").val());
         var bad_qty = parseFloat($("#id_ng_qty").val());
@@ -185,7 +186,7 @@ $("#consumption").css({"visibility":"hidden"});
         var step_code = $("#id_step_code").val();
         var mach_code = $("#id_mach_code").val();
 
-        if(labor_time<0 || good_qty<0 || bad_qty<0) {
+        if(labor_time<0 || good_qty<0 || bad_qty<0 || mach_time<0) {
             msg = "數字不能負數";
             alert(msg);
             return false;
