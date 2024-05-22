@@ -177,12 +177,19 @@ $("#consumption").css({"visibility":"hidden"});
         var labor_time = parseFloat($("#id_labor_time").val());
         var std_labor_time = parseFloat($("#hid_std_labor_time").val());
         var good_qty = parseFloat($("#id_good_qty").val());
+        var bad_qty = parseFloat($("#id_ng_qty").val());
         var wo_qty = parseFloat($("#hid_wo_qty").val());
         var worked_labor_time = parseFloat($("#hid_worked_labor_time").val());
         var worked_good_qty = parseFloat($("#hid_worked_good_qty").val());
         var step_name = $("#id_step_name").val();
         var step_code = $("#id_step_code").val();
         var mach_code = $("#id_mach_code").val();
+
+        if(labor_time<0 || good_qty<0 || bad_qty<0) {
+            msg = "數字不能負數";
+            alert(msg);
+            return false;
+        }
 
         if(step_name=="") {
             msg = "{% trans 'There is no this confirmation code information.' %}";
@@ -285,6 +292,7 @@ $("#consumption").css({"visibility":"hidden"});
         //===================================
     }
     //物料耗用==================================================
+
 </script>
 {% endblock js %}
 {% block content %}
