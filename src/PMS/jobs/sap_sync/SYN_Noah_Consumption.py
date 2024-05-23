@@ -1,3 +1,5 @@
+import csv
+
 import xlwt
 from jobs.sap_sync.encode import get_series_number
 from jobs.sap_sync.utils import get_ip, get_batch_no, get_date_str
@@ -56,7 +58,26 @@ class SYN_Noah_Consumption(object):
         records = self.dc_db.select_sql_dict(sql)
         return records
 
-    # 匯出Excel，Excel的欄位格式及內容調整
+    # 匯出CSV
+    def prod_sap_consumption_csv(self, records, file_path):
+        amount = 0
+        fieldnames = ['Production Order', 'Confirmation', 'Item No.', 'Material', 'SysX ID', 'Quantity']
+
+        with open(file_path, 'w', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            for record in records:
+                writer.writerow({'Production Order': record['wo_no'],
+                                 'Confirmation': record['cfm_code'],
+                                 'Item No.': record['wo_mtrl_no'],
+                                 'Material': record['item_no'],
+                                 'SysX ID': record['id'],
+                                 'Quantity': record['qty']})
+                amount += 1
+        return amount
+
+
+    # 匯出Excel，Excel的欄位格式及內容調整(已無使用)
     def prod_sap_consumption_excel(self, batch_no):
         wb = xlwt.Workbook(encoding='utf-8')
         ws = wb.add_sheet('Confirmation')
@@ -100,7 +121,7 @@ class SYN_Noah_Consumption(object):
             .format(function=func, batch_no=batch_no, amount=amount, create_by=create_by, file_name=file_name, create_at=create_at)
         self.sqlite_db.execute_sql(sql)
 
-    # 產生Excel檔案流程
+    # 產生Excel檔案流程(已無使用)
     def generate_excel(self, plant, file_name):
         records = self.export_consumptions(plant)  # 取得本次處理資料
         batch_no = get_batch_no()  # 取號
@@ -111,10 +132,21 @@ class SYN_Noah_Consumption(object):
             wb.save(self.save_path + file_name)  # 儲存一份在主機上
             return wb
 
+    # 產生CSV檔案流程
+    def generate_csv(self, plant, file_path, file_name):
+        records = self.export_consumptions(plant)  # 取得本次處理資料
+        batch_no = get_batch_no()  # 取號
+
+        if len(records) > 0:
+            amount = self.prod_sap_consumption_csv(records, file_path)  # 取出中介資料匯出Excel
+            self.save_log("consumption", batch_no, amount, self.create_by, file_name)  # 紀錄Log
+            return amount
+
+
     # 取得檔案名稱
     def get_file_name(self, plant):
         key = plant + get_date_str()
         series = get_series_number(self.sqlite_db, "sap_consumption_excel", key)
-        file_name = "MatComp_{plant}_{key}V{series}.xls".format(plant=plant, key=key, series=series)
+        file_name = "MatComp_{plant}_{key}V{series}.csv".format(plant=plant, key=key, series=series)
         return file_name
 

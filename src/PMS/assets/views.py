@@ -916,10 +916,10 @@ def print_label(request, pk):
         os.makedirs(directory)
 
     with open(file_name, 'w', newline='') as csvfile:
-        fieldnames = ['NUMBER', 'KEEPER']
+        fieldnames = ['NUMBER', 'KEEPER', 'KEEPER_UNIT']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
-        writer.writerow({'NUMBER': asset.label_no, 'KEEPER': asset.keeper_name})
+        writer.writerow({'NUMBER': asset.label_no, 'KEEPER': asset.keeper_name, 'KEEPER_UNIT': asset.keeper_unit})
     print_result = print_cmd(file_name, ASSET_BTW_FILE)
     delete_csv(file_name)
     result = {}

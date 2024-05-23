@@ -1,3 +1,4 @@
+import csv
 import json
 import os
 from django.contrib.auth.decorators import login_required
@@ -773,12 +774,13 @@ def prod_sap_export(request):
             sync = mtrl_sync
 
         file_name = sync.get_file_name(plant)
-        response = HttpResponse(content_type='application/ms-excel')
-        response['Content-Disposition'] = "attachment; filename={file_name}".format(file_name=file_name)
-        wb = sync.generate_excel(plant, file_name)
+        file_path = save_path + file_name
+        amount = sync.generate_csv(plant, file_path, file_name)
 
-        if wb:
-            wb.save(response)
+        if amount > 0:
+            data = open(file_path, 'r').read()
+            response = HttpResponse(data, content_type='text/csv')
+            response['Content-Disposition'] = "attachment; filename={file_name}".format(file_name=file_name)
             return response
 
     logs = Sync_SAP_Log.objects.all().order_by('-create_at')[:20]

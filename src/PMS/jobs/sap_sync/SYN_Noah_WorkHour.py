@@ -1,3 +1,5 @@
+import csv
+
 import xlwt
 from jobs.sap_sync.encode import get_series_number
 from jobs.sap_sync.utils import get_ip, get_batch_no, get_date_str
@@ -64,6 +66,39 @@ class SYN_Noah_WorkHour(object):
         records = self.dc_db.select_sql_dict(sql)
         return records
 
+    # 匯出CSV
+    def prod_sap_workhour_csv(self, records, file_path):
+        amount = 0
+        fieldnames = ['PersonalNumber', 'Posting Date (DDMMYYYY)', 'WorkCenter', 'Production Order', 'Confirmation',
+                   'Material', 'SetupTime', 'Machine Time', 'Labour Time', 'Yield to Confirm', 'Scrap to Confirm',
+                   'ConfText', 'Partial/Final', 'SysX ID']
+
+        with open(file_path, 'w', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            for record in records:
+                tmp_record_dt = record['record_dt'].split('-')
+                tmp_record_dt = tmp_record_dt[2] + tmp_record_dt[1] + tmp_record_dt[0]
+                tmp_status = 'X' if record['status'] != None else ''
+
+                writer.writerow({'PersonalNumber': record['sap_emp_no'],
+                                 'Posting Date (DDMMYYYY)': tmp_record_dt,
+                                 'WorkCenter': "",
+                                 'Production Order': record['wo_no'],
+                                 'Confirmation': record['cfm_code'],
+                                 'Material': record['item_no'],
+                                 'SetupTime': "0",
+                                 'Machine Time': record['mach_time'],
+                                 'Labour Time': record['labor_time'],
+                                 'Yield to Confirm': record['good_qty'],
+                                 'Scrap to Confirm': record['ng_qty'],
+                                 'ConfText': record['comment'],
+                                 'Partial/Final': tmp_status,
+                                 'SysX ID': record['id']})
+                amount += 1
+        return amount
+
+
     # 匯出Excel，Excel的欄位格式及內容調整
     def prod_sap_workhour_excel(self, batch_no):
         wb = xlwt.Workbook(encoding='utf-8')
@@ -100,7 +135,7 @@ class SYN_Noah_WorkHour(object):
 
         for record in records:
             row_num += 1
-            ws.write(row_num, 0, record['emp_no'], font_style)  # SAP員編
+            ws.write(row_num, 0, record['sap_emp_no'], font_style)  # SAP員編
             ws.write(row_num, 1, record['record_dt'], font_style)  # 工作執行日
             ws.write(row_num, 2, "", font_style)  # Work Center
             ws.write(row_num, 3, record['wo_no'], font_style)  # 生產工單
@@ -124,20 +159,30 @@ class SYN_Noah_WorkHour(object):
             .format(function=func, batch_no=batch_no, amount=amount, create_by=create_by, file_name=file_name, create_at=create_at)
         self.sqlite_db.execute_sql(sql)
 
-    # 產生Excel檔案流程
-    def generate_excel(self, plant, file_name):
+    # 產生Excel檔案流程(已無使用)
+    # def generate_excel(self, plant, file_name):
+    #     records = self.export_records(plant)  # 取得本次處理資料
+    #     batch_no = get_batch_no()  # 取號
+    #     amount = self.create_dc_workhour_data(records, batch_no)  # Insert中介資料
+    #     if amount > 0:
+    #         self.save_log("workhour", batch_no, amount, self.create_by, file_name)  # 紀錄Log
+    #         wb = self.prod_sap_workhour_csv(batch_no)
+    #         wb.save(self.save_path + file_name)  # 儲存一份在主機上
+    #         return wb
+
+    # 產生CSV檔案流程
+    def generate_csv(self, plant, file_path, file_name):
         records = self.export_records(plant)  # 取得本次處理資料
         batch_no = get_batch_no()  # 取號
-        amount = self.create_dc_workhour_data(records, batch_no)  # Insert中介資料
-        if amount > 0:
+
+        if len(records) > 0:
+            amount = self.prod_sap_workhour_csv(records, file_path)
             self.save_log("workhour", batch_no, amount, self.create_by, file_name)  # 紀錄Log
-            wb = self.prod_sap_workhour_excel(batch_no)
-            wb.save(self.save_path + file_name)  # 儲存一份在主機上
-            return wb
+            return amount
 
     # 取得檔案名稱
     def get_file_name(self, plant):
         key = plant + get_date_str()
         series = get_series_number(self.sqlite_db, "sap_workhour_excel", key)
-        file_name = "TimeConf_{plant}_{key}V{series}.xls".format(plant=plant, key=key, series=series)
+        file_name = "TimeConf_{plant}_{key}V{series}.csv".format(plant=plant, key=key, series=series)
         return file_name
