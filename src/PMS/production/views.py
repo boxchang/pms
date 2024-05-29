@@ -206,6 +206,8 @@ def item_search(request):
 @login_required
 def record_del(request, pk):
     record = Record.objects.get(pk=pk)
+    consumption = Consumption.objects.filter(cfm_code=record.cfm_code)
+    consumption.delete()
     record.delete()
     return redirect(reverse('prod_record_detail_sap_empno', kwargs={'sap_emp_no': record.sap_emp_no}))
 
