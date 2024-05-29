@@ -255,8 +255,8 @@ $("#consumption").css({"visibility":"hidden"});
         var del = "<a class=\"del_btn\" href=\"#\" onclick=\"del_mtr(this,'"+wo_item_no+"','"+ mtr_item_no + "')\"><i class=\"fas fa-times fa-2x text-info\"></i></a>";
 
         //欄位必填驗證
-        if(mtr_item_no.length==0||mtr_qty.length==0) {
-            alert("料號或數量沒有填寫");
+        if(wo_item_no.length==0 || mtr_item_no.length==0 || mtr_qty.length==0) {
+            alert("料號項目、料號或數量沒有填寫");
             return false;
         }
 

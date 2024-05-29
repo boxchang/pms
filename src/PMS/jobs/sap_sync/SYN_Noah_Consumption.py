@@ -27,6 +27,12 @@ class SYN_Noah_Consumption(object):
         records = self.sqlite_db.select_sql_dict(sql)
         return records
 
+    # 更新耗用資料Flag
+    def update_consumptions(self, plant):
+        sql = """update production_consumption set sap_flag=1 where plant='{plant}' and sap_flag=0""".format(
+            plant=plant)
+        self.sqlite_db.execute_sql(sql)
+
     # 耗用的資料轉入中介
     def create_dc_consumption_data(self, records, batch_no):
         amount = 0
@@ -134,14 +140,15 @@ class SYN_Noah_Consumption(object):
 
     # 產生CSV檔案流程
     def generate_csv(self, plant, file_path, file_name):
+        amount = 0
         records = self.export_consumptions(plant)  # 取得本次處理資料
         batch_no = get_batch_no()  # 取號
 
         if len(records) > 0:
             amount = self.prod_sap_consumption_csv(records, file_path)  # 取出中介資料匯出Excel
             self.save_log("consumption", batch_no, amount, self.create_by, file_name)  # 紀錄Log
-            return amount
-
+            self.update_consumptions(plant)  # 更新Flag
+        return amount
 
     # 取得檔案名稱
     def get_file_name(self, plant):

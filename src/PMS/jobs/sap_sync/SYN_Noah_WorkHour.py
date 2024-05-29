@@ -26,6 +26,12 @@ class SYN_Noah_WorkHour(object):
         records = self.sqlite_db.select_sql_dict(sql)
         return records
 
+    # 更新報工資料
+    def update_records(self, plant):
+        sql = """update production_record set sap_flag=1 where plant='{plant}' and sap_flag=0""".format(
+            plant=plant)
+        self.sqlite_db.execute_sql(sql)
+
     # 報工資料轉入中介
     def create_dc_workhour_data(self, records, batch_no):
         amount = 0
@@ -172,13 +178,15 @@ class SYN_Noah_WorkHour(object):
 
     # 產生CSV檔案流程
     def generate_csv(self, plant, file_path, file_name):
+        amount = 0
         records = self.export_records(plant)  # 取得本次處理資料
         batch_no = get_batch_no()  # 取號
 
         if len(records) > 0:
             amount = self.prod_sap_workhour_csv(records, file_path)
             self.save_log("workhour", batch_no, amount, self.create_by, file_name)  # 紀錄Log
-            return amount
+            self.update_records(plant)  # 更新Flag
+        return amount
 
     # 取得檔案名稱
     def get_file_name(self, plant):
