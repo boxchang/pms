@@ -185,6 +185,13 @@ $("#consumption").css({"visibility":"hidden"});
         var step_name = $("#id_step_name").val();
         var step_code = $("#id_step_code").val();
         var mach_code = $("#id_mach_code").val();
+        var comment = $('#id_comment').val();
+
+        //SAP匯入是用CSV，不能有逗號
+        if(comment.indexOf(',') > -1) {
+            alert("因與SAP整合用CSV，備註不能有逗號");
+            return false;
+        }
 
         if(labor_time<0 || good_qty<0 || bad_qty<0 || mach_time<0) {
             msg = "數字不能負數";
@@ -247,6 +254,7 @@ $("#consumption").css({"visibility":"hidden"});
         var wo_item_no = $('#id_wo_item_no').val();
         var mtr_item_no = $('#id_mtr_item_no').val();
         var mtr_qty = $('#id_mtr_qty').val();
+
         let obj = {};
         obj['wo_mtrl_no'] = wo_item_no;
         obj['mtr_no'] = mtr_item_no;

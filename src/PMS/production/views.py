@@ -104,7 +104,7 @@ def record(request):
         if mach_code:
             mach = Machine.objects.get(mach_code=mach_code)
         _series = get_series_number("record", key)
-        series_no = "T" + key + str(_series).zfill(7)
+        series_no = "T" + key + str(_series).zfill(5)
         record = Record.objects.create(record_dt=record_dt, emp_no=emp_no, wo_no=wo_no, cfm_code=cfm_code,
                                         labor_time=labor_time, mach_time=mach_time, ctr_code=ctr_code,
                                         good_qty=good_qty, ng_qty=ng_qty, item_no=item_no, spec=spec, username=username,
@@ -117,7 +117,7 @@ def record(request):
             mtr_info = json.loads(mtr_info)
             for mtr in mtr_info:
                 _series = get_series_number("consumption", key)
-                series_no = "M" + key + str(_series).zfill(7)
+                series_no = "M" + key + str(_series).zfill(5)
                 Consumption.objects.create(plant=plant, cfm_code=cfm_code, wo_no=wo_no, item_no=mtr['mtr_no'], qty=mtr['qty'], create_by=key_user, id=series_no, wo_mtrl_no=mtr['wo_mtrl_no'])
 
         return redirect(record.get_absolute_url())
@@ -149,7 +149,7 @@ def record2(request):
         #                                                    'comment': comment,
         #                                                    'create_by': key_user})
         _series = get_series_number("record2", key)
-        series_no = "T" + key + str(_series).zfill(7)
+        series_no = "T" + key + str(_series).zfill(5)
         record2 = Record2.objects.create(record_dt=record_dt, sap_emp_no=sap_emp_no, work_type=work_type,
                                          labor_time=labor_time, comment=comment, create_by=key_user, id=series_no, qty=qty)
         return redirect(record2.get_absolute_url())
