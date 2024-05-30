@@ -697,7 +697,7 @@ def record_manage(request):
         now = datetime.now()
         record_dt = datetime.strftime(now, '%Y-%m-%d')
 
-    if request.user.is_superuser:
+    if request.user.is_superuser or request.user.unit.id == 24:
         record1_rows = Record.objects.filter(record_dt=record_dt).values('sap_emp_no').distinct()
         record2_rows = Record2.objects.filter(record_dt=record_dt).values('sap_emp_no').distinct()
     else:
