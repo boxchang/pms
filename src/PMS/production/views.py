@@ -168,7 +168,7 @@ def wo_detail(request):
             step_mach_time = 0
             step_good_qty = 0
             step_ng_qty = 0
-            records = Record.objects.filter(wo_no=step.wo_main.wo_no, step_code=step.step_code)
+            records = Record.objects.filter(wo_no=step.wo_main.wo_no, step_no=step.step_no)
             for record in records:
                 step_labor_time += record.labor_time
                 step_mach_time += record.mach_time
