@@ -212,9 +212,6 @@ def wo_detail2(request):
             step.records = records
             item_no = step.wo_main.item_no
             spec = step.wo_main.spec
-        for step in steps:
-            for record in step.records:
-                print(record.step_code)
     form = WoSearchForm()
     return render(request, 'production/wo_detail2.html', locals())
 
