@@ -440,6 +440,18 @@ def record_detail_sap_empno(request, sap_emp_no):
     return render(request, 'production/record_detail.html', locals())
 
 
+def find_pre_step(wo_no, cur_step):
+    if int(cur_step[:3]) - 1 >= 1:
+        tmp_step_no = ("00{s}0".format(s=int(cur_step[:3]) - 1))[-4:]
+        wodata_pre_steps = WODetail.objects.filter(wo_main__wo_no=wo_no, step_no=tmp_step_no)
+        if wodata_pre_steps:
+            return wodata_pre_steps[0]
+        else:
+            return find_pre_step(wo_no, tmp_step_no)
+    else:
+        return ""
+
+
 def get_step_info(request):
     value = {}
     if request.method == 'POST':
@@ -498,16 +510,16 @@ def get_step_info(request):
                 value['pre_step_done'] = "Y"
             else:
                 value['pre_step_done'] = "N"
-                if int(step.step_no[:3])-1 >= 1:
-                    pre_step_no = "00{s}0".format(s=int(step.step_no[:3])-1)
-                    pre_steps = Record.objects.filter(wo_no=value['wo_no'], step_no=pre_step_no)
+                wodata_pre_step = find_pre_step(value['wo_no'], step.step_no)
+
+                if wodata_pre_step.ctr_code == "YY05":
+                    value['pre_step_done'] = "Y"
+                else:
+                    pre_steps = Record.objects.filter(wo_no=value['wo_no'], step_no=wodata_pre_step.step_no)
                     for pre_step in pre_steps:
-                        if pre_step.ctr_code == "YY01":
-                            value['pre_step_done'] = "Y"
-                        else:
-                            if pre_step:
-                                if (pre_step.good_qty+pre_step.ng_qty) ==step.wo_qty:
-                                    value['pre_step_done'] = "Y"
+                        if pre_step:
+                            if (pre_step.good_qty+pre_step.ng_qty) == step.wo_qty:
+                                value['pre_step_done'] = "Y"
 
             # 判斷是否輸入過用料
             consumptions = Consumption.objects.filter(cfm_code=cfm_code)

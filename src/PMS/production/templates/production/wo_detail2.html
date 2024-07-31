@@ -45,24 +45,43 @@ $("#id_wo_no").focus();
                     <th>備註</th>
                 </tr>
             {% for step in steps %}
-                {% for record in step.records %}
-                <tr>
-                    <td style="background-color: rgba(0,0,0,.05)">{{ wo_no }}</td>
-                    <td style="background-color: rgba(0,0,0,.05)">{{ record.step_no }}</td>
-                    <td style="background-color: rgba(0,0,0,.05)">{{ record.step_code }}</td>
-                    <td style="background-color: rgba(0,0,0,.05)">{{ record.step_name }}</td>
-                    <td style="text-align: center;background-color: rgba(0,0,0,.05)">{{ record.ctr_code }}</td>
-                    <td style="text-align: right;background-color: rgba(0,0,0,.05)">{{ record.wo_qty }}</td>
-                    <td style="color: blue;font-weight:bold;text-align: right">{{ record.good_qty }}</td>
-                    <td style="color: blue;font-weight:bold;text-align: right">{{ record.ng_qty }}</td>
-                    <td style="color: blue;font-weight:bold;text-align: right">{{ record.mach_time }}</td>
-                    <td style="color: blue;font-weight:bold;text-align: right">{{ record.labor_time }}</td>
-                    <td style="text-align: center">{{ record.record_dt }}</td>
-                    <td style="text-align: center">{{ record.sap_emp_no }}</td>
-                    <td style="text-align: center">{{ record.username }}</td>
-                    <td style="text-align: right">{{ record.comment|default:"" }}</td>
-                </tr>
-                {% endfor %}
+                {% if step.records %}
+                    {% for record in step.records %}
+                    <tr>
+                        <td style="background-color: rgba(0,0,0,.05)">{{ wo_no }}</td>
+                        <td style="background-color: rgba(0,0,0,.05)">{{ record.step_no }}</td>
+                        <td style="background-color: rgba(0,0,0,.05)">{{ record.step_code }}</td>
+                        <td style="background-color: rgba(0,0,0,.05)">{{ record.step_name }}</td>
+                        <td style="text-align: center;background-color: rgba(0,0,0,.05)">{{ record.ctr_code }}</td>
+                        <td style="text-align: right;background-color: rgba(0,0,0,.05)">{{ record.wo_qty }}</td>
+                        <td style="color: blue;font-weight:bold;text-align: right">{{ record.good_qty }}</td>
+                        <td style="color: blue;font-weight:bold;text-align: right">{{ record.ng_qty }}</td>
+                        <td style="color: blue;font-weight:bold;text-align: right">{{ record.mach_time }}</td>
+                        <td style="color: blue;font-weight:bold;text-align: right">{{ record.labor_time }}</td>
+                        <td style="text-align: center">{{ record.record_dt }}</td>
+                        <td style="text-align: center">{{ record.sap_emp_no }}</td>
+                        <td style="text-align: center">{{ record.username }}</td>
+                        <td style="text-align: right">{{ record.comment|default:"" }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td style="background-color: rgba(0,0,0,.05)">{{ wo_no }}</td>
+                        <td style="background-color: rgba(0,0,0,.05)">{{ step.step_no }}</td>
+                        <td style="background-color: rgba(0,0,0,.05)">{{ step.step_code }}</td>
+                        <td style="background-color: rgba(0,0,0,.05)">{{ step.step_name }}</td>
+                        <td style="text-align: center;background-color: rgba(0,0,0,.05)">{{ step.ctr_code }}</td>
+                        <td style="text-align: right;background-color: rgba(0,0,0,.05)">{{ step.wo_qty }}</td>
+                        <td style="color: blue;font-weight:bold;text-align: right"></td>
+                        <td style="color: blue;font-weight:bold;text-align: right"></td>
+                        <td style="color: blue;font-weight:bold;text-align: right"></td>
+                        <td style="color: blue;font-weight:bold;text-align: right"></td>
+                        <td style="text-align: center"></td>
+                        <td style="text-align: center"></td>
+                        <td style="text-align: center"></td>
+                        <td style="text-align: right"></td>
+                    </tr>
+                {% endif %}
             {% endfor %}
             </table>
         </div>
