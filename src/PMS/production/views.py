@@ -823,7 +823,7 @@ def prod_sap_export(request):
         amount = sync.generate_csv(plant, file_path, file_name)
 
         if amount > 0:
-            data = open(file_path, 'r').read()
+            data = open(file_path, 'r', encoding='utf-8').read()
             response = HttpResponse(data, content_type='text/csv')
             response['Content-Disposition'] = "attachment; filename={file_name}".format(file_name=file_name)
             return response

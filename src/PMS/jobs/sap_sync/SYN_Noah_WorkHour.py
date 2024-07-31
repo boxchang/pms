@@ -79,7 +79,7 @@ class SYN_Noah_WorkHour(object):
                    'Material', 'SetupTime', 'Machine Time', 'Labour Time', 'Yield to Confirm', 'Scrap to Confirm',
                    'ConfText', 'Partial/Final', 'SysX ID']
 
-        with open(file_path, 'w', newline='') as csvfile:
+        with open(file_path, 'w', newline='', encoding='utf-8') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
             for record in records:

@@ -69,7 +69,7 @@ class SYN_Noah_Consumption(object):
         amount = 0
         fieldnames = ['Production Order', 'Confirmation', 'Item No.', 'Material', 'SysX ID', 'Quantity']
 
-        with open(file_path, 'w', newline='') as csvfile:
+        with open(file_path, 'w', newline='', encoding='utf-8') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
             for record in records:
