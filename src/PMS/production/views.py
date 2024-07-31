@@ -188,6 +188,37 @@ def wo_detail(request):
     return render(request, 'production/wo_detail.html', locals())
 
 
+# 工單報工資料查詢第二版
+def wo_detail2(request):
+    if request.method == 'POST':
+        wo_no = request.POST.get('wo_no')
+        if wo_no:
+            wo_no = str(wo_no).strip()
+        steps = WODetail.objects.select_related('wo_main').filter(wo_main__wo_no=wo_no, wo_main__enable=True).order_by('step_no')
+        for step in steps:
+            step_labor_time = 0
+            step_mach_time = 0
+            step_good_qty = 0
+            step_ng_qty = 0
+            records = Record.objects.filter(wo_no=step.wo_main.wo_no, step_no=step.step_no)
+            for record in records:
+                record.step_no = step.step_no
+                record.step_code = step.step_code
+                record.step_name = step.step_name
+                record.wo_qty = step.wo_qty
+                record.std_qty = step.std_qty
+                record.std_labor_time = round(step.wo_labor_time/step.std_qty*step.wo_qty, 1)
+                record.std_mach_time = round(step.wo_mach_time / step.std_qty * step.wo_qty, 1)
+            step.records = records
+            item_no = step.wo_main.item_no
+            spec = step.wo_main.spec
+        for step in steps:
+            for record in step.records:
+                print(record.step_code)
+    form = WoSearchForm()
+    return render(request, 'production/wo_detail2.html', locals())
+
+
 # 料號查詢工單報工資料
 def item_search(request):
     if request.method == 'POST':
@@ -465,6 +496,21 @@ def get_step_info(request):
                 else:
                     value['first_step_done'] = "N"
 
+            # 前一站若是Y01的話，判斷有沒有報工
+            if step.step_no == "0010":
+                value['pre_step_done'] = "Y"
+            else:
+                value['pre_step_done'] = "N"
+                if int(step.step_no[:3])-1 >= 1:
+                    pre_step_no = "00{s}0".format(s=int(step.step_no[:3])-1)
+                    pre_steps = Record.objects.filter(wo_no=value['wo_no'], step_no=pre_step_no)
+                    for pre_step in pre_steps:
+                        if pre_step.ctr_code == "YY01":
+                            value['pre_step_done'] = "Y"
+                        else:
+                            if pre_step:
+                                if (pre_step.good_qty+pre_step.ng_qty) ==step.wo_qty:
+                                    value['pre_step_done'] = "Y"
 
             # 判斷是否輸入過用料
             consumptions = Consumption.objects.filter(cfm_code=cfm_code)

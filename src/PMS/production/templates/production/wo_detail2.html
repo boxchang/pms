@@ -1,0 +1,72 @@
+{% extends 'production/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load i18n %}
+{% block ready %}
+$("#id_wo_no").focus();
+{% endblock ready %}
+{% block js %}
+<script>
+
+</script>
+{% endblock js %}
+{% block content %}
+    <div class="row">
+        <div class="col">
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-10">
+            <form action="{% url 'prod_wo_detail2' %}" method="POST">
+                {% csrf_token %}
+                {% crispy form %}
+            </form>
+            <div class="row p-3">
+                <div class="col-3">料號：{{ item_no }}</div>
+                <div class="col-9">料號說明：{{ spec }}</div>
+            </div>
+            <table border="1" class='table table-bordered table-striped'>
+                <tr>
+                    <th style="width: 80px">工單</th>
+                    <th style="width: 100px">加工順序</th>
+                    <th style="width: 100px">作業代碼</th>
+                    <th style="width: 150px">作業短文</th>
+                    <th style="width: 80px">控制碼</th>
+                    <th style="width: 100px">工單數量</th>
+                    <th style="width: 100px">良品</th>
+                    <th style="width: 100px">NG</th>
+                    <th style="width: 100px">作業機時</th>
+                    <th style="width: 100px">作業人時</th>
+                    <th style="width: 120px">報工日期</th>
+                    <th style="width: 100px">SAP員編</th>
+                    <th style="width: 100px">輸入人員</th>
+                    <th>備註</th>
+                </tr>
+            {% for step in steps %}
+                {% for record in step.records %}
+                <tr>
+                    <td style="background-color: rgba(0,0,0,.05)">{{ wo_no }}</td>
+                    <td style="background-color: rgba(0,0,0,.05)">{{ record.step_no }}</td>
+                    <td style="background-color: rgba(0,0,0,.05)">{{ record.step_code }}</td>
+                    <td style="background-color: rgba(0,0,0,.05)">{{ record.step_name }}</td>
+                    <td style="text-align: center;background-color: rgba(0,0,0,.05)">{{ record.ctr_code }}</td>
+                    <td style="text-align: right;background-color: rgba(0,0,0,.05)">{{ record.wo_qty }}</td>
+                    <td style="color: blue;font-weight:bold;text-align: right">{{ record.good_qty }}</td>
+                    <td style="color: blue;font-weight:bold;text-align: right">{{ record.ng_qty }}</td>
+                    <td style="color: blue;font-weight:bold;text-align: right">{{ record.mach_time }}</td>
+                    <td style="color: blue;font-weight:bold;text-align: right">{{ record.labor_time }}</td>
+                    <td style="text-align: center">{{ record.record_dt }}</td>
+                    <td style="text-align: center">{{ record.sap_emp_no }}</td>
+                    <td style="text-align: center">{{ record.username }}</td>
+                    <td style="text-align: right">{{ record.comment|default:"" }}</td>
+                </tr>
+                {% endfor %}
+            {% endfor %}
+            </table>
+        </div>
+        <div class="col-1"></div>
+    </div>
+
+{% endblock %}
