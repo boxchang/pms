@@ -481,7 +481,12 @@ def get_step_info(request):
                 worked_ng_qty = 0
                 worked_labor_time = 0
                 worked_mach_time = 0
+                wo_ng_qty = 0
                 worked_rows = Record.objects.filter(cfm_code=step.cfm_code).aggregate(Sum('labor_time'), Sum('mach_time'), Sum('good_qty'), Sum('ng_qty'))
+
+                # 已報工NG數
+                wo_ng_rows = Record.objects.filter(wo_no=step.wo_main.wo_no).aggregate(Sum('ng_qty'))
+                wo_ng_qty = wo_ng_rows['ng_qty__sum'] if wo_ng_rows['ng_qty__sum'] else 0
 
                 if worked_rows['good_qty__sum']:
                     worked_good_qty = worked_rows['good_qty__sum']
@@ -491,11 +496,14 @@ def get_step_info(request):
                     worked_labor_time = worked_rows['labor_time__sum']
                 if worked_rows['mach_time__sum']:
                     worked_mach_time = worked_rows['mach_time__sum']
+                if wo_ng_rows['ng_qty__sum']:
+                    wo_ng_qty = wo_ng_rows['ng_qty__sum']
 
                 value['worked_good_qty'] = worked_good_qty
                 value['worked_ng_qty'] = worked_ng_qty
                 value['worked_labor_time'] = worked_labor_time
                 value['worked_mach_time'] = worked_mach_time
+                value['wo_ng_qty'] = wo_ng_qty
 
             # 判斷第一站是否已報工
             if step.step_no != "0010":
