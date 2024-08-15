@@ -486,7 +486,6 @@ def get_step_info(request):
 
                 # 已報工NG數
                 wo_ng_rows = Record.objects.filter(wo_no=step.wo_main.wo_no).aggregate(Sum('ng_qty'))
-                wo_ng_qty = wo_ng_rows['ng_qty__sum'] if wo_ng_rows['ng_qty__sum'] else 0
 
                 if worked_rows['good_qty__sum']:
                     worked_good_qty = worked_rows['good_qty__sum']
@@ -505,6 +504,7 @@ def get_step_info(request):
                 value['worked_mach_time'] = worked_mach_time
                 value['wo_ng_qty'] = wo_ng_qty
 
+            pre_step_good_qty = step.wo_qty  # 初始值為工單數量
             # 判斷第一站是否已報工
             if step.step_no != "0010":
                 records = Record.objects.filter(wo_no=value['wo_no'], step_no='0010')
@@ -523,11 +523,13 @@ def get_step_info(request):
                 if wodata_pre_step.ctr_code == "YY05":
                     value['pre_step_done'] = "Y"
                 else:
-                    pre_steps = Record.objects.filter(wo_no=value['wo_no'], step_no=wodata_pre_step.step_no)
-                    for pre_step in pre_steps:
-                        if pre_step:
-                            if (pre_step.good_qty+pre_step.ng_qty) == step.wo_qty:
-                                value['pre_step_done'] = "Y"
+                    pre_step_good_rows = Record.objects.filter(wo_no=step.wo_main.wo_no, step_no=wodata_pre_step.step_no).aggregate(Sum('good_qty'))
+                    pre_step_good_qty = pre_step_good_rows['good_qty__sum'] if pre_step_good_rows['good_qty__sum'] else 0
+
+                    if (pre_step_good_qty+wo_ng_qty) >= step.wo_qty:
+                        value['pre_step_done'] = "Y"
+
+            value['pre_step_good_qty'] = pre_step_good_qty
 
             # 判斷是否輸入過用料
             consumptions = Consumption.objects.filter(cfm_code=cfm_code)
