@@ -423,7 +423,7 @@ def apply(request):
             apply.category = ItemCategory.objects.filter(category_name=items[0]['category']).first()
             apply.create_by = request.user
             apply.update_by = request.user
-            apply.approver = request.user.manager
+            apply.approver = apply.requester.manager
             apply.save()
 
             if request.FILES.get('file1'):
