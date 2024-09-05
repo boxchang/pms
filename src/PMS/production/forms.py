@@ -230,9 +230,11 @@ class RecordForm(forms.ModelForm):
 class RecordManageForm(forms.ModelForm):
     class Meta:
         model = Record
-        fields = ('record_dt',)
+        fields = ('record_dt', 'sap_emp_no', 'username')
 
     record_dt = forms.DateField(label=_('record_date'))
+    sap_emp_no = forms.CharField(required=False, label=_('sap_emp_no'))
+    username = forms.CharField(required=False, label=_('username'))
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -243,6 +245,8 @@ class RecordManageForm(forms.ModelForm):
         self.helper.layout = Layout(
             Div(
                 Div('record_dt', css_class='col-md-3'),
+                Div('sap_emp_no', css_class='col-md-3'),
+                Div('username', css_class='col-md-3'),
                 Div(Submit('submit', _('search'), css_class='btn btn-info'), css_class='col-md-3 d-flex align-items-center mt-3'),
                 css_class='row'),
         )

@@ -755,30 +755,62 @@ def excel_import_preview(request):
 
 def record_manage(request):
     form = RecordManageForm()
+    sap_emp_no = ""
+    username = ""
     if request.method == 'POST':
         record_dt = request.POST.get('record_dt')
+        sap_emp_no = request.POST.get('sap_emp_no')
+        username = request.POST.get('username')
         form = RecordManageForm(initial={'record_dt': record_dt})
     else:
         now = datetime.now()
         record_dt = datetime.strftime(now, '%Y-%m-%d')
 
+    record1_rows = Record.objects.filter(record_dt=record_dt)
+    record2_rows = Record2.objects.filter(record_dt=record_dt)
     if request.user.is_superuser or request.user.unit.id == 24:
-        record1_rows = Record.objects.filter(record_dt=record_dt).values('sap_emp_no').distinct()
-        record2_rows = Record2.objects.filter(record_dt=record_dt).values('sap_emp_no').distinct()
+        if sap_emp_no:
+            record1_rows = record1_rows.filter(sap_emp_no=sap_emp_no)
+            record2_rows = record1_rows.filter(sap_emp_no=sap_emp_no)
+        if username:
+            record1_rows = record1_rows.filter(username__icontains=username)
+            record2_rows = record1_rows.filter(username__icontains=username)
+
+        record1_rows = record1_rows.values('sap_emp_no').distinct()
+        record2_rows = record2_rows.values('sap_emp_no').distinct()
     else:
         # 取得同部門人員清單
         dept_users = CustomUser.objects.filter(unit=request.user.unit)
         dept_users = [dept_user.sap_emp_no for dept_user in dept_users]
-        record1_rows = Record.objects.filter(record_dt=record_dt, sap_emp_no__in=dept_users).values('sap_emp_no').distinct()
-        record2_rows = Record2.objects.filter(record_dt=record_dt, sap_emp_no__in=dept_users).values('sap_emp_no').distinct()
+        record1_rows = record1_rows.filter(sap_emp_no__in=dept_users)
+        record2_rows = record2_rows.filter(sap_emp_no__in=dept_users)
+
+        if sap_emp_no:
+            record1_rows = record1_rows.filter(sap_emp_no=sap_emp_no)
+            record2_rows = record1_rows.filter(sap_emp_no=sap_emp_no)
+        if username:
+            record1_rows = record1_rows.filter(username__icontains=username)
+            record2_rows = record1_rows.filter(username__icontains=username)
+
+        record1_rows = record1_rows.values('sap_emp_no').distinct()
+        record2_rows = record2_rows.values('sap_emp_no').distinct()
 
     list = []  # 當日報工人員列表
-    for record1_row in record1_rows:
-        list.append(record1_row['sap_emp_no'])
+    if sap_emp_no:
+        list.append(sap_emp_no)
+    elif username:
+        users = record1_rows.filter(username__icontains=username)
+        if users:
+            for user in users:
+                sap_emp_no = user["sap_emp_no"]
+                list.append(sap_emp_no)
+    else:
+        for record1_row in record1_rows:
+            list.append(record1_row['sap_emp_no'])
 
-    for record2_row in record2_rows:
-        if not record2_row['sap_emp_no'] in list:
-            list.append(record2_row['sap_emp_no'])
+        for record2_row in record2_rows:
+            if not record2_row['sap_emp_no'] in list:
+                list.append(record2_row['sap_emp_no'])
 
     # 人員報工統計
     records = []
