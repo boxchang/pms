@@ -15,7 +15,7 @@ class InvAppliedHistoryForm(forms.ModelForm):
     status = forms.ModelChoiceField(required=False, label="狀態", queryset=FormStatus.objects.all(), initial=0)
     start_date = forms.DateField(label="申請日期(起)")
     due_date = forms.DateField(label="申請日期(迄)")
-    category = forms.ModelChoiceField(required=False, label="物品類別", queryset=ItemCategory.objects.all(), initial=0)
+    category = forms.ModelChoiceField(required=False, label="物品類別", queryset=ItemCategory.objects.filter(enable=True), initial=0)
     unit = forms.ModelChoiceField(required=False, label="申請部門", queryset=Unit.objects.all(),
                                   widget=forms.Select(attrs={"onChange": "dept_change()"}))
     requester = forms.ModelChoiceField(required=False, label="申請人/代申請人/簽核者", queryset=CustomUser.objects.none())
@@ -63,7 +63,7 @@ class InvAppliedHistoryForm(forms.ModelForm):
 
 
 class SearchForm(forms.Form):
-    category = forms.ModelChoiceField(required=False, label="物品類別", queryset=ItemCategory.objects.all(), to_field_name="catogory_code")
+    category = forms.ModelChoiceField(required=False, label="物品類別", queryset=ItemCategory.objects.filter(enable=True), to_field_name="catogory_code")
     type = forms.ModelChoiceField(required=False, label="物品種類", queryset=ItemType.objects.none())
     keyword = forms.CharField(required=False, label="關鍵字")
 
