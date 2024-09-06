@@ -579,14 +579,13 @@ def delete_csv(file_name):
 def TEXT2CSV(asset_number):
     now = datetime.now()
     file_name = datetime.strftime(now, '%Y%m%d %H%M%S') + ".csv"
-    print_month = datetime.strftime(now, '%Y/%m')
     file_name = os.path.join(BASE_DIR, 'media', 'uploads', 'label', file_name)
 
     with open(file_name, 'w', newline='') as csvfile:
-        fieldnames = ['NUMBER', 'PRINT_MONTH']
+        fieldnames = ['NUMBER']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
-        writer.writerow({'NUMBER': asset_number, 'PRINT_MONTH': print_month})
+        writer.writerow({'NUMBER': asset_number})
     return file_name
 
 #印標籤專頁
@@ -851,16 +850,17 @@ def Excel2CSV(sheet):
     now = datetime.now()
     file_name = datetime.strftime(now, '%Y%m%d %H%M%S') + ".csv"
     file_name = os.path.join(BASE_DIR, 'media', 'uploads', 'label', file_name)
+    print_month = datetime.strftime(now, '%Y/%m')
 
     with open(file_name, 'w', newline='') as csvfile:
-        fieldnames = ['NUMBER']
+        fieldnames = ['NUMBER', 'PRINT_MONTH']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
         writer.writeheader()
         for i in range(2, sheet.max_row+1):
             value = sheet.cell(row = i, column = 1).value
             if value:
-                writer.writerow({'NUMBER': value})
+                writer.writerow({'NUMBER': value, 'PRINT_MONTH': print_month})
     return file_name
 
 #API預覽
