@@ -11,7 +11,7 @@ from assets.models import Asset, AssetArea, AssetCategory, AssetStatus, AssetTyp
 import openpyxl
 from django.http import JsonResponse
 import os
-from PMS.settings.base import ASSET_BTW_FILE, EXE_FILE, NON_ASSET_BTW_FILE, PRINTER, BASE_DIR
+from PMS.settings.base import ASSET_BTW_FILE, EXE_FILE, NON_ASSET_BTW_FILE, PRINTER, BASE_DIR, OFFICE_ASSET_BTW_FILE
 import csv
 from datetime import datetime
 from django.shortcuts import render, redirect
@@ -579,13 +579,14 @@ def delete_csv(file_name):
 def TEXT2CSV(asset_number):
     now = datetime.now()
     file_name = datetime.strftime(now, '%Y%m%d %H%M%S') + ".csv"
+    print_month = datetime.strftime(now, '%Y/%m')
     file_name = os.path.join(BASE_DIR, 'media', 'uploads', 'label', file_name)
 
     with open(file_name, 'w', newline='') as csvfile:
-        fieldnames = ['NUMBER']
+        fieldnames = ['NUMBER', 'PRINT_MONTH']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
-        writer.writerow({'NUMBER': asset_number})
+        writer.writerow({'NUMBER': asset_number, 'PRINT_MONTH': print_month})
     return file_name
 
 #印標籤專頁
@@ -611,7 +612,7 @@ def label(request):
                 wb = openpyxl.load_workbook(excel_file)
                 sheet = wb.worksheets[0]
                 csv = Excel2CSV(sheet)
-                print_result = print_cmd(csv, ASSET_BTW_FILE)
+                print_result = print_cmd(csv, OFFICE_ASSET_BTW_FILE)
                 delete_csv(csv)
 
     return render(request, 'assets/label.html', locals())

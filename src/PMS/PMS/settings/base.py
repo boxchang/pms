@@ -255,6 +255,7 @@ LOCALE_PATHS = [os.path.join(BASE_DIR, "locale")]
 
 EXE_FILE = "C:\\\"Program Files\"\\Seagull\\\"BarTender 2022\"\\BarTend.exe"
 ASSET_BTW_FILE = os.path.join(BASE_DIR, 'PMS', 'settings', 'bartender', 'template.btw')
+OFFICE_ASSET_BTW_FILE = os.path.join(BASE_DIR, 'PMS', 'settings', 'bartender', 'office_asset.btw')
 NON_ASSET_BTW_FILE = os.path.join(BASE_DIR, 'PMS', 'settings', 'bartender', 'non_asset.btw')
 PRINTER = "TSC TTP-345"
 
