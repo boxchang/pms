@@ -612,7 +612,7 @@ def label(request):
                 sheet = wb.worksheets[0]
                 csv = Excel2CSV(sheet)
                 print_result = print_cmd(csv, OFFICE_ASSET_BTW_FILE)
-                #delete_csv(csv)
+                delete_csv(csv)
 
     return render(request, 'assets/label.html', locals())
 
