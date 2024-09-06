@@ -612,7 +612,7 @@ def label(request):
                 sheet = wb.worksheets[0]
                 csv = Excel2CSV(sheet)
                 print_result = print_cmd(csv, OFFICE_ASSET_BTW_FILE)
-                delete_csv(csv)
+                #delete_csv(csv)
 
     return render(request, 'assets/label.html', locals())
 
@@ -850,7 +850,6 @@ def Excel2CSV(sheet):
     now = datetime.now()
     file_name = datetime.strftime(now, '%Y%m%d %H%M%S') + ".csv"
     file_name = os.path.join(BASE_DIR, 'media', 'uploads', 'label', file_name)
-    print_month = datetime.strftime(now, '%Y/%m')
 
     with open(file_name, 'w', newline='') as csvfile:
         fieldnames = ['NUMBER', 'PRINT_MONTH']
@@ -859,6 +858,7 @@ def Excel2CSV(sheet):
         writer.writeheader()
         for i in range(2, sheet.max_row+1):
             value = sheet.cell(row = i, column = 1).value
+            print_month = sheet.cell(row=i, column=2).value
             if value:
                 writer.writerow({'NUMBER': value, 'PRINT_MONTH': print_month})
     return file_name
