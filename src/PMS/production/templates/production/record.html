@@ -106,8 +106,8 @@ $("#consumption").css({"visibility":"hidden"});
 
                 if(data.first_step_done=="N" || data.pre_step_done == "N") {
                     alert("{% trans 'The previous step has not been finished yet' %}");
-                    //$("#id_cfm_code").val('');
-                    //return false; 只提醒但不卡住，上線後再開啟
+                    $("#id_cfm_code").val('');
+                    return false;
                 }
 
                 if(!data.step_name) {

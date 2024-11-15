@@ -451,6 +451,21 @@ def find_pre_step(wo_no, cur_step):
     else:
         return ""
 
+def isPreStepYY01Done(wo_no, step_no):
+    db = database()
+    sql = f"""
+    select * from production_womain m
+    join production_wodetail d on m.Id = d.wo_main_id
+    left join production_record r on d.cfm_code = r.cfm_code
+    where m.wo_no = {wo_no} and d.step_no < '{step_no}'
+    and enable = 1 and d.ctr_code = 'YY01' and sap_emp_no is null
+    """
+    results = db.select_sql_dict(sql)
+
+    if len(results) == 0:
+        return True
+    else:
+        return False
 
 def get_step_info(request):
     value = {}
@@ -528,6 +543,9 @@ def get_step_info(request):
 
                     if (pre_step_good_qty+wo_ng_qty) >= step.wo_qty:
                         value['pre_step_done'] = "Y"
+
+            if not isPreStepYY01Done:
+                value['pre_step_done'] = "N"
 
             value['pre_step_good_qty'] = pre_step_good_qty
 

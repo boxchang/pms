@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-29 15:19+0700\n"
-"PO-Revision-Date: 2024-07-29 15:20+0700\n"
+"POT-Creation-Date: 2024-11-15 11:19+0700\n"
+"PO-Revision-Date: 2024-11-15 11:19+0700\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: zh_TW\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.5\n"
 
 #: .\assets\templates\assets\category_reset.html:42
 #: .\assets\templates\assets\chart.html:64
@@ -33,7 +33,7 @@ msgstr ""
 #: .\helpdesk\templates\helpdesk\search.html:21
 #: .\inventory\templates\inventory\base.html:52
 #: .\monitor\templates\monitor\base.html:24
-#: .\production\templates\production\base.html:37
+#: .\production\templates\production\base.html:38
 #: .\stock\templates\stock\base.html:55
 msgid "logout"
 msgstr "登出"
@@ -306,30 +306,30 @@ msgstr "問題內容"
 msgid "reply_num"
 msgstr "回覆數"
 
-#: .\production\forms.py:22 .\production\forms.py:280
+#: .\production\forms.py:22 .\production\forms.py:284
 msgid "export"
 msgstr "匯出"
 
-#: .\production\forms.py:33 .\production\forms.py:136 .\production\views.py:326
+#: .\production\forms.py:33 .\production\forms.py:136 .\production\views.py:354
 msgid "prod_order"
 msgstr "工單"
 
 #: .\production\forms.py:44 .\production\forms.py:68 .\production\forms.py:111
-#: .\production\forms.py:246
+#: .\production\forms.py:250
 msgid "search"
 msgstr "查詢"
 
-#: .\production\forms.py:54 .\production\forms.py:137 .\production\views.py:328
+#: .\production\forms.py:54 .\production\forms.py:137 .\production\views.py:356
 msgid "item_no"
 msgstr "料號"
 
-#: .\production\forms.py:98 .\production\forms.py:141 .\users\forms.py:51
-#: .\users\models.py:80
+#: .\production\forms.py:98 .\production\forms.py:141 .\production\forms.py:236
+#: .\users\forms.py:51 .\users\models.py:80
 msgid "sap_emp_no"
 msgstr "SAP員工編號"
 
 #: .\production\forms.py:99 .\production\forms.py:133 .\production\forms.py:235
-#: .\production\views.py:410
+#: .\production\views.py:438
 msgid "record_date"
 msgstr "作業日期"
 
@@ -341,7 +341,7 @@ msgstr "已累計報工"
 msgid "plant"
 msgstr "工廠"
 
-#: .\production\forms.py:138 .\production\views.py:328
+#: .\production\forms.py:138 .\production\views.py:356
 msgid "spec"
 msgstr "物料說明"
 
@@ -362,23 +362,23 @@ msgstr "確認碼"
 msgid "control_code"
 msgstr "控制碼"
 
-#: .\production\forms.py:144 .\production\views.py:326
+#: .\production\forms.py:144 .\production\views.py:354
 msgid "step_code"
 msgstr "站點代碼"
 
-#: .\production\forms.py:145 .\production\views.py:326
+#: .\production\forms.py:145 .\production\views.py:354
 msgid "step_name"
 msgstr "站點名稱"
 
-#: .\production\forms.py:146 .\production\views.py:327
+#: .\production\forms.py:146 .\production\views.py:355
 msgid "labor_time"
 msgstr "人時"
 
-#: .\production\forms.py:147 .\production\views.py:327
+#: .\production\forms.py:147 .\production\views.py:355
 msgid "mach_time"
 msgstr "機時"
 
-#: .\production\forms.py:148 .\production\views.py:327
+#: .\production\forms.py:148 .\production\views.py:355
 msgid "good_qty"
 msgstr "良品"
 
@@ -386,13 +386,17 @@ msgstr "良品"
 msgid "ng_qty"
 msgstr "NG"
 
-#: .\production\forms.py:150 .\production\views.py:398
+#: .\production\forms.py:150 .\production\views.py:426
 msgid "comment"
 msgstr "備註"
 
 #: .\production\forms.py:153
 msgid "mach_name"
 msgstr "機台"
+
+#: .\production\forms.py:237 .\users\models.py:81
+msgid "username"
+msgstr "用戶名"
 
 #: .\production\templates\production\base.html:19
 msgid "Record Add"
@@ -408,7 +412,7 @@ msgstr "SAP員工編號不正確或尚未建立資料"
 
 #: .\production\templates\production\record.html:108
 msgid "The previous step has not been finished yet"
-msgstr "第一個站點或前一站尚未報工"
+msgstr "有YY01站點尚未報工，請工單查詢確認"
 
 #: .\production\templates\production\record.html:114
 #: .\production\templates\production\record.html:203
@@ -430,17 +434,17 @@ msgid ""
 "standard time({standard_time})."
 msgstr "提醒總工時 {labor_time} 已經超過標準工時10%%({standard_time})"
 
-#: .\production\views.py:403
+#: .\production\views.py:431
 #: .\requests\templates\requests\request_base.html:172
 #: .\requests\templates\requests\request_base.html:193
 msgid "New"
 msgstr "新增"
 
-#: .\production\views.py:408
+#: .\production\views.py:436
 msgid "total_labor_time"
 msgstr "總人時"
 
-#: .\production\views.py:408
+#: .\production\views.py:436
 msgid "remain_labor_time"
 msgstr "待報工人時"
 
@@ -777,10 +781,6 @@ msgstr "密碼不正確"
 #: .\users\models.py:31
 msgid "類別"
 msgstr ""
-
-#: .\users\models.py:81
-msgid "username"
-msgstr "用戶名"
 
 #: .\users\models.py:82
 msgid "email address"

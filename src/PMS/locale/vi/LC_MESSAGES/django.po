@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-29 15:19+0700\n"
-"PO-Revision-Date: 2024-07-29 15:19+0700\n"
+"POT-Creation-Date: 2024-11-15 11:19+0700\n"
+"PO-Revision-Date: 2024-11-15 11:03+0700\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: vi_VN\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.5\n"
 
 #: .\assets\templates\assets\category_reset.html:42
 #: .\assets\templates\assets\chart.html:64
@@ -33,7 +33,7 @@ msgstr ""
 #: .\helpdesk\templates\helpdesk\search.html:21
 #: .\inventory\templates\inventory\base.html:52
 #: .\monitor\templates\monitor\base.html:24
-#: .\production\templates\production\base.html:37
+#: .\production\templates\production\base.html:38
 #: .\stock\templates\stock\base.html:55
 msgid "logout"
 msgstr "Đăng xuất"
@@ -306,30 +306,30 @@ msgstr ""
 msgid "reply_num"
 msgstr ""
 
-#: .\production\forms.py:22 .\production\forms.py:280
+#: .\production\forms.py:22 .\production\forms.py:284
 msgid "export"
 msgstr "xuất khẩu"
 
-#: .\production\forms.py:33 .\production\forms.py:136 .\production\views.py:326
+#: .\production\forms.py:33 .\production\forms.py:136 .\production\views.py:354
 msgid "prod_order"
 msgstr "trình tự công việc"
 
 #: .\production\forms.py:44 .\production\forms.py:68 .\production\forms.py:111
-#: .\production\forms.py:246
+#: .\production\forms.py:250
 msgid "search"
 msgstr "Hỏi thăm"
 
-#: .\production\forms.py:54 .\production\forms.py:137 .\production\views.py:328
+#: .\production\forms.py:54 .\production\forms.py:137 .\production\views.py:356
 msgid "item_no"
 msgstr "Phần Không"
 
-#: .\production\forms.py:98 .\production\forms.py:141 .\users\forms.py:51
-#: .\users\models.py:80
+#: .\production\forms.py:98 .\production\forms.py:141 .\production\forms.py:236
+#: .\users\forms.py:51 .\users\models.py:80
 msgid "sap_emp_no"
 msgstr "SAP Mã hiệu công nhân"
 
 #: .\production\forms.py:99 .\production\forms.py:133 .\production\forms.py:235
-#: .\production\views.py:410
+#: .\production\views.py:438
 msgid "record_date"
 msgstr "ngày làm việc"
 
@@ -341,7 +341,7 @@ msgstr "Số giờ làm việc tích lũy"
 msgid "plant"
 msgstr "địa điểm"
 
-#: .\production\forms.py:138 .\production\views.py:328
+#: .\production\forms.py:138 .\production\views.py:356
 msgid "spec"
 msgstr "mô tả vật liệu"
 
@@ -362,23 +362,23 @@ msgstr "mã xác nhận"
 msgid "control_code"
 msgstr "mã kiểm soát"
 
-#: .\production\forms.py:144 .\production\views.py:326
+#: .\production\forms.py:144 .\production\views.py:354
 msgid "step_code"
 msgstr "mã trang web"
 
-#: .\production\forms.py:145 .\production\views.py:326
+#: .\production\forms.py:145 .\production\views.py:354
 msgid "step_name"
 msgstr "Tên trang web"
 
-#: .\production\forms.py:146 .\production\views.py:327
+#: .\production\forms.py:146 .\production\views.py:355
 msgid "labor_time"
 msgstr "giờ làm việc"
 
-#: .\production\forms.py:147 .\production\views.py:327
+#: .\production\forms.py:147 .\production\views.py:355
 msgid "mach_time"
 msgstr "giờ máy"
 
-#: .\production\forms.py:148 .\production\views.py:327
+#: .\production\forms.py:148 .\production\views.py:355
 msgid "good_qty"
 msgstr "Sản phẩm tốt"
 
@@ -386,13 +386,17 @@ msgstr "Sản phẩm tốt"
 msgid "ng_qty"
 msgstr "sản phẩm xấu"
 
-#: .\production\forms.py:150 .\production\views.py:398
+#: .\production\forms.py:150 .\production\views.py:426
 msgid "comment"
 msgstr "bình luận"
 
 #: .\production\forms.py:153
 msgid "mach_name"
 msgstr "Tên may moc"
+
+#: .\production\forms.py:237 .\users\models.py:81
+msgid "username"
+msgstr "tên tài khoản"
 
 #: .\production\templates\production\base.html:19
 msgid "Record Add"
@@ -408,7 +412,7 @@ msgstr "Mã số nhân viên SAP không chính xác hoặc không có dữ liệ
 
 #: .\production\templates\production\record.html:108
 msgid "The previous step has not been finished yet"
-msgstr "Bước trước vẫn chưa hoàn tất"
+msgstr "Một số bước vẫn chưa xong"
 
 #: .\production\templates\production\record.html:114
 #: .\production\templates\production\record.html:203
@@ -432,17 +436,17 @@ msgstr ""
 "Nhắc rằng tổng thời gian ghi lại {labor_time} đã vượt quá 10%% so với thời "
 "gian tiêu chuẩn({standard_time})."
 
-#: .\production\views.py:403
+#: .\production\views.py:431
 #: .\requests\templates\requests\request_base.html:172
 #: .\requests\templates\requests\request_base.html:193
 msgid "New"
 msgstr "Thêm vào"
 
-#: .\production\views.py:408
+#: .\production\views.py:436
 msgid "total_labor_time"
 msgstr "tổng thời gian làm việc"
 
-#: .\production\views.py:408
+#: .\production\views.py:436
 msgid "remain_labor_time"
 msgstr "thời gian chưa hoàn thành"
 
@@ -770,10 +774,6 @@ msgstr "Mật khẩu không chính xác"
 #: .\users\models.py:31
 msgid "類別"
 msgstr ""
-
-#: .\users\models.py:81
-msgid "username"
-msgstr "tên tài khoản"
 
 #: .\users\models.py:82
 msgid "email address"
