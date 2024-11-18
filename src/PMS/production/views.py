@@ -674,7 +674,7 @@ def build_exceltemp_data(request, excel_file):
         temp.wo_mach_time = wo['wo_mach_time']
         temp.std_qty = wo['std_qty']
         temp.create_by = request.user
-        if str(wo['status']).find('PRT') >= 0:  # 已列印的工單才匯入系統
+        if str(wo['status']).find('PRT') >= 0 and str(wo['status']).find('DLT') < 0:  # 已列印的工單才匯入系統
             temp.save()
 
 
@@ -766,7 +766,9 @@ def excel_import_preview(request):
                 wo['wo_labor_time'] = sheet.cell(row=iRow, column=13).value
                 wo['wo_mach_time'] = sheet.cell(row=iRow, column=14).value
                 wo['std_qty'] = sheet.cell(row=iRow, column=15).value
-                wos.append(wo)
+
+                if str(wo['status']).find('PRT') >= 0 and str(wo['status']).find('DLT') < 0:
+                    wos.append(wo)
 
                 if iRow > 50:  # 預覽只顯示50筆
                     break
