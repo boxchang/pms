@@ -441,23 +441,20 @@ def record_detail_sap_empno(request, sap_emp_no):
 
 
 def find_pre_step(wo_no, cur_step):
-    if int(cur_step[:3]) - 1 >= 1:
-        tmp_step_no = ("00{s}0".format(s=int(cur_step[:3]) - 1))[-4:]
-        wodata_pre_steps = WODetail.objects.filter(wo_main__wo_no=wo_no, step_no=tmp_step_no)
-        if wodata_pre_steps:
-            return wodata_pre_steps[0]
-        else:
-            return find_pre_step(wo_no, tmp_step_no)
+    wodata_pre_steps = WODetail.objects.filter(wo_main__wo_no=wo_no, step_no__lt=cur_step)
+    if wodata_pre_steps:
+        return wodata_pre_steps[0]
     else:
         return ""
+
 
 def isPreStepYY01Done(wo_no, step_no):
     db = database()
     sql = f"""
-    select * from production_womain m 
-    join production_wodetail d on m.Id = d.wo_main_id 
-    left join production_record r on d.cfm_code = r.cfm_code 
-    where m.wo_no = {wo_no} and d.step_no < '{step_no}' 
+    select * from production_womain m
+    join production_wodetail d on m.Id = d.wo_main_id
+    left join production_record r on d.cfm_code = r.cfm_code
+    where m.wo_no = {wo_no} and d.step_no < '{step_no}'
     and enable = 1 and d.ctr_code = 'YY01' and sap_emp_no is null
     """
     print(sql)
@@ -468,13 +465,14 @@ def isPreStepYY01Done(wo_no, step_no):
     else:
         return False
 
+
 def get_step_info(request):
     value = {}
     if request.method == 'POST':
         cfm_code = request.POST.get('cfm_code')
         try:
             step = WODetail.objects.select_related('wo_main').get(wo_main__enable=True, cfm_code=cfm_code)
-            labor_time = round(step.wo_labor_time/step.std_qty*step.wo_qty, 1)
+            labor_time = round(step.wo_labor_time / step.std_qty * step.wo_qty, 1)
             mach_time = round(step.wo_mach_time / step.std_qty * step.wo_qty, 1)
 
             if step:
@@ -498,7 +496,9 @@ def get_step_info(request):
                 worked_labor_time = 0
                 worked_mach_time = 0
                 wo_ng_qty = 0
-                worked_rows = Record.objects.filter(cfm_code=step.cfm_code).aggregate(Sum('labor_time'), Sum('mach_time'), Sum('good_qty'), Sum('ng_qty'))
+                worked_rows = Record.objects.filter(cfm_code=step.cfm_code).aggregate(Sum('labor_time'),
+                                                                                      Sum('mach_time'), Sum('good_qty'),
+                                                                                      Sum('ng_qty'))
 
                 # 已報工NG數
                 wo_ng_rows = Record.objects.filter(wo_no=step.wo_main.wo_no).aggregate(Sum('ng_qty'))
@@ -539,10 +539,13 @@ def get_step_info(request):
                 if wodata_pre_step.ctr_code == "YY05":
                     value['pre_step_done'] = "Y"
                 else:
-                    pre_step_good_rows = Record.objects.filter(wo_no=step.wo_main.wo_no, step_no=wodata_pre_step.step_no).aggregate(Sum('good_qty'))
-                    pre_step_good_qty = pre_step_good_rows['good_qty__sum'] if pre_step_good_rows['good_qty__sum'] else 0
+                    pre_step_good_rows = Record.objects.filter(wo_no=step.wo_main.wo_no,
+                                                               step_no=wodata_pre_step.step_no).aggregate(
+                        Sum('good_qty'))
+                    pre_step_good_qty = pre_step_good_rows['good_qty__sum'] if pre_step_good_rows[
+                        'good_qty__sum'] else 0
 
-                    if (pre_step_good_qty+wo_ng_qty) >= step.wo_qty:
+                    if (pre_step_good_qty + wo_ng_qty) >= step.wo_qty:
                         value['pre_step_done'] = "Y"
 
             if not isPreStepYY01Done(step.wo_main.wo_no, step.step_no):
