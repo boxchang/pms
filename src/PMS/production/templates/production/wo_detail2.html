@@ -43,6 +43,7 @@ $("#id_wo_no").focus();
                     <th style="width: 100px">SAP員編</th>
                     <th style="width: 100px">輸入人員</th>
                     <th>備註</th>
+                    <th style="width: 100px">輸入時間</th>
                 </tr>
             {% for step in steps %}
                 {% if step.records %}
@@ -62,6 +63,7 @@ $("#id_wo_no").focus();
                         <td style="text-align: center">{{ record.sap_emp_no }}</td>
                         <td style="text-align: center">{{ record.username }}</td>
                         <td style="text-align: right">{{ record.comment|default:"" }}</td>
+                        <td style="text-align: center">{{ record.update_at|date:"Y-m-d H:i:s" }}</td>
                     </tr>
                     {% endfor %}
                 {% else %}
@@ -80,6 +82,7 @@ $("#id_wo_no").focus();
                         <td style="text-align: center"></td>
                         <td style="text-align: center"></td>
                         <td style="text-align: right"></td>
+                        <td style="text-align: center"></td>
                     </tr>
                 {% endif %}
             {% endfor %}
