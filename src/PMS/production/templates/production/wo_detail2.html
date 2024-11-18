@@ -31,7 +31,6 @@ $("#id_wo_no").focus();
                 <tr>
                     <th style="width: 80px">工單</th>
                     <th style="width: 90px">加工順序</th>
-                    <th style="width: 90px">作業代碼</th>
                     <th style="width: 150px">作業短文</th>
                     <th style="width: 80px">控制碼</th>
                     <th style="width: 100px">工單數量</th>
@@ -51,7 +50,6 @@ $("#id_wo_no").focus();
                     <tr>
                         <td style="background-color: rgba(0,0,0,.05)">{{ wo_no }}</td>
                         <td style="background-color: rgba(0,0,0,.05)">{{ record.step_no }}</td>
-                        <td style="background-color: rgba(0,0,0,.05)">{{ record.step_code }}</td>
                         <td style="background-color: rgba(0,0,0,.05)">{{ record.step_name }}</td>
                         <td style="text-align: center;background-color: rgba(0,0,0,.05)">{{ record.ctr_code }}</td>
                         <td style="text-align: right;background-color: rgba(0,0,0,.05)">{{ record.wo_qty }}</td>
@@ -70,7 +68,6 @@ $("#id_wo_no").focus();
                     <tr>
                         <td style="background-color: rgba(0,0,0,.05)">{{ wo_no }}</td>
                         <td style="background-color: rgba(0,0,0,.05)">{{ step.step_no }}</td>
-                        <td style="background-color: rgba(0,0,0,.05)">{{ step.step_code }}</td>
                         <td style="background-color: rgba(0,0,0,.05)">{{ step.step_name }}</td>
                         <td style="text-align: center;background-color: rgba(0,0,0,.05)">{{ step.ctr_code }}</td>
                         <td style="text-align: right;background-color: rgba(0,0,0,.05)">{{ step.wo_qty }}</td>
