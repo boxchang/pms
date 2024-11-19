@@ -441,7 +441,7 @@ def record_detail_sap_empno(request, sap_emp_no):
 
 
 def find_pre_step(wo_no, cur_step):
-    wodata_pre_steps = WODetail.objects.filter(wo_main__wo_no=wo_no, step_no__lt=cur_step)
+    wodata_pre_steps = WODetail.objects.filter(wo_main__wo_no=wo_no, step_no__lt=cur_step, wo_main__enable=1).order_by('-step_no')
     if wodata_pre_steps:
         return wodata_pre_steps[0]
     else:
