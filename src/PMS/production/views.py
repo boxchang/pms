@@ -538,15 +538,15 @@ def get_step_info(request):
 
                 if wodata_pre_step.ctr_code == "YY05":
                     value['pre_step_done'] = "Y"
-                # else:
-                #     pre_step_good_rows = Record.objects.filter(wo_no=step.wo_main.wo_no).order_by('-update_at')
-                #     if pre_step_good_rows:
-                #         pre_step_good_qty = pre_step_good_rows[0].good_qty
-                #     else:
-                #         pre_step_good_qty = 0
-                #
-                #     if (pre_step_good_qty + wo_ng_qty) >= step.wo_qty:
-                #         value['pre_step_done'] = "Y"
+                else:
+                    pre_step_good_rows = Record.objects.filter(wo_no=step.wo_main.wo_no, good_qty__gt=0).order_by('-update_at')
+                    if pre_step_good_rows:
+                        pre_step_good_qty = pre_step_good_rows[0].good_qty
+                    else:
+                        pre_step_good_qty = 0
+
+                    if (pre_step_good_qty + wo_ng_qty) >= step.wo_qty:
+                        value['pre_step_done'] = "Y"
 
             if not isPreStepYY01Done(step.wo_main.wo_no, step.step_no):
                 value['pre_step_done'] = "N"
