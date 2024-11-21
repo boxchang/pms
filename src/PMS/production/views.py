@@ -532,6 +532,7 @@ def get_step_info(request):
             # 前一站若是Y01的話，判斷有沒有報工
             if step.step_no == "0010":
                 value['pre_step_done'] = "Y"
+                value['first_step_done'] = "Y"
             else:
                 value['pre_step_done'] = "N"
                 wodata_pre_step = find_pre_step(value['wo_no'], step.step_no)
@@ -541,11 +542,16 @@ def get_step_info(request):
                 else:
                     record_pre_step = Record.objects.filter(wo_no=step.wo_main.wo_no, good_qty__gt=0).exclude(step_no=step.step_no).order_by('-update_at')[0]
 
-                    pre_step_good_rows = Record.objects.filter(wo_no=step.wo_main.wo_no,
-                                                               step_no=record_pre_step.step_no).aggregate(
-                        Sum('good_qty'))
-                    pre_step_good_qty = pre_step_good_rows['good_qty__sum'] if pre_step_good_rows[
-                        'good_qty__sum'] else 0
+                    if int(record_pre_step.step_no) > int(step.step_no):
+                        # 分批報工的情況，上一站的判斷抓取工單的順序
+                        pre_step_good_rows = Record.objects.filter(wo_no=step.wo_main.wo_no,
+                                                                   step_no=wodata_pre_step.step_no).aggregate(Sum('good_qty'))
+                    else:
+                        # 一般情況以上一站報工的站點為準
+                        pre_step_good_rows = Record.objects.filter(wo_no=step.wo_main.wo_no,
+                                                                   step_no=record_pre_step.step_no).aggregate(Sum('good_qty'))
+
+                    pre_step_good_qty = pre_step_good_rows['good_qty__sum'] if pre_step_good_rows['good_qty__sum'] else 0
 
                     if (pre_step_good_qty + wo_ng_qty) >= step.wo_qty:
                         value['pre_step_done'] = "Y"
