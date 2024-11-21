@@ -538,6 +538,7 @@ def get_step_info(request):
                 wodata_pre_step = find_pre_step(value['wo_no'], step.step_no)
 
                 if wodata_pre_step.ctr_code == "YY05":
+                    # 上一站是YY05不使用上一站的良品數計算，依工單總數計算
                     value['pre_step_done'] = "Y"
                 else:
                     record_pre_step = Record.objects.filter(wo_no=step.wo_main.wo_no, good_qty__gt=0).exclude(step_no=step.step_no).order_by('-update_at')[0]
