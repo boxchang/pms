@@ -530,7 +530,7 @@ def get_step_info(request):
                     value['first_step_done'] = "N"
 
             # 前一站若是Y01的話，判斷有沒有報工
-            if step.step_no == "0010":
+            if step.step_no == "0010" or step.step_no == "0001":
                 value['pre_step_done'] = "Y"
                 value['first_step_done'] = "Y"
             else:
