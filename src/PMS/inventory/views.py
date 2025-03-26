@@ -1,3 +1,5 @@
+#  Version  Date         Editor      Desc
+#  V001     2025/3/26    Box         直屬主管為總經理室不需要簽核，狀態直接改成已簽核
 import json
 import os
 
@@ -419,11 +421,15 @@ def apply(request):
             apply.apply_date = apply_date
             apply.ext_number = ext_number
             apply.reason = reason
-            apply.status = FormStatus.objects.get(pk=1)
+            if apply.requester.manager.unit.unitId == 'S01':  # 總經理室
+                apply.status = FormStatus.objects.get(pk=2)
+            else:
+                apply.status = FormStatus.objects.get(pk=1)
+                apply.approver = apply.requester.manager
             apply.category = ItemCategory.objects.filter(category_name=items[0]['category']).first()
             apply.create_by = request.user
             apply.update_by = request.user
-            apply.approver = apply.requester.manager
+
             apply.save()
 
             if request.FILES.get('file1'):
@@ -453,8 +459,9 @@ def apply(request):
                 obj.applied_form = apply
                 obj.save()
 
-            if apply.requester.manager.email:
-                address.append(apply.requester.manager.email)
+            if not apply.requester.manager.unit.unitId == 'S01':  # 總經理室
+                if apply.requester.manager.email:
+                    address.append(apply.requester.manager.email)
 
             subject = '總務用品請領單簽核通知'
             try:
@@ -482,6 +489,9 @@ def detail(request, pk):
         items = form.applied_form_item.all().order_by('category')
 
         status_html = get_invform_status_dropdown(form)
+
+        if form.requester.manager.unit.unitId == 'S01':
+            form.requester.manager = None
 
         if form.status.id == 1 and form.requester.manager == request.user:
             isApprover = True
