@@ -168,6 +168,15 @@ class AssetModelForm(forms.ModelForm):
             }
         )
 
+        self.fields['warranty_date'].widget = DatePickerInput(
+            options={
+                "format": "YYYY-MM-DD",
+                "showClose": False,
+                "showClear": True,
+                "showTodayButton": False,
+            }
+        )
+
     def clean_pur_date(self):
         value = self.cleaned_data['pur_date'][0:7]
         return value
