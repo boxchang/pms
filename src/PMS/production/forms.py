@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from django import forms
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Submit, Button
+from crispy_forms.layout import Layout, Div, Submit, Button, Field
 from bootstrap_datepicker_plus.widgets import DatePickerInput
 from django.utils.translation import gettext_lazy as _
 from production.models import Record, Machine
@@ -40,8 +40,8 @@ class WoSearchForm(forms.ModelForm):
 
         self.helper.layout = Layout(
             Div(
-                Div('wo_no', css_class='col-md-3'),
-                Div(Submit('submit', _('search'), css_class='btn btn-info'), css_class='col-md-3 d-flex align-items-center mt-3'),
+                Field('wo_no', wrapper_class='form-row'),
+                Div(Submit('submit', _('search'), css_class='btn btn-info'), css_class='col-md-3 d-flex align-items-center mb-2'),
                 css_class='row'),
         )
 
