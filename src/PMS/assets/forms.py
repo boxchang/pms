@@ -66,7 +66,7 @@ class AssetModelForm(forms.ModelForm):
         model = Asset
         fields = ('label_no', 'auto_encode', 'category', 'type', 'brand', 'model', 'desc', 'owner_unit', 'keeper_unit',
             'keeper_name', 'location', 'location_desc', 'pur_date', 'pur_price', 'area', 'status', 'comment',
-                  'scrap_date', 'scrap_reason', 'sap_asset_no')
+                  'scrap_date', 'scrap_reason', 'sap_asset_no', 'device_series', 'warranty_date')
 
     label_no = forms.CharField(required=False, label="標籤編號")
     auto_encode = forms.BooleanField(required=False, initial=True, label="自動編碼")
@@ -88,6 +88,8 @@ class AssetModelForm(forms.ModelForm):
     scrap_date = forms.CharField(required=False, initial="", label="報廢日期")
     scrap_reason = forms.CharField(required=False, initial="", label="報廢原因")
     comment = forms.CharField(required=False, label="備註", widget=CKEditorUploadingWidget())
+    device_series = forms.CharField(required=False, initial="", label="設備序號")
+    warranty_date = forms.CharField(required=False, initial="", label="保固日期")
 
     def __init__(self, *args, submit_title='Submit', **kwargs):
         super().__init__(*args, **kwargs)
@@ -108,9 +110,13 @@ class AssetModelForm(forms.ModelForm):
                     Div('type', css_class='col-md-4'),
                     Div('brand', css_class='col-md-4'),
                     css_class='row'),
+                 Div(
+                     Div('model', css_class='col-md-4'),
+                     Div('device_series', css_class='col-md-4'),
+                     Div('warranty_date', css_class='col-md-4'),
+                     css_class='row'),
                 Div(
-                    Div('model', css_class='col-md-6'),
-                    Div('desc', css_class='col-md-6'),
+                    Div('desc', css_class='col-md-12'),
                     css_class='row'),
             ),
             HTML('<hr>'),

@@ -84,6 +84,8 @@ def export_assets_xls(request):
     ws.col(14).width = 256 *20
     ws.col(15).width = 256 * 20
     ws.col(16).width = 256 * 20
+    ws.col(17).width = 256 * 20
+    ws.col(18).width = 256 * 20
 
     # Sheet header, first row
     row_num = 0
@@ -91,7 +93,7 @@ def export_assets_xls(request):
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
 
-    columns = ['資產編碼', '標籤編號', '資產類別', '資產種類', '品牌', '型號', '地區', '負責單位', '保管單位', '保管人姓名', '放置地點', '放置地點描述', '採購日期', '採購金額', '狀態', '描述', 'SAP資產編號']
+    columns = ['資產編碼', '標籤編號', '資產類別', '資產種類', '品牌', '型號', '地區', '負責單位', '保管單位', '保管人姓名', '放置地點', '放置地點描述', '採購日期', '採購金額', '狀態', '描述', 'SAP資產編號', '設備序號', '保固日期']
 
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
@@ -125,6 +127,8 @@ def export_assets_xls(request):
         ws.write(row_num, 14, data.status.status_name, font_style)
         ws.write(row_num, 15, data.desc, font_style)
         ws.write(row_num, 16, data.sap_asset_no, font_style)
+        ws.write(row_num, 17, data.device_series, font_style)
+        ws.write(row_num, 18, data.warranty_date, font_style)
 
     wb.save(response)
     return response

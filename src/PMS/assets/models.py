@@ -148,6 +148,9 @@ class Asset(models.Model):
     update_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='asset_update_by')
     comment = models.CharField(max_length=5000, blank=True, null=True)
+    device_series = models.CharField(max_length=50, blank=True, null=True)
+    warranty_date = models.CharField(max_length=50, blank=True, null=True)
+
 
     def __str__(self):
         return self.label_no
