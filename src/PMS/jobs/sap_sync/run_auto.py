@@ -10,7 +10,7 @@ from jobs.sap_sync.SYN_Noah_Consumption import SYN_Noah_Consumption
 from jobs.sap_sync.SYN_Noah_WorkHour import SYN_Noah_WorkHour
 
 plants = ['302A', '302B']
-save_path = "C:\\temp\\python\\"
+save_path = "D:\\sap_upload\\"
 
 create_by = get_ip()  # 執行位置
 dc_db = dc_database()  # 中介資料庫
