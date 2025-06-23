@@ -1,5 +1,5 @@
 import csv
-
+import os
 import xlwt
 from jobs.sap_sync.encode import get_series_number
 from jobs.sap_sync.utils import get_ip, get_batch_no, get_date_str
@@ -20,20 +20,33 @@ class SYN_Noah_Consumption(object):
         self.ip = get_ip()
         self.save_path = save_path
 
-    # 取得耗用資料
+    # 取得耗用資料(手動上傳版本)
     def export_consumptions(self, plant):
         sql = """select * from production_consumption where plant='{plant}' and sap_flag={sap_flag}""".format(
             plant=plant, sap_flag=0)
         records = self.sqlite_db.select_sql_dict(sql)
         return records
 
-    # 更新耗用資料Flag
+    # 取得耗用資料(自動上傳版本)
+    def auto_export_consumptions(self, plant):
+        sql = """select * from production_consumption where plant='{plant}' and auto_flag={auto_flag}""".format(
+            plant=plant, auto_flag=0)
+        records = self.sqlite_db.select_sql_dict(sql)
+        return records
+
+    # 更新耗用資料Flag(手動上傳版本)
     def update_consumptions(self, plant):
         sql = """update production_consumption set sap_flag=1 where plant='{plant}' and sap_flag=0""".format(
             plant=plant)
         self.sqlite_db.execute_sql(sql)
 
-    # 耗用的資料轉入中介
+    # 更新耗用資料Flag(自動上傳版本)
+    def auto_update_consumptions(self, plant):
+        sql = """update production_consumption set auto_flag=1 where plant='{plant}' and auto_flag=0""".format(
+            plant=plant)
+        self.sqlite_db.execute_sql(sql)
+
+    # 耗用的資料轉入中介(已無使用)
     def create_dc_consumption_data(self, records, batch_no):
         amount = 0
         for record in records:
@@ -58,7 +71,7 @@ class SYN_Noah_Consumption(object):
                 print(sql)
         return amount
 
-    # 取得中介要轉出的資料
+    # 取得中介要轉出的資料(已無使用)
     def get_dc_consumption_data(self, batch_no):
         sql = "select * from SYN_Noah_Consumption where batch_no='{batch_no}'".format(batch_no=batch_no)
         records = self.dc_db.select_sql_dict(sql)
@@ -138,7 +151,7 @@ class SYN_Noah_Consumption(object):
             wb.save(self.save_path + file_name)  # 儲存一份在主機上
             return wb
 
-    # 產生CSV檔案流程
+    # 產生CSV檔案流程(網頁下載版本)
     def generate_csv(self, plant, file_path, file_name):
         amount = 0
         records = self.export_consumptions(plant)  # 取得本次處理資料
@@ -148,6 +161,31 @@ class SYN_Noah_Consumption(object):
             amount = self.prod_sap_consumption_csv(records, file_path)  # 取出中介資料匯出Excel
             self.save_log("consumption", batch_no, amount, self.create_by, file_name)  # 紀錄Log
             self.update_consumptions(plant)  # 更新Flag
+        return amount
+
+    # 月底結帳
+    def update_record_dates(self, records):
+
+        today = datetime.datetime.now()
+
+        # 檢查是否為每月1號
+        if today.day == 1:
+            for record in records.values():
+                record['record_dt'] = today.strftime("%Y-%m-%d")
+
+        return records
+
+    # 產生CSV檔案流程(自動下載版本)
+    def auto_generate_csv(self, plant, file_path, file_name):
+        amount = 0
+        records = self.auto_export_consumptions(plant)  # 取得本次處理資料
+        records = self.update_record_dates(records)
+        batch_no = get_batch_no()  # 取號
+
+        if len(records) > 0:
+            amount = self.prod_sap_consumption_csv(records, file_path)  # 取出中介資料匯出Excel
+            self.save_log("consumption", batch_no, amount, self.create_by, file_name)  # 紀錄Log
+            self.auto_update_consumptions(plant)  # 更新Flag
         return amount
 
     # 取得檔案名稱

@@ -42,9 +42,11 @@ def prepare_test_data():
 workhour = SYN_Noah_WorkHour(sqlite_db, dc_db, create_by, save_path)
 for plant in plants:
     file_name = workhour.get_file_name(plant)
-    workhour.generate_csv(plant, save_path, file_name)
+    file_path = save_path + file_name
+    workhour.auto_generate_csv(plant, file_path, file_name)
 
 material = SYN_Noah_Consumption(sqlite_db, dc_db, create_by, save_path)
 for plant in plants:
     file_name = material.get_file_name(plant)
-    material.generate_csv(plant, save_path, file_name)
+    file_path = save_path + file_name
+    material.auto_generate_csv(plant, file_path, file_name)

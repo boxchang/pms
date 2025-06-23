@@ -94,6 +94,7 @@ class Record(models.Model):
     ng_qty = models.IntegerField(default=0)
     comment = models.CharField(max_length=40, blank=True, null=True)
     sap_flag = models.BooleanField(default=False)
+    auto_flag = models.BooleanField(default=False)
     status = models.CharField(max_length=10, blank=True, null=True)
     update_at = models.DateTimeField(auto_now=True, null=True)
     update_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='record_update_by')
@@ -137,6 +138,7 @@ class Consumption(models.Model):
     item_no = models.CharField(max_length=20, blank=False, null=False)
     qty = models.FloatField(default=0)
     sap_flag = models.BooleanField(default=False)
+    auto_flag = models.BooleanField(default=False)
     create_at = models.DateTimeField(auto_now=True, null=True)
     create_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING,
                                   related_name='consumption_create_by')
